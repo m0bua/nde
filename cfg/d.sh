@@ -12,13 +12,16 @@ fi; fi; fi
 if [[ $1 == ssh ]]; then
 	command="docker exec -it"
 	extra_params="bash"
-	if [[ ! -z $2 ]]; then params=$(docker ps --format {{.Names}} | grep _$2 | head -n 1); fi
+	if [[ ! -z $2 ]]; then
+		if [[ $2 =~ [0-9]+ ]]; then params=$(docker ps --format {{.Names}} | grep $2 | head -n 1)
+		else params=$(docker ps --format {{.Names}} | grep nde-$2 | head -n 1); fi
+	fi
 	if [[ ! $params =~ [\w\d_]+ ]]; then 
 		if [[ $2 =~ ^[^\s]+ ]]; then extra_params=$2; fi
-		params=$(docker ps --format {{.Names}} | grep _php7 | head -n 1); 
+		params=$(docker ps --format {{.Names}} | grep nde-php7 | head -n 1); 
 	fi
-	if [[ ! $params =~ [\w\d_]+ ]]; then params=$(docker ps -a --format {{.Names}} | grep _php7 | head -n 1); fi
 	if [[ $3 =~ ^[^\s]+ ]]; then extra_params=$3; fi
+	if [[ -z $params ]]; then echo " Container not found."; exit; fi
 fi
 
 if [[ $1 == df ]]; then
