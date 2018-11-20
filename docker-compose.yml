@@ -1,0 +1,46 @@
+version: '3.5'
+services:
+  nginx:
+    hostname: nginx
+    image: nginx:latest
+    ports:
+      - 80:80
+    volumes:
+      - /var/www:/var/www
+      - ./cfg/nginx:/etc/nginx/conf.d
+      - ./logs:/var/log/nginx
+      - ./cfg/d.bashrc:/root/.bashrc
+    links:
+      - php7
+      - php5
+
+  php7:
+    hostname: php7
+    image: php:7-fpm
+    build: ./cfg/php7
+    links:
+      - db
+    volumes:
+      - /var/www:/var/www
+      - ./cfg/d.bashrc:/root/.bashrc
+
+  php5:
+    hostname: php5
+    image: php:5-fpm
+    build: ./cfg/php5
+    links:
+      - db
+    volumes:
+      - /var/www:/var/www
+      - ./cfg/d.bashrc:/root/.bashrc
+
+  db:
+    hostname: mysql
+    image: mysql:5
+    ports:
+      - 3306:3306
+    volumes:
+      - ./db-mysql:/var/lib/mysql
+      - ./cfg/d.bashrc:/root/.bashrc
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
