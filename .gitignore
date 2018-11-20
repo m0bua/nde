@@ -1,4 +1,2 @@
 /db-mysql/*
-!/db-mysql/.placeholder
 /logs/*
-!/logs/.placeholder
