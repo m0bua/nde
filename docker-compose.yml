@@ -2,6 +2,7 @@ version: '3.5'
 services:
   nginx:
     hostname: nginx
+    container_name: nde-nginx
     image: nginx:latest
     ports:
       - 80:80
@@ -16,6 +17,7 @@ services:
 
   php7:
     hostname: php7
+    container_name: nde-php7
     image: php:7-fpm
     build: ./cfg/php7
     links:
@@ -26,6 +28,7 @@ services:
 
   php5:
     hostname: php5
+    container_name: nde-php5
     image: php:5-fpm
     build: ./cfg/php5
     links:
@@ -36,6 +39,7 @@ services:
 
   db:
     hostname: mysql
+    container_name: nde-mysql
     image: mysql:5
     ports:
       - 3306:3306
