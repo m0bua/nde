@@ -10,7 +10,7 @@ services:
       - /var/www:/var/www
       - ./cfg/nginx:/etc/nginx/conf.d
       - ./logs/nginx:/var/log/nginx
-      - ./cfg/d.bashrc:/root/.bashrc
+      - ./cfg/d.bashrc:/etc/bash.bashrc
     links:
       - php7
       - php5
@@ -20,22 +20,24 @@ services:
     container_name: nde-php7
     image: php:7-fpm
     build: ./cfg/php7
+    user: 1000:1000
     links:
       - db
     volumes:
       - /var/www:/var/www
-      - ./cfg/d.bashrc:/root/.bashrc
+      - ./cfg/d.bashrc:/etc/bash.bashrc
 
   php5:
     hostname: php5
     container_name: nde-php5
     image: php:5-fpm
     build: ./cfg/php5
+    user: 1000:1000
     links:
       - db
     volumes:
       - /var/www:/var/www
-      - ./cfg/d.bashrc:/root/.bashrc
+      - ./cfg/d.bashrc:/etc/bash.bashrc
 
   db:
     hostname: mysql
@@ -46,6 +48,6 @@ services:
     volumes:
       - ./db-mysql:/var/lib/mysql
       - ./logs/mysql:/var/log/nginx
-      - ./cfg/d.bashrc:/root/.bashrc
+      - ./cfg/d.bashrc:/etc/bash.bashrc
     environment:
       MYSQL_ROOT_PASSWORD: secret

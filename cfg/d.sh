@@ -6,8 +6,8 @@ command="docker-compose"
 
 if [[ $params =~ ^up.*-a ]]; then params=$(echo $params | sed 's/ -a//')
 else 
-	if [[ $params =~ ^up ]]; then if [[ ! $params =~ -d ]]; then extra_params='-d'
-fi; fi; fi
+	if [[ $params =~ ^up ]]; then if [[ ! $params =~ -d ]]; then extra_params='-d'; fi
+fi; fi
 
 if [[ $1 == ssh ]]; then
 	command="docker exec -it"
@@ -22,6 +22,7 @@ if [[ $1 == ssh ]]; then
 	fi
 	if [[ $3 =~ ^[^\s]+ ]]; then extra_params=$3; fi
 	if [[ -z $params ]]; then echo " Container not found."; exit; fi
+		echo $params
 fi
 
 if [[ $1 == df ]]; then

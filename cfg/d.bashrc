@@ -2,6 +2,7 @@ case $- in
     *i*) ;;
       *) return;;
 esac
+export TERM=xterm-256color
 shopt -s checkwinsize
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
@@ -26,7 +27,7 @@ unset color_prompt force_color_prompt
 
 case "$TERM" in
 xterm*|rxvt*)
-    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}nde-\h: \w\a\]$PS1"
     ;;
 *)
     ;;
