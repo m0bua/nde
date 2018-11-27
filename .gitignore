@@ -1,2 +1,3 @@
 /db-mysql/*
 /logs/*
+/docker-compose.yml
