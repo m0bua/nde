@@ -37,6 +37,24 @@ if %1==ssh (
 )
 
 
+if %1==-kill (
+	for /F %%p in ('docker ps -q') do docker kill %%p
+
+	GOTO:EOF
+)
+
+if %1==-purge (
+	echo  Killing all running containers:
+	for /F %%p in ('docker ps -q') do docker kill %%p
+	echo  Removing all containers:
+	for /F %%p in ('docker ps -aq') do docker rm %%p
+	echo  Removing all images:
+	for /F %%p in ('docker images -q') do docker rmi --force %%p
+	
+	GOTO:EOF
+)
+
+
 :command
 set OLDDIR=%CD%
 chdir /d %userprofile%\nde

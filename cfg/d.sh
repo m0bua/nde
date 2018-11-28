@@ -31,7 +31,7 @@ if [[ $1 == df ]]; then
 	exit
 fi
 
-if [[ $1 == ---kill ]]; then
+if [[ $1 == -kill ]]; then
 	params=$(docker ps -q)
 	if [[ $params =~ [\w\d]+ ]]; then docker kill $params
 	else echo "   No containers to kill"
@@ -39,7 +39,7 @@ if [[ $1 == ---kill ]]; then
 	exit;
 fi
 
-if [[ $1 == ---purge ]]; then
+if [[ $1 == -purge ]]; then
 	echo " Killing all running containers:"
 	params=$(docker ps -q)
 	if [[ $params =~ [\w\d]+ ]]; then docker kill $params
