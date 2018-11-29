@@ -19,7 +19,7 @@ services:
     hostname: php7
     container_name: nde-php7
     image: php:7-fpm
-    build: ./cfg/php7
+    build: ./cfg/df-php7
     user: 1000:1000
     links:
       - db
@@ -31,7 +31,7 @@ services:
     hostname: php5
     container_name: nde-php5
     image: php:5-fpm
-    build: ./cfg/php5
+    build: ./cfg/df-php5
     user: 1000:1000
     links:
       - db
