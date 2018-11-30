@@ -6,38 +6,38 @@ services:
     image: nginx:latest
     ports:
       - 80:80
+      - 443:443
     volumes:
       - /var/www:/var/www
       - ./cfg/nginx:/etc/nginx/conf.d
       - ./logs/nginx:/var/log/nginx
       - ./cfg/d.bashrc:/etc/bash.bashrc
-    links:
-      - php7
-      - php5
 
   php7:
     hostname: php7
     container_name: nde-php7
     image: php:7-fpm
-    build: ./cfg/df-php7
+    build: ./cfg/php/7
     user: 1000:1000
     links:
       - db
     volumes:
       - /var/www:/var/www
       - ./cfg/d.bashrc:/etc/bash.bashrc
+      - ./cfg/php/7/socket.conf:/usr/local/etc/php-fpm.d/zz-docker.conf
 
   php5:
     hostname: php5
     container_name: nde-php5
     image: php:5-fpm
-    build: ./cfg/df-php5
+    build: ./cfg/php/5
     user: 1000:1000
     links:
       - db
     volumes:
       - /var/www:/var/www
       - ./cfg/d.bashrc:/etc/bash.bashrc
+      - ./cfg/php/5/socket.conf:/usr/local/etc/php-fpm.d/zz-docker.conf
 
   db:
     hostname: mysql
