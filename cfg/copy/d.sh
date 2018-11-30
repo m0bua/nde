@@ -26,6 +26,18 @@ if [[ $1 == ssh ]]; then
 	if [[ -z $params ]]; then echo " Container not found."; exit; fi
 fi
 
+if [[ $1 == log ]]; then
+	command="docker"
+	params="logs -f --details"
+	extra_params=$(docker ps --format {{.Names}} | grep nde-php7 | head -n 1); 
+
+	if [[ ! -z $2 ]]; then
+		if [[ $2 =~ [0-9]+ ]]; then extra_params=$(docker ps --format {{.Names}} | grep $2 | head -n 1)
+		else extra_params=$(docker ps --format {{.Names}} | grep nde-$2 | head -n 1); fi
+	fi
+	if [[ -z $extra_params ]]; then echo " Container not found."; exit; fi
+fi
+
 if [[ $1 == df ]]; then
 	docker system df
 	exit

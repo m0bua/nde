@@ -36,6 +36,15 @@ if %1==ssh (
 	goto command
 )
 
+if %1==log (
+	set command=docker logs -f --details
+	set params=nde-php7
+
+	if not [%2]==[]	goto param2
+
+	goto command
+)
+
 
 if %1==-kill (
 	for /F %%p in ('docker ps -q') do docker kill %%p
