@@ -6,7 +6,8 @@ RUN apt-get update -y \
 	&& docker-php-ext-install bcmath json xml gd intl mbstring \
 		pdo pdo_mysql zip bz2 opcache readline soap \
 	&& curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
-	&& mkdir -p /.composer && chown 1000:1000 /.composer
+	&& mkdir -p /.composer && chown 1000:1000 /.composer \
+	&& yes | pecl install xdebug-2.5.5 && docker-php-ext-enable xdebug
 
 
 WORKDIR /var/www
