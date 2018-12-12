@@ -27,7 +27,7 @@ services:
       - /var/www:/var/www
       - ./cfg/d.bashrc:/etc/bash.bashrc
       - ./cfg/php/7/socket.conf:/usr/local/etc/php-fpm.d/zz-docker.conf
-      - ./cfg/php/7/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+      - ./cfg/php/all/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
 
 
   php5:
@@ -44,7 +44,7 @@ services:
       - /var/www:/var/www
       - ./cfg/d.bashrc:/etc/bash.bashrc
       - ./cfg/php/5/socket.conf:/usr/local/etc/php-fpm.d/zz-docker.conf
-      - ./cfg/php/5/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+      - ./cfg/php/all/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
 
 
   db:
