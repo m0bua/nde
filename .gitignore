@@ -1,3 +1,4 @@
-/db-mysql/*
-/logs/*
+/*/*
+!/cfg
+!/cfg/*
 /docker-compose.yml
