@@ -22,13 +22,30 @@ services:
     environment:
       XDEBUG_CONFIG: remote_host={{YOUR_IP_ADDRESS}}
     links:
-      - db
+      - mysql5
+      - mysql8
     volumes:
       - /var/www:/var/www
       - ./cfg/d.bashrc:/etc/bash.bashrc
       - ./cfg/php/7/socket.conf:/usr/local/etc/php-fpm.d/zz-docker.conf
-      - ./cfg/php/all/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+      - ./cfg/php/conf/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
 
+  php72:
+    hostname: php72
+    container_name: nde-php72
+    image: php:72-fpm
+    build: ./cfg/php/72
+    user: 1000:1000
+    environment:
+      XDEBUG_CONFIG: remote_host={{YOUR_IP_ADDRESS}}
+    links:
+      - mysql5
+      - mysql8
+    volumes:
+      - /var/www:/var/www
+      - ./cfg/d.bashrc:/etc/bash.bashrc
+      - ./cfg/php/72/socket.conf:/usr/local/etc/php-fpm.d/zz-docker.conf
+      - ./cfg/php/conf/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
 
   php5:
     hostname: php5
@@ -39,23 +56,38 @@ services:
     environment:
       XDEBUG_CONFIG: remote_host={{YOUR_IP_ADDRESS}}
     links:
-      - db
+      - mysql5
+      - mysql8
     volumes:
       - /var/www:/var/www
       - ./cfg/d.bashrc:/etc/bash.bashrc
       - ./cfg/php/5/socket.conf:/usr/local/etc/php-fpm.d/zz-docker.conf
-      - ./cfg/php/all/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+      - ./cfg/php/conf/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
 
-
-  db:
-    hostname: mysql
-    container_name: nde-mysql
+  mysql5:
+    hostname: mysql5
+    container_name: nde-mysql5
     image: mysql:5
+    command: ['--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci','--default-authentication-plugin=mysql_native_password']
     ports:
       - 3306:3306
     volumes:
-      - ./db-mysql:/var/lib/mysql
-      - ./logs/mysql:/var/log/nginx
+      - ./db/mysql5:/var/lib/mysql
+      - ./logs/mysql5:/var/log/nginx
+      - ./cfg/d.bashrc:/etc/bash.bashrc
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+
+  mysql8:
+    hostname: mysql8
+    container_name: nde-mysql8
+    image: mysql
+    command: ['--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci','--default-authentication-plugin=mysql_native_password']
+    ports:
+      - 3308:3306
+    volumes:
+      - ./db/mysql8:/var/lib/mysql
+      - ./logs/mysql8:/var/log/nginx
       - ./cfg/d.bashrc:/etc/bash.bashrc
     environment:
       MYSQL_ROOT_PASSWORD: secret
