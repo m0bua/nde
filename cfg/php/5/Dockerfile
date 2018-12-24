@@ -8,7 +8,8 @@ RUN \
 		if [ -z "$(php -m|grep -i $module)" ];then docker-php-ext-install $module;fi;done && \
 	curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && \
 	mkdir -p /.composer && chown 1000:1000 /.composer && \
-	if [ -z "$(php -m|grep -i xdebug)" ];then pecl install xdebug-2.5.5 && docker-php-ext-enable xdebug;fi
+	if [ -z "$(php -m|grep -i xdebug)" ];then pecl install xdebug-2.5.5 && docker-php-ext-enable xdebug;fi && \
+	mkdir -p /run/sock && chown 1000:1000 /run/sock
 
 
 WORKDIR /var/www

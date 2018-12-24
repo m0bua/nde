@@ -1,4 +1,5 @@
 version: '3.5'
+
 services:
   nginx:
     hostname: nginx
@@ -12,14 +13,15 @@ services:
     #   - php72
     #   - php5
     volumes:
-      - /var/www:/var/www
+      - projects:/var/www
+      - sock:/run/sock
       - ./cfg/nginx:/etc/nginx/conf.d
       - ./logs/nginx:/var/log/nginx
       - ./cfg/d.bashrc:/etc/bash.bashrc
 
   php7:
     hostname: php7
-    container_name: nde-php7
+    container_name: nde-php-7
     image: php:7-fpm
     build: ./cfg/php/7
     user: 1000:1000
@@ -29,14 +31,15 @@ services:
       - mysql5
       # - mysql8
     volumes:
-      - /var/www:/var/www
+      - projects:/var/www
+      - sock:/run/sock
       - ./cfg/d.bashrc:/etc/bash.bashrc
       - ./cfg/php/7/socket.conf:/usr/local/etc/php-fpm.d/zz-docker.conf
       - ./cfg/php/conf/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
 
   php72:
     hostname: php72
-    container_name: nde-php72
+    container_name: nde-php-72
     image: php:72-fpm
     build: ./cfg/php/72
     user: 1000:1000
@@ -46,14 +49,15 @@ services:
       - mysql5
       # - mysql8
     volumes:
-      - /var/www:/var/www
+      - projects:/var/www
+      - sock:/run/sock
       - ./cfg/d.bashrc:/etc/bash.bashrc
       - ./cfg/php/72/socket.conf:/usr/local/etc/php-fpm.d/zz-docker.conf
       - ./cfg/php/conf/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
 
   php5:
     hostname: php5
-    container_name: nde-php5
+    container_name: nde-php-5
     image: php:5-fpm
     build: ./cfg/php/5
     user: 1000:1000
@@ -63,14 +67,15 @@ services:
       - mysql5
       # - mysql8
     volumes:
-      - /var/www:/var/www
+      - projects:/var/www
+      - sock:/run/sock
       - ./cfg/d.bashrc:/etc/bash.bashrc
       - ./cfg/php/5/socket.conf:/usr/local/etc/php-fpm.d/zz-docker.conf
       - ./cfg/php/conf/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
 
   mysql5:
     hostname: mysql5
-    container_name: nde-mysql5
+    container_name: nde-mysql-5
     image: mysql:5
     command: 
       - --character-set-server=utf8mb4
@@ -88,7 +93,7 @@ services:
 
   # mysql8:
   #   hostname: mysql8
-  #   container_name: nde-mysql8
+  #   container_name: nde-mysql-8
   #   image: mysql
   #   command:
   #     - --character-set-server=utf8mb4
@@ -103,3 +108,9 @@ services:
   #     - ./cfg/d.bashrc:/etc/bash.bashrc
   #   environment:
   #     MYSQL_ROOT_PASSWORD: secret
+
+volumes:
+  sock:
+  projects:
+    driver_opts:
+      device: /var/www #your projects path
