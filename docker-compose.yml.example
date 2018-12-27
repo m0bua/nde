@@ -25,8 +25,6 @@ services:
     image: php:7-fpm
     build: ./cfg/php/7
     user: 1000:1000
-    environment: 
-      XDEBUG_CONFIG: remote_host={{YOUR_IP_ADDRESS}}
     links:
       - mysql5
       # - mysql8
@@ -43,8 +41,6 @@ services:
     image: php:72-fpm
     build: ./cfg/php/72
     user: 1000:1000
-    environment: 
-      XDEBUG_CONFIG: remote_host={{YOUR_IP_ADDRESS}}
     links:
       - mysql5
       # - mysql8
@@ -61,8 +57,6 @@ services:
     image: php:5-fpm
     build: ./cfg/php/5
     user: 1000:1000
-    environment: 
-      XDEBUG_CONFIG: remote_host={{YOUR_IP_ADDRESS}}
     links:
       - mysql5
       # - mysql8
@@ -86,7 +80,7 @@ services:
       - 3306:3306
     volumes:
       - ./db/mysql5:/var/lib/mysql
-      - ./logs/mysql5:/var/log/nginx
+      - ./logs/mysql5:/var/log/mysql
       - ./cfg/d.bashrc:/etc/bash.bashrc
     environment:
       MYSQL_ROOT_PASSWORD: secret
@@ -104,7 +98,7 @@ services:
   #     - 3308:3306
   #   volumes:
   #     - ./db/mysql8:/var/lib/mysql
-  #     - ./logs/mysql8:/var/log/nginx
+  #     - ./logs/mysql8:/var/log/mysql
   #     - ./cfg/d.bashrc:/etc/bash.bashrc
   #   environment:
   #     MYSQL_ROOT_PASSWORD: secret
