@@ -28,7 +28,7 @@ if %1==df (
 
 if %1==ssh (
 	set command=docker exec -it
-	set params=nde-php7
+	set params=nde-php-7
 	set extra_params=bash
 
 	if not [%2]==[]	goto param2

@@ -20,7 +20,7 @@ if [[ $1 == ssh ]]; then
 	fi
 	if [[ ! $params =~ [\w\d_]+ ]]; then 
 		if [[ $2 =~ ^[^\s]+ ]]; then extra_params=$2; fi
-		params=$(docker ps --format {{.Names}} | grep nde-php7 | head -n 1); 
+		params=$(docker ps --format {{.Names}} | grep nde-php-7 | head -n 1); 
 	fi
 	if [[ $3 =~ ^[^\s]+ ]]; then extra_params=$3; fi
 	if [[ -z $params ]]; then echo " Container not found."; exit; fi
