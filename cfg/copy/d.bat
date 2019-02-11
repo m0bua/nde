@@ -38,7 +38,7 @@ if %1==ssh (
 
 if %1==log (
 	set command=docker logs -f --details
-	set params=nde-php7
+	set params=nde-php-72
 
 	if not [%2]==[]	goto param2
 
