@@ -10,10 +10,15 @@ RUN apt-get update -y &&\
 		docker-php-ext-configure gd --with-freetype-dir=/usr/include/freetype2 --with-jpeg-dir=/usr/include --with-gd &&\
 		docker-php-ext-install gd && docker-php-ext-enable gd;fi &&\
 	if [ -z "$(php -m|grep -i imagick)" ];then pecl install imagick && docker-php-ext-enable imagick;fi &&\
+	if [ -z "`cat /usr/local/etc/php-fpm.d/www.conf | grep "^php_flag\[display_errors\] = on"`" ]; then \
+		echo 'php_flag[display_errors] = on' >> /usr/local/etc/php-fpm.d/www.conf; fi &&\
+	if [ -z "`cat /usr/local/etc/php-fpm.d/www.conf | grep "^catch_workers_output = yes"`" ]; then \
+		echo 'catch_workers_output = yes' >> /usr/local/etc/php-fpm.d/www.conf; fi &&\
+	if [ -z "`cat /usr/local/etc/php-fpm.d/www.conf | grep "^php_admin_flag\[log_errors\] = on"`" ]; then \
+		echo 'php_admin_flag[log_errors] = on' >> /usr/local/etc/php-fpm.d/www.conf; fi &&\
 	curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer &&\
 	mkdir -p /.composer && chown 1000:1000 /.composer && mkdir -p /run/sock && chown 1000:1000 /run/sock &&\
 	if [ -z "$(php -m|grep -i xdebug)" ];then pecl install xdebug-beta && docker-php-ext-enable xdebug;fi
-
 
 WORKDIR /var/www
 CMD ["php-fpm"]
