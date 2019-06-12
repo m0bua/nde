@@ -16,6 +16,7 @@ services:
       - projects:/var/www
       - sock:/run/sock
       - ./cfg/nginx:/etc/nginx/conf.d
+      - ./cfg/nginx/cert:/etc/nginx/cert
       - ./logs/nginx:/var/log/nginx
       - ./cfg/d.bashrc:/etc/bash.bashrc
 
