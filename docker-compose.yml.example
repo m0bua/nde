@@ -26,8 +26,6 @@ services:
     image: php:7-fpm
     build: ./cfg/php/7
     user: 1000:1000
-    #environment: 
-      #XDEBUG_CONFIG: remote_host={{YOUR_IP_ADDRESS}}
     links:
       - mysql5
       # - mysql8
@@ -44,8 +42,6 @@ services:
     image: php:72-fpm
     build: ./cfg/php/72
     user: 1000:1000
-    #environment: 
-      #XDEBUG_CONFIG: remote_host={{YOUR_IP_ADDRESS}}
     links:
       - mysql5
       # - mysql8
@@ -62,8 +58,6 @@ services:
     image: php:5-fpm
     build: ./cfg/php/5
     user: 1000:1000
-    #environment: 
-      #XDEBUG_CONFIG: remote_host={{YOUR_IP_ADDRESS}}
     links:
       - mysql5
       # - mysql8

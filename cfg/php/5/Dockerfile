@@ -16,6 +16,16 @@ RUN apt-get update -y &&\
 		echo 'catch_workers_output = yes' >> /usr/local/etc/php-fpm.d/www.conf; fi &&\
 	if [ -z "`cat /usr/local/etc/php-fpm.d/www.conf | grep "^php_admin_flag\[log_errors\] = on"`" ]; then \
 		echo 'php_admin_flag[log_errors] = on' >> /usr/local/etc/php-fpm.d/www.conf; fi &&\
+	if [ -z "`cat /usr/local/etc/php/php.ini | grep "^error_reporting"`" ]; then \
+		echo 'error_reporting = -1' >> /usr/local/etc/php/php.ini; fi &&\
+	if [ -z "`cat /usr/local/etc/php/php.ini | grep "^display_errors"`" ]; then \
+		echo 'display_errors = on' >> /usr/local/etc/php/php.ini; fi &&\
+	if [ -z "`cat /usr/local/etc/php/php.ini | grep "^display_startup_errors"`" ]; then \
+		echo 'display_startup_errors = on' >> /usr/local/etc/php/php.ini; fi &&\
+	if [ -z "`cat /usr/local/etc/php/php.ini | grep "^upload_max_filesize"`" ]; then \
+		echo 'upload_max_filesize = 100M' >> /usr/local/etc/php/php.ini; fi &&\
+	if [ -z "`cat /usr/local/etc/php/php.ini | grep "^memory_limit"`" ]; then \
+		echo 'memory_limit = 512M' >> /usr/local/etc/php/php.ini; fi &&\
 	curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer &&\
 	mkdir -p /.composer && chown 1000:1000 /.composer && mkdir -p /run/sock && chown 1000:1000 /run/sock &&\
 	if [ -z "$(php -m|grep -i xdebug)" ];then pecl install xdebug-2.5.5 && docker-php-ext-enable xdebug;fi
