@@ -4,7 +4,7 @@ RUN apt-get update -y &&\
 	apt-get install -y libfreetype6-dev libpng-dev libjpeg62-turbo-dev libmagickwand-dev \
 		sendmail git unzip libzip-dev libbz2-dev libicu-dev libedit-dev libxml2-dev libpq-dev &&\
 	apt-get dist-upgrade -y && apt-get clean &&\
-	for module in bcmath iconv mysqli intl mysqli pgsql pdo pdo_pgsql pdo_mysql zip bz2 opcache soap; do \
+	for module in bcmath exif iconv mysqli intl mysqli pgsql pdo pdo_pgsql pdo_mysql zip bz2 opcache soap; do \
 		if [ -z "$(php -m|grep -i $module)" ];then docker-php-ext-install $module;fi;done &&\
 	if [ -z "$(php -m|grep -i gd)" ];then \
 		docker-php-ext-configure gd --with-freetype-dir=/usr/include/freetype2 --with-jpeg-dir=/usr/include --with-gd &&\
