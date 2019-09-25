@@ -29,6 +29,7 @@ services:
     links:
       - mysql5
       # - mysql8
+      - beanstalk
     volumes:
       - projects:/var/www
       - sock:/run/sock
@@ -45,6 +46,7 @@ services:
     links:
       - mysql5
       # - mysql8
+      - beanstalk
     volumes:
       - projects:/var/www
       - sock:/run/sock
@@ -61,6 +63,7 @@ services:
     links:
       - mysql5
       # - mysql8
+      - beanstalk
     volumes:
       - projects:/var/www
       - sock:/run/sock
@@ -103,6 +106,13 @@ services:
   #     - ./cfg/d.bashrc:/etc/bash.bashrc
   #   environment:
   #     MYSQL_ROOT_PASSWORD: secret
+
+  beanstalk:
+    hostname: beanstalk
+    container_name: nde-beanstalk
+    image: schickling/beanstalkd
+    # ports:
+      # - 11300:11300
 
 volumes:
   sock:
