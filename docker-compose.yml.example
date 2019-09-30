@@ -111,6 +111,8 @@ services:
     hostname: beanstalk
     container_name: nde-beanstalk
     image: schickling/beanstalkd
+    volumes:
+      - projects:/var/www
     # ports:
       # - 11300:11300
 

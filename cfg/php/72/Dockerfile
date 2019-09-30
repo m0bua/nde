@@ -24,6 +24,8 @@ RUN apt-get update -y &&\
 		echo 'display_startup_errors = on' >> /usr/local/etc/php/php.ini; fi &&\
 	if [ -z "`cat /usr/local/etc/php/php.ini | grep "^upload_max_filesize"`" ]; then \
 		echo 'upload_max_filesize = 100M' >> /usr/local/etc/php/php.ini; fi &&\
+	if [ -z "`cat /usr/local/etc/php/php.ini | grep "^post_max_size"`" ]; then \
+		echo 'post_max_size = 100M' >> /usr/local/etc/php/php.ini; fi &&\
 	if [ -z "`cat /usr/local/etc/php/php.ini | grep "^memory_limit"`" ]; then \
 		echo 'memory_limit = 512M' >> /usr/local/etc/php/php.ini; fi &&\
 	curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer &&\
