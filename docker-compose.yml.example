@@ -37,6 +37,24 @@ services:
       - ./cfg/php/7/socket.conf:/usr/local/etc/php-fpm.d/zz-docker.conf
       - ./cfg/php/conf/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
 
+  php71:
+    hostname: php71
+    container_name: nde-php-71
+    image: php:71-fpm
+    build: ./cfg/php/71
+    user: 1000:1000
+    links:
+      - mysql5
+      # - mysql8
+      - beanstalk
+    volumes:
+      - projects:/var/www
+      - sock:/run/sock
+      - ./cfg/d.bashrc:/etc/bash.bashrc
+      - ./cfg/php/71/socket.conf:/usr/local/etc/php-fpm.d/zz-docker.conf
+      - ./cfg/php/conf/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+
+
   php72:
     hostname: php72
     container_name: nde-php-72
@@ -52,6 +70,24 @@ services:
       - sock:/run/sock
       - ./cfg/d.bashrc:/etc/bash.bashrc
       - ./cfg/php/72/socket.conf:/usr/local/etc/php-fpm.d/zz-docker.conf
+      - ./cfg/php/conf/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+
+
+  php74:
+    hostname: php74
+    container_name: nde-php-74
+    image: php:74-fpm
+    build: ./cfg/php/74
+    user: 1000:1000
+    links:
+      - mysql5
+      # - mysql8
+      - beanstalk
+    volumes:
+      - projects:/var/www
+      - sock:/run/sock
+      - ./cfg/d.bashrc:/etc/bash.bashrc
+      - ./cfg/php/74/socket.conf:/usr/local/etc/php-fpm.d/zz-docker.conf
       - ./cfg/php/conf/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
 
   php5:
