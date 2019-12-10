@@ -67,6 +67,23 @@ services:
       - ./cfg/php/72/socket.conf:/usr/local/etc/php-fpm.d/zz-docker.conf
       - ./cfg/php/conf/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
 
+  php73:
+    hostname: php73
+    container_name: nde-php-73
+    image: php:73-fpm
+    build: ./cfg/php/73
+    user: 1000:1000
+    links:
+      - mysql5
+      # - mysql8
+      # - beanstalk
+    volumes:
+      - projects:/var/www
+      - sock:/run/sock
+      - ./cfg/d.bashrc:/etc/bash.bashrc
+      - ./cfg/php/73/socket.conf:/usr/local/etc/php-fpm.d/zz-docker.conf
+      - ./cfg/php/conf/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+
 
   php74:
     hostname: php74
