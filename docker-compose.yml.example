@@ -8,10 +8,6 @@ services:
     ports:
       - 80:80
       - 443:443
-    # links:
-    #   - php7
-    #   - php72
-    #   - php5
     volumes:
       - projects:/var/www
       - sock:/run/sock
@@ -29,7 +25,7 @@ services:
     links:
       - mysql5
       # - mysql8
-      - beanstalk
+      # - beanstalk
     volumes:
       - projects:/var/www
       - sock:/run/sock
@@ -46,14 +42,13 @@ services:
     links:
       - mysql5
       # - mysql8
-      - beanstalk
+      # - beanstalk
     volumes:
       - projects:/var/www
       - sock:/run/sock
       - ./cfg/d.bashrc:/etc/bash.bashrc
       - ./cfg/php/71/socket.conf:/usr/local/etc/php-fpm.d/zz-docker.conf
       - ./cfg/php/conf/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
-
 
   php72:
     hostname: php72
@@ -64,7 +59,7 @@ services:
     links:
       - mysql5
       # - mysql8
-      - beanstalk
+      # - beanstalk
     volumes:
       - projects:/var/www
       - sock:/run/sock
@@ -82,7 +77,7 @@ services:
     links:
       - mysql5
       # - mysql8
-      - beanstalk
+      # - beanstalk
     volumes:
       - projects:/var/www
       - sock:/run/sock
@@ -99,7 +94,7 @@ services:
     links:
       - mysql5
       # - mysql8
-      - beanstalk
+      # - beanstalk
     volumes:
       - projects:/var/www
       - sock:/run/sock
@@ -143,14 +138,14 @@ services:
   #   environment:
   #     MYSQL_ROOT_PASSWORD: secret
 
-  beanstalk:
-    hostname: beanstalk
-    container_name: nde-beanstalk
-    image: schickling/beanstalkd
-    volumes:
-      - projects:/var/www
-    # ports:
-      # - 11300:11300
+  #   beanstalk:
+  #    hostname# : beanstalk
+  #    container_name: nd# e-beanstalk
+  #    image: schicklin# g/beanstalkd
+  #    volumes:
+  #      - projects:/var/www
+  #    # ports:
+  #      # - 11300:11300
 
 volumes:
   sock:
