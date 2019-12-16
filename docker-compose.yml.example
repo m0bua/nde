@@ -8,6 +8,8 @@ services:
     ports:
       - 80:80
       - 443:443
+    links:
+      - mail
     volumes:
       - projects:/var/www
       - sock:/run/php
@@ -27,6 +29,7 @@ services:
         MGID: $MUID
     user: "www-data:www-data"
     links:
+      - mail
       - mysql5
       # - mysql8
       # - beanstalk
@@ -79,6 +82,14 @@ services:
   #      - projects:/var/www
   #    # ports:
   #      # - 11300:11300
+  
+  mail:
+    hostname: mail
+    container_name: nde-mail
+    image: mailhog/mailhog
+    ports: 
+      # - 1025:1025 # smtp server
+      - 8025:8025 # web ui
 
   dns:
     hostname: dns
