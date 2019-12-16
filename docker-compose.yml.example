@@ -4,120 +4,36 @@ services:
   nginx:
     hostname: nginx
     container_name: nde-nginx
-    image: nginx:latest
+    image: nginx:alpine
     ports:
       - 80:80
       - 443:443
     volumes:
       - projects:/var/www
-      - sock:/run/sock
+      - sock:/run/php
       - ./cfg/nginx:/etc/nginx/conf.d
       - ./cfg/nginx/cert:/etc/nginx/cert
       - ./logs/nginx:/var/log/nginx
       - ./cfg/d.bashrc:/etc/bash.bashrc
 
-  php7:
-    hostname: php7
-    container_name: nde-php-7
-    image: php:7-fpm
-    build: ./cfg/php/7
-    user: 1000:1000
+  php:
+    hostname: php
+    container_name: nde-php
+    build:
+      context: ./cfg/php
+      dockerfile: ./debian/Dockerfile
+      args:
+        MUID: $MUID
+        MGID: $MUID
+    user: "www-data:www-data"
     links:
       - mysql5
       # - mysql8
       # - beanstalk
     volumes:
       - projects:/var/www
-      - sock:/run/sock
+      - sock:/run/php
       - ./cfg/d.bashrc:/etc/bash.bashrc
-      - ./cfg/php/7/socket.conf:/usr/local/etc/php-fpm.d/zz-docker.conf
-      - ./cfg/php/conf/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
-
-  php71:
-    hostname: php71
-    container_name: nde-php-71
-    image: php:71-fpm
-    build: ./cfg/php/71
-    user: 1000:1000
-    links:
-      - mysql5
-      # - mysql8
-      # - beanstalk
-    volumes:
-      - projects:/var/www
-      - sock:/run/sock
-      - ./cfg/d.bashrc:/etc/bash.bashrc
-      - ./cfg/php/71/socket.conf:/usr/local/etc/php-fpm.d/zz-docker.conf
-      - ./cfg/php/conf/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
-
-  php72:
-    hostname: php72
-    container_name: nde-php-72
-    image: php:72-fpm
-    build: ./cfg/php/72
-    user: 1000:1000
-    links:
-      - mysql5
-      # - mysql8
-      # - beanstalk
-    volumes:
-      - projects:/var/www
-      - sock:/run/sock
-      - ./cfg/d.bashrc:/etc/bash.bashrc
-      - ./cfg/php/72/socket.conf:/usr/local/etc/php-fpm.d/zz-docker.conf
-      - ./cfg/php/conf/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
-
-  php73:
-    hostname: php73
-    container_name: nde-php-73
-    image: php:73-fpm
-    build: ./cfg/php/73
-    user: 1000:1000
-    links:
-      - mysql5
-      # - mysql8
-      # - beanstalk
-    volumes:
-      - projects:/var/www
-      - sock:/run/sock
-      - ./cfg/d.bashrc:/etc/bash.bashrc
-      - ./cfg/php/73/socket.conf:/usr/local/etc/php-fpm.d/zz-docker.conf
-      - ./cfg/php/conf/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
-
-
-  php74:
-    hostname: php74
-    container_name: nde-php-74
-    image: php:74-fpm
-    build: ./cfg/php/74
-    user: 1000:1000
-    links:
-      - mysql5
-      # - mysql8
-      # - beanstalk
-    volumes:
-      - projects:/var/www
-      - sock:/run/sock
-      - ./cfg/d.bashrc:/etc/bash.bashrc
-      - ./cfg/php/74/socket.conf:/usr/local/etc/php-fpm.d/zz-docker.conf
-      - ./cfg/php/conf/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
-
-  php5:
-    hostname: php5
-    container_name: nde-php-5
-    image: php:5-fpm
-    build: ./cfg/php/5
-    user: 1000:1000
-    links:
-      - mysql5
-      # - mysql8
-      # - beanstalk
-    volumes:
-      - projects:/var/www
-      - sock:/run/sock
-      - ./cfg/d.bashrc:/etc/bash.bashrc
-      - ./cfg/php/5/socket.conf:/usr/local/etc/php-fpm.d/zz-docker.conf
-      - ./cfg/php/conf/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
 
   mysql5:
     hostname: mysql5
@@ -163,6 +79,18 @@ services:
   #      - projects:/var/www
   #    # ports:
   #      # - 11300:11300
+
+  dns:
+    hostname: dns
+    container_name: nde-dns
+    restart: always
+    image: andyshinn/dnsmasq
+    volumes:
+      - ./cfg/dnsmasq.conf:/etc/dnsmasq.conf
+    ports:
+     - "53:53/udp"
+    cap_add:
+      - NET_ADMIN
 
 volumes:
   sock:

@@ -1,6 +1,9 @@
 #!/bin/bash
 cd ~/nde
 
+export MUID=$(id -u)
+export MGID=$(id -g)
+
 params="$*"
 command="docker-compose"
 
@@ -20,7 +23,7 @@ if [[ $1 == ssh ]]; then
 	fi
 	if [[ ! $params =~ [\w\d_]+ ]]; then 
 		if [[ $2 =~ ^[^\s]+ ]]; then extra_params=$2; fi
-		params=nde-php-7; #$(docker ps --format {{.Names}} | grep nde-php-7 | head -n 1); 
+		params=nde-php; #$(docker ps --format {{.Names}} | grep nde-php | head -n 1); 
 	fi
 	if [[ $3 =~ ^[^\s]+ ]]; then extra_params=$3; fi
 	if [[ -z $params ]]; then echo " Container not found."; exit; fi
@@ -29,7 +32,7 @@ fi
 if [[ $1 == log ]]; then
 	command="docker"
 	params="logs -f --details"
-	extra_params=nde-php-7; #$(docker ps --format {{.Names}} | grep nde-php-7 | head -n 1); 
+	extra_params=nde-php; #$(docker ps --format {{.Names}} | grep nde-php | head -n 1); 
 
 	if [[ ! -z $2 ]]; then
 		if [[ $2 =~ [0-9]+ ]]; then extra_params=$(docker ps --format {{.Names}} | grep $2 | head -n 1)
@@ -66,6 +69,5 @@ if [[ $1 == -purge ]]; then
 	else echo "   No images to remove."; fi
 	exit;
 fi
-
 
 $command $params $extra_params
