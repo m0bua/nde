@@ -1,4 +1,6 @@
 /*/*
-!/cfg
-!/cfg/*
+!/copy
+!/copy/*
+!/cfg.example
+!/cfg.example/*
 /docker-compose.yml
