@@ -1,6 +1,5 @@
 /*/*
-!/copy
-!/copy/*
-!/cfg.example
-!/cfg.example/*
 /docker-compose.yml
+!/copy/*
+!/cfg.example/*
+!/db/.gitignore

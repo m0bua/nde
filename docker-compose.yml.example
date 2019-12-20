@@ -8,14 +8,13 @@ services:
     ports:
       - 80:80
       - 443:443
-    links:
-      - mail
+    # links:
+    #   - mail
     volumes:
       - projects:/var/www
       - sock:/run/php
       - ./cfg/nginx:/etc/nginx/conf.d
       - ./cfg/nginx/cert:/etc/nginx/cert
-      - ./logs/nginx:/var/log/nginx
       - ./cfg/d.bashrc:/etc/bash.bashrc
 
   php:
@@ -28,11 +27,11 @@ services:
         MUID: $MUID
         MGID: $MUID
     user: "www-data:www-data"
-    links:
-      - mail
-      - mysql5
-      # - mysql8
-      # - beanstalk
+    # links:
+    #   - mail
+    #   - mysql5
+    #   - mysql8
+    #   - beanstalk
     volumes:
       - projects:/var/www
       - sock:/run/php
@@ -51,7 +50,6 @@ services:
       - 3306:3306
     volumes:
       - ./db/mysql5:/var/lib/mysql
-      - ./logs/mysql5:/var/log/mysql
       - ./cfg/d.bashrc:/etc/bash.bashrc
     environment:
       MYSQL_ROOT_PASSWORD: secret
@@ -69,7 +67,6 @@ services:
   #     - 3308:3306
   #   volumes:
   #     - ./db/mysql8:/var/lib/mysql
-  #     - ./logs/mysql8:/var/log/mysql
   #     - ./cfg/d.bashrc:/etc/bash.bashrc
   #   environment:
   #     MYSQL_ROOT_PASSWORD: secret
@@ -105,6 +102,9 @@ services:
 
 volumes:
   sock:
+    driver_opts:
+      o: uid=$MUID,gid=$MGID
   projects:
     driver_opts:
+      o: uid=$MUID,gid=$MGID
       device: /var/www #your projects path
