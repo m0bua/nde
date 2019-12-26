@@ -8,10 +8,10 @@ services:
     ports:
       - 80:80
       - 443:443
-    # links:
+    # links: #not needed
     #   - mail
     volumes:
-      - projects:/var/www
+      - /var/www:/var/www
       - sock:/run/php
       - ./cfg/nginx:/etc/nginx/conf.d
       - ./cfg/nginx/cert:/etc/nginx/cert
@@ -20,20 +20,20 @@ services:
   php:
     hostname: php
     container_name: nde-php
-    build:
+    build: 
       context: ./cfg/php
       dockerfile: ./debian/Dockerfile
       args:
         MUID: $MUID
         MGID: $MUID
-    user: "www-data:www-data"
-    # links:
+    user: "www-data:www-data" #Unix only
+    # links: #not needed
     #   - mail
     #   - mysql5
     #   - mysql8
     #   - beanstalk
     volumes:
-      - projects:/var/www
+      - /var/www:/var/www
       - sock:/run/php
       - ./cfg/d.bashrc:/etc/bash.bashrc
 
@@ -47,7 +47,7 @@ services:
       - --default-authentication-plugin=mysql_native_password
       - --sql_mode=ONLY_FULL_GROUP_BY
     ports:
-      - 3306:3306
+      - 3306:3306 #for mysql client
     volumes:
       - ./db/mysql5:/var/lib/mysql
       - ./cfg/d.bashrc:/etc/bash.bashrc
@@ -84,9 +84,9 @@ services:
     hostname: mail
     container_name: nde-mail
     image: mailhog/mailhog
-    ports: 
+    # ports: 
       # - 1025:1025 # smtp server
-      - 8025:8025 # web ui
+      # - 8025:8025 # web ui
 
   dns:
     hostname: dns
@@ -102,9 +102,5 @@ services:
 
 volumes:
   sock:
-    driver_opts:
-      o: uid=$MUID,gid=$MGID
-  projects:
-    driver_opts:
-      o: uid=$MUID,gid=$MGID
-      device: /var/www #your projects path
+    driver_opts: #Unix only
+      o: uid=$MUID,gid=$MGID #Unix only
