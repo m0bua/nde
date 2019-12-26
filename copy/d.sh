@@ -14,7 +14,7 @@ else
 	if [[ $params =~ ^up ]]; then if [[ ! $params =~ -d ]]; then extra_params='-d'; fi
 fi; fi
 
-if [[ $1 == ssh ]]; then
+if [[ $1 == ssh ]] || [[ $1 == '' ]]; then
 	command="docker exec -it"
 	extra_params="bash"
 	if [[ ! -z $2 ]]; then

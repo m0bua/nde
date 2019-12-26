@@ -36,6 +36,16 @@ if %1==ssh (
 	goto command
 )
 
+if %1=='' (
+	set command=docker exec -it
+	set params=nde-php
+	set extra_params=bash
+
+	if not [%2]==[]	goto param2
+
+	goto command
+)
+
 if %1==log (
 	set command=docker logs -f --details
 	set params=nde-php
