@@ -1,8 +1,8 @@
 FROM debian:stable-slim
 
 ARG	VERSIONS='5.6 7.0 7.1 7.2 7.3 7.4'
-ARG	EXTENSIONS='fpm curl bcmath mbstring gd intl zip bz2 soap exif iconv pdo mysqli opcache simplexml gmagick xdebug'
-ARG	INSTALL='composer git sudo bash-completion unzip \
+ARG	EXTENSIONS='dev fpm curl http bcmath mbstring gd intl zip bz2 soap exif iconv pdo mysqli opcache simplexml gmagick xdebug'
+ARG	INSTALL='composer git sudo bash-completion unzip php-pear \
 	libzip-dev libbz2-dev libicu-dev libxml2-dev libpng-dev libwebp-dev libjpeg62-turbo-dev libmagickwand-dev libxpm-dev libedit-dev libpq-dev'
 ARG	PHP="php7.3"
 ARG	PHP7="php7.4"
