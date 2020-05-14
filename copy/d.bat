@@ -5,6 +5,9 @@ set command=docker-compose
 set params=%*
 set extra_params=
 
+set MUID=1000
+set MGID=1000
+
 if [%1]==[] goto command
 
 if %1==up (

@@ -102,5 +102,7 @@ services:
 
 volumes:
   sock:
-    driver_opts: #Unix only
-      o: uid=$MUID,gid=$MGID #Unix only
+    driver_opts:
+      o: uid=$MUID,gid=$MGID
+      type: tmpfs
+      device: tmpfs
