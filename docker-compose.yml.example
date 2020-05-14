@@ -11,18 +11,18 @@ services:
     # links: #not needed
     #   - mail
     volumes:
-      - /var/www:/var/www
+      - ~/prj:/var/www
       - sock:/run/php
-      - ./cfg/nginx:/etc/nginx/conf.d
-      - ./cfg/nginx/cert:/etc/nginx/cert
-      - ./cfg/d.bashrc:/etc/bash.bashrc
+      - ~/nde/cfg/nginx:/etc/nginx/conf.d
+      - ~/nde/cfg/nginx/cert:/etc/nginx/cert
+      - ~/nde/cfg/d.bashrc:/etc/bash.bashrc
 
   php:
     hostname: php
     container_name: nde-php
     build: 
-      context: ./cfg/php
-      dockerfile: ./debian/Dockerfile
+      context: ~/nde/cfg/php
+      dockerfile: ~/nde/debian/Dockerfile
       args:
         MUID: $MUID
         MGID: $MUID
@@ -33,9 +33,9 @@ services:
     #   - mysql8
     #   - beanstalk
     volumes:
-      - /var/www:/var/www
+      - ~/prj:/var/www
       - sock:/run/php
-      - ./cfg/d.bashrc:/etc/bash.bashrc
+      - ~/nde/cfg/d.bashrc:/etc/bash.bashrc
 
   mysql5:
     hostname: mysql5
@@ -49,8 +49,8 @@ services:
     ports:
       - 3306:3306 #for mysql client
     volumes:
-      - ./db/mysql5:/var/lib/mysql
-      - ./cfg/d.bashrc:/etc/bash.bashrc
+      - ~/nde/db/mysql5:/var/lib/mysql
+      - ~/nde/cfg/d.bashrc:/etc/bash.bashrc
     environment:
       MYSQL_ROOT_PASSWORD: secret
 
@@ -66,8 +66,8 @@ services:
   #   ports:
   #     - 3308:3306
   #   volumes:
-  #     - ./db/mysql8:/var/lib/mysql
-  #     - ./cfg/d.bashrc:/etc/bash.bashrc
+  #     - ~/nde/db/mysql8:/var/lib/mysql
+  #     - ~/nde/cfg/d.bashrc:/etc/bash.bashrc
   #   environment:
   #     MYSQL_ROOT_PASSWORD: secret
 
@@ -94,7 +94,7 @@ services:
     restart: always
     image: andyshinn/dnsmasq
     volumes:
-      - ./cfg/dnsmasq.conf:/etc/dnsmasq.conf
+      - ~/nde/cfg/dnsmasq.conf:/etc/dnsmasq.conf
     ports:
      - "53:53/udp"
     cap_add:
