@@ -7,6 +7,8 @@ export MGID=$(id -g)
 params="$*"
 command="docker-compose"
 
+if [[ $params =~ nlog ]]; then params="tail -f /var/log/nginx/*.log"; fi
+
 if [[ $params =~ halt ]]; then params=$(echo $params | sed 's/halt/down/'); fi
 
 if [[ $params =~ ^up.*-a ]]; then params=$(echo $params | sed 's/ -a//')

@@ -16,6 +16,13 @@ if %1==up (
 	goto command
 )
 
+if %1==nlog (
+	set command=docker
+	set params=exec nde-nginx tail -f /var/log/nginx/*.log
+	
+	goto command
+)
+
 if %1==halt (
 	set params=%params:halt=down%
 	
