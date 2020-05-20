@@ -8,7 +8,13 @@ set extra_params=
 set MUID=1000
 set MGID=1000
 
-if [%1]==[] goto command
+if [%1]==[] (
+	set command=docker exec -it
+	set params=nde-php
+	set extra_params=bash
+
+	goto command
+)
 
 if %1==up (
 	if not "x%params:-a=%"=="x%params%" set params=%params:-a=%
@@ -41,6 +47,7 @@ if %1==ssh (
 	set params=nde-php
 	set extra_params=bash
 
+	if not [%2]==[]	goto param2
 	if not [%2]==[]	goto param2
 
 	goto command
