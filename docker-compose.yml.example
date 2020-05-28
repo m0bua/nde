@@ -27,10 +27,10 @@ services:
         MUID: $MUID
         MGID: $MUID
     user: "www-data:www-data" #Unix only
-    # links: #not needed
-    #   - mail
-    #   - mysql5
+    links:
+      - mysql5
     #   - mysql8
+    #   - mail
     #   - beanstalk
     volumes:
       - ~/prj:/var/www
