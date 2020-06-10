@@ -1,0 +1,124 @@
+version: '3.5'
+
+services:
+  nginx:
+    hostname: nginx
+    container_name: nde-nginx
+    image: nginx:latest
+    ports:
+      - 80:80
+      - 443:443
+      - 3306:3306
+    volumes:
+      - ./prj:/var/www
+      - ./cfg/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./cfg/nginx/cert:/etc/nginx/cert
+      - ./cfg/d.bashrc:/etc/bash.bashrc
+
+  php56:
+    hostname: php56
+    container_name: nde-php-56
+    image: chialab/php-dev:5.6-fpm
+    volumes:
+      - ./prj:/var/www
+      - ./cfg/d.bashrc:/etc/bash.bashrc
+      - ./cfg/php/php.ini:/usr/local/etc/php/php.ini
+      - ./cfg/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+
+  php70:
+    hostname: php70
+    container_name: nde-php-70
+    image: chialab/php-dev:7.0-fpm
+    volumes:
+      - ./prj:/var/www
+      - ./cfg/d.bashrc:/etc/bash.bashrc
+      - ./cfg/php/php.ini:/usr/local/etc/php/php.ini
+      - ./cfg/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+
+  php71:
+    hostname: php71
+    container_name: nde-php-71
+    image: chialab/php-dev:7.1-fpm
+    volumes:
+      - ./prj:/var/www
+      - ./cfg/d.bashrc:/etc/bash.bashrc
+      - ./cfg/php/php.ini:/usr/local/etc/php/php.ini
+      - ./cfg/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+
+  php72:
+    hostname: php72
+    container_name: nde-php-72
+    image: chialab/php-dev:7.2-fpm
+    volumes:
+      - ./prj:/var/www
+      - ./cfg/d.bashrc:/etc/bash.bashrc
+      - ./cfg/php/php.ini:/usr/local/etc/php/php.ini
+      - ./cfg/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+
+  php73:
+    hostname: php73
+    container_name: nde-php-73
+    image: chialab/php-dev:7.3-fpm
+    volumes:
+      - ./prj:/var/www
+      - ./cfg/d.bashrc:/etc/bash.bashrc
+      - ./cfg/php/php.ini:/usr/local/etc/php/php.ini
+      - ./cfg/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+
+  php74:
+    hostname: php74
+    container_name: nde-php-74
+    image: chialab/php-dev:7.4-fpm
+    volumes:
+      - ./prj:/var/www
+      - ./cfg/d.bashrc:/etc/bash.bashrc
+      - ./cfg/php/php.ini:/usr/local/etc/php/php.ini
+      - ./cfg/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+
+  mysql5:
+    hostname: mysql5
+    container_name: nde-mysql5
+    image: mysql:5
+    command: 
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --default-authentication-plugin=mysql_native_password
+      - --sql_mode=ONLY_FULL_GROUP_BY
+    volumes:
+      - ./db/mysql5:/var/lib/mysql
+      - ./cfg/d.bashrc:/etc/bash.bashrc
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+
+  mysql8:
+    hostname: mysql8
+    container_name: nde-mysql8
+    image: mysql
+    command: 
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --default-authentication-plugin=mysql_native_password
+      - --sql_mode=ONLY_FULL_GROUP_BY
+    volumes:
+      - ./db/mysql8:/var/lib/mysql
+      - ./cfg/d.bashrc:/etc/bash.bashrc
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+  
+  mail:
+    hostname: mail
+    container_name: nde-mail
+    image: mailhog/mailhog
+
+  dns:
+    hostname: dns
+    container_name: nde-dns
+    restart: always
+    image: andyshinn/dnsmasq
+    volumes:
+      - ./cfg/dnsmasq.conf:/etc/dnsmasq.conf
+      - ./cfg/d.bashrc:/etc/bash.bashrc
+    ports:
+     - "53:53/udp"
+    cap_add:
+      - NET_ADMIN

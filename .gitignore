@@ -1,5 +1,7 @@
+/*
 /*/*
-/docker-compose.yml
-!/copy/*
-!/cfg.example/*
+!.gitignore
+!.gitattributes
+!/example
+!/example/*
 !/db/.gitignore
