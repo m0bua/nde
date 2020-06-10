@@ -1,3 +1,5 @@
+if [ -d /var/www ]; then cd /var/www; fi
+
 case $- in
     *i*) ;;
       *) return;;
