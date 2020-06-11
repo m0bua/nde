@@ -2,6 +2,8 @@
 /*/*
 !.gitignore
 !.gitattributes
+!/topath
+!/topath/*
 !/example
 !/example/*
 !/db/.gitignore

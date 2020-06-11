@@ -10,67 +10,67 @@ services:
       - 443:443
       - 3306:3306
     volumes:
-      - ./prj:/var/www
+      - ~/prj:/var/www
       - ./cfg/nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./cfg/nginx/cert:/etc/nginx/cert
       - ./cfg/d.bashrc:/etc/bash.bashrc
 
   php56:
     hostname: php56
-    container_name: nde-php-56
+    container_name: nde-php56
     image: chialab/php-dev:5.6-fpm
     volumes:
-      - ./prj:/var/www
+      - ~/prj:/var/www
       - ./cfg/d.bashrc:/etc/bash.bashrc
       - ./cfg/php/php.ini:/usr/local/etc/php/php.ini
       - ./cfg/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
 
   php70:
     hostname: php70
-    container_name: nde-php-70
+    container_name: nde-php70
     image: chialab/php-dev:7.0-fpm
     volumes:
-      - ./prj:/var/www
+      - ~/prj:/var/www
       - ./cfg/d.bashrc:/etc/bash.bashrc
       - ./cfg/php/php.ini:/usr/local/etc/php/php.ini
       - ./cfg/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
 
   php71:
     hostname: php71
-    container_name: nde-php-71
+    container_name: nde-php71
     image: chialab/php-dev:7.1-fpm
     volumes:
-      - ./prj:/var/www
+      - ~/prj:/var/www
       - ./cfg/d.bashrc:/etc/bash.bashrc
       - ./cfg/php/php.ini:/usr/local/etc/php/php.ini
       - ./cfg/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
 
   php72:
     hostname: php72
-    container_name: nde-php-72
+    container_name: nde-php72
     image: chialab/php-dev:7.2-fpm
     volumes:
-      - ./prj:/var/www
+      - ~/prj:/var/www
       - ./cfg/d.bashrc:/etc/bash.bashrc
       - ./cfg/php/php.ini:/usr/local/etc/php/php.ini
       - ./cfg/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
 
   php73:
     hostname: php73
-    container_name: nde-php-73
+    container_name: nde-php73
     image: chialab/php-dev:7.3-fpm
     volumes:
-      - ./prj:/var/www
+      - ~/prj:/var/www
       - ./cfg/d.bashrc:/etc/bash.bashrc
       - ./cfg/php/php.ini:/usr/local/etc/php/php.ini
       - ./cfg/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
 
   php74:
     hostname: php74
-    container_name: nde-php-74
+    container_name: nde-php74
     image: chialab/php-dev:7.4-fpm
     volumes:
-      - ./prj:/var/www
+      - ~/prj:/var/www
       - ./cfg/d.bashrc:/etc/bash.bashrc
       - ./cfg/php/php.ini:/usr/local/etc/php/php.ini
       - ./cfg/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
