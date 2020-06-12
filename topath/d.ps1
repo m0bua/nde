@@ -37,13 +37,6 @@ try {
     exit
   }
 
-  if ( $params -match 'halt' ){$params=($params -replace "halt", "down")}
-
-  if ( $params -match '^up.*-a'){$params=($params -replace "-a", "")}
-  elseif ($params -match '^up' -and (!($params -match '-d'))) {$extra_params='-d'}
-
-  if ( $params -eq 'df' ){ $command='docker'; $params='system df' }
-
   if ( $params -eq '-kill') {
     if ( $(docker ps -q) -match '[\w\d]+' ){$command='docker';$params="kill $(docker ps -q)"}
     else {echo "   No containers to kill";exit}
@@ -64,6 +57,11 @@ try {
   } else {
     $params="$args"
   }
+
+  if ( $params -eq 'df' ){ $command='docker'; $params='system df' }
+  if ( $params -match 'halt' ){$params=($params -replace "halt", "down")}
+  if ( $params -match '^up.*-a'){$params=($params -replace "-a", "")}
+  elseif ($params -match '^up' -and (!($params -match '-d'))) {$extra_params='-d'}
 
   run($true)
 
