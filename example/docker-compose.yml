@@ -83,8 +83,8 @@ services:
       - --collation-server=utf8mb4_unicode_ci
       - --default-authentication-plugin=mysql_native_password
       - --sql_mode=ONLY_FULL_GROUP_BY
-    # ports:
-    #   - 3306:3306
+    ports:
+      - 3306:3306
     volumes:
       - ./db/mysql5:/var/lib/mysql
       - ./cfg/d.bashrc:/etc/bash.bashrc
@@ -102,10 +102,29 @@ services:
       - --collation-server=utf8mb4_unicode_ci
       - --default-authentication-plugin=mysql_native_password
       - --sql_mode=ONLY_FULL_GROUP_BY
-    # ports:
-    #   - 3306:3308
+    ports:
+      - 3308:3306
     volumes:
       - ./db/mysql8:/var/lib/mysql
+      - ./cfg/d.bashrc:/etc/bash.bashrc
+    environment:
+      MYSQL_USER: user
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: secret
+
+  maria:
+    hostname: maria
+    container_name: nde-maria
+    image: mariadb
+    command: 
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --default-authentication-plugin=mysql_native_password
+      - --sql_mode=ONLY_FULL_GROUP_BY
+    ports:
+      - 3305:3306
+    volumes:
+      - ./db/maria:/var/lib/mysql
       - ./cfg/d.bashrc:/etc/bash.bashrc
     environment:
       MYSQL_USER: user
@@ -124,7 +143,6 @@ services:
     image: andyshinn/dnsmasq
     volumes:
       - ./cfg/dnsmasq.conf:/etc/dnsmasq.conf
-      - ./cfg/d.bashrc:/etc/bash.bashrc
     ports:
      - "53:53/udp"
     cap_add:
