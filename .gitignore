@@ -2,6 +2,8 @@
 /*/*
 !.gitignore
 !.gitattributes
+!/init.sh
+!/init.ps1
 !/topath
 !/topath/*
 !/example

@@ -53,7 +53,7 @@ if [[ ! -z $params ]]; then
   extra_params="bash"
   if [[ $2 =~ [^\s]+ ]]; then extra_params=$2; fi
 elif [[ -z "$(docker ps --format {{.Names}})" ]]
-  then params="up"; extra_params="-d"
+  then if [[ -z $1 ]];then params="up"; extra_params="-d"; fi
 else params="$*"; fi
 
 run

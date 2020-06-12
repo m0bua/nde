@@ -15,6 +15,8 @@ try {
   $params="$args"
   $extra_params=""
 
+  if ($params -eq '-init') {./init.ps1 script; exit}
+
   if ($params -eq '-purge') {
     $command='docker'
     echo " Killing all running containers:"
@@ -32,7 +34,7 @@ try {
     if ($extra_params -match '[\w\d]+' ){
       $params="rmi --force"; run($false)
     } else { echo "   No images to remove." }
-    exit;
+    exit
   }
 
   if ( $params -match 'halt' ){$params=($params -replace "halt", "down")}
@@ -57,7 +59,7 @@ try {
   if ($params){ 
     $command="docker exec -it";$extra_params="bash"
     if ( $args[1] -match '[^\s]+' ){$extra_params=$args[1]}
-  } elseif (!"$(docker ps --format '{{.Names}}')") {
+  } elseif (!"$(docker ps --format '{{.Names}}')" -and !$args[0]) {
     $params="up"; $extra_params="-d"
   } else {
     $params="$args"
