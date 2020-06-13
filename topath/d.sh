@@ -32,6 +32,21 @@ if [[ $1 == -purge ]]; then
   exit;
 fi
 
+if [[ $1 == -delete ]]; then
+  command='docker'
+  echo " Killing all running containers:"
+  extra_params=$(docker ps -q)
+  if [[ $extra_params =~ [\w\d]+ ]]; then
+    params='kill'; exit='false'; run
+  else echo "   No containers to kill."; fi
+  echo " Removing all containers:"
+  extra_params=$(docker ps -aq)
+  if [[ $extra_params =~ [\w\d]+ ]]; then
+    params='rm'; exit='false'; run
+  else echo "   No containers to remove."; fi
+  exit;
+fi
+
 if [[ $1 == -kill ]]; then
   if [[ $(docker ps -q) =~ [\w\d]+ ]]; then 
     $command='docker';$params="kill $(docker ps -q)"

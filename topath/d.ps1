@@ -37,6 +37,21 @@ try {
     exit
   }
 
+  if ($params -eq '-delete') {
+    $command='docker'
+    echo " Killing all running containers:"
+    $extra_params=$(docker ps -q)
+    if ($extra_params -match '[\w\d]+' ){
+      $params="kill"; run($false)
+    } else { echo "   No containers to kill." }
+    echo " Removing all containers:"
+    $extra_params=$(docker ps -aq)
+    if ($extra_params -match '[\w\d]+' ){
+      $params="rm"; run($false)
+    } else { echo "   No containers to remove." }
+    exit
+  }
+
   if ( $params -eq '-kill') {
     if ( $(docker ps -q) -match '[\w\d]+' ){$command='docker';$params="kill $(docker ps -q)"}
     else {echo "   No containers to kill";exit}
