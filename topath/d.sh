@@ -12,6 +12,8 @@ params="$*"
 extra_params=""
 exit=true
 
+if [[ $params == '-init' ]]; then ./init.sh script; exit; fi
+
 if [[ $1 == -purge ]]; then
   command='docker'
   echo " Killing all running containers:"
@@ -48,7 +50,7 @@ if [[ $1 == -delete ]]; then
 fi
 
 if [[ $1 == -kill ]]; then
-  if [[ $(docker ps -q) =~ [\w\d]+ ]]; then 
+  if [[ $(docker ps -q) =~ [\w\d]+ ]]; then
     $command='docker';$params="kill $(docker ps -q)"
   else echo "   No containers to kill"; exit
 fi; fi
@@ -56,13 +58,13 @@ fi; fi
 if [[ -z $1 ]]; then params=$(docker ps --format {{.Names}} 2> /dev/null | grep -E "^nde-.*$default_container" | head -n 1)
 else params=$(docker ps --format {{.Names}} 2> /dev/null | grep -E "^nde-.*$1" | head -n 1); fi
 
-if [[ ! -z $params ]]; then 
+if [[ ! -z $params ]]; then
   command="docker exec -it"
   extra_params="bash"
   if [[ $2 =~ [^\s]+ ]]; then extra_params=$2; fi
 elif [[ -z "$(docker ps --format {{.Names}} 2> /dev/null)" ]]
-  then if [[ -z $1 ]];then params="up"; extra_params="-d"
-else params="$*"; fi; fi
+  then if [[ -z $1 ]];then params="up"; extra_params="-d"; fi
+else params="$*"; fi
 
 if [[ $1 == df ]]; then docker system df; exit; fi
 if [[ $params =~ halt ]]; then params=$(echo $params | sed 's/halt/down/'); fi
