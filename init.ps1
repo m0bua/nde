@@ -9,25 +9,22 @@ if([System.IO.Directory]::Exists("$topath\topath") -and [System.IO.File]::Exists
   }
 } else {echo 'Path error!'}
 
-if(!($PSScriptRoot -eq ('{0}\nde' -f $env:USERPROFILE))){
-  $link_path = ('{0}\nde' -f $env:USERPROFILE)
-  sudo "New-Item -ItemType SymbolicLink -Path $link_path -Target $PSScriptRoot"
-}
-
-$prj_path = Read-Host "Put your projects folder path"
-if([System.IO.Directory]::Exists($prj_path)){
-  $link_path = ('{0}\prj' -f $env:USERPROFILE)
-  sudo "New-Item -ItemType SymbolicLink -Path $link_path -Target $prj_path"
-} else {echo 'Projects path error! Skipping...'}
-
 if([System.IO.Directory]::Exists(('{0}\cfg' -f $PSScriptRoot))){
-  $link = Read-Host "Rewrite configs? [nY]"
+  $link = Read-Host "Rewrite configs? [yN]"
 } else {$link = 'y'}
 if($link -match '^yes|y$'){
   Copy-Item -Force -Path "$PSScriptRoot\example\*" -Destination $PSScriptRoot
+  $prj_path = Read-Host "Put your projects folder path"
+  $prj_path = ($prj_path -replace "/", "\")
+  if([System.IO.Directory]::Exists($prj_path)){
+    (Get-Content docker-compose.yml).replace('~/prj', $prj_path) | Set-Content docker-compose.yml
+  } else {
+    if($prj_path){$echo = "$prj_path is not a folder. "}
+    echo "${echo}Will keep default (~/prj)"
+  }
 }
 
-if(!$args -eq 'script'){
+if(!($args -eq 'script')){
   Write-Host -NoNewLine 'Ready!'
   $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
 }
