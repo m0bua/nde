@@ -1,0 +1,78 @@
+{
+	"version": 2,
+	"remoteDnsServers": [],
+	"envs": [
+		{
+			"name": "",
+			"hostnames": [
+				{
+					"id": 1592581699060624673,
+					"hostname": ".d",
+					"ip": "127.0.0.1",
+					"target": "nginx",
+					"ttl": 60,
+					"type": "CNAME"
+				},
+				{
+					"id": 1592581703731853834,
+					"hostname": ".d74",
+					"ip": "127.0.0.1",
+					"target": "nginx",
+					"ttl": 60,
+					"type": "CNAME"
+				},
+				{
+					"id": 1592581706226667775,
+					"hostname": ".d73",
+					"ip": "127.0.0.1",
+					"target": "nginx",
+					"ttl": 60,
+					"type": "CNAME"
+				},
+				{
+					"id": 1592581707704606410,
+					"hostname": ".d72",
+					"ip": "127.0.0.1",
+					"target": "nginx",
+					"ttl": 60,
+					"type": "CNAME"
+				},
+				{
+					"id": 1592581708498372995,
+					"hostname": ".d71",
+					"ip": "127.0.0.1",
+					"target": "nginx",
+					"ttl": 60,
+					"type": "CNAME"
+				},
+				{
+					"id": 1592581709648935039,
+					"hostname": ".d70",
+					"ip": "127.0.0.1",
+					"target": "nginx",
+					"ttl": 60,
+					"type": "CNAME"
+				},
+				{
+					"id": 1592581711993067167,
+					"hostname": ".d56",
+					"ip": "127.0.0.1",
+					"target": "nginx",
+					"ttl": 60,
+					"type": "CNAME"
+				}
+			]
+		}
+	],
+	"activeEnv": "",
+	"webServerPort": 0,
+	"dnsServerPort": 0,
+	"defaultDns": null,
+	"logLevel": "",
+	"logFile": "",
+	"registerContainerNames": null,
+	"hostMachineHostname": "",
+	"domain": "",
+	"dpsNetwork": null,
+	"dpsNetworkAutoConnect": null
+}
