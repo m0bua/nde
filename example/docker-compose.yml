@@ -3,11 +3,11 @@ version: '3.5'
 services:
   nginx:
     hostname: nginx
-    container_name: nde-nginx
+    container_name: nginx
     image: nginx:latest
-    # ports:
-    #   - 80:80
-    #   - 443:443
+    ports:
+      - 80:80
+      - 443:443
     volumes:
       - ~/prj:/var/www
       - ./cfg/nginx/nginx.conf:/etc/nginx/nginx.conf
@@ -16,7 +16,7 @@ services:
 
   php56:
     hostname: php56
-    container_name: nde-php56
+    container_name: php56
     image: chialab/php-dev:5.6-fpm
     volumes:
       - ~/prj:/var/www
@@ -26,7 +26,7 @@ services:
 
   # php70:
   #   hostname: php70
-  #   container_name: nde-php70
+  #   container_name: php70
   #   image: chialab/php-dev:7.0-fpm
   #   volumes:
   #     - ~/prj:/var/www
@@ -36,7 +36,7 @@ services:
 
   # php71:
   #   hostname: php71
-  #   container_name: nde-php71
+  #   container_name: php71
   #   image: chialab/php-dev:7.1-fpm
   #   volumes:
   #     - ~/prj:/var/www
@@ -46,7 +46,7 @@ services:
 
   # php72:
   #   hostname: php72
-  #   container_name: nde-php72
+  #   container_name: php72
   #   image: chialab/php-dev:7.2-fpm
   #   volumes:
   #     - ~/prj:/var/www
@@ -56,7 +56,7 @@ services:
 
   php73:
     hostname: php73
-    container_name: nde-php73
+    container_name: php73
     image: chialab/php-dev:7.3-fpm
     volumes:
       - ~/prj:/var/www
@@ -66,7 +66,7 @@ services:
 
   php74:
     hostname: php74
-    container_name: nde-php74
+    container_name: php74
     image: chialab/php-dev:7.4-fpm
     volumes:
       - ~/prj:/var/www
@@ -76,15 +76,15 @@ services:
 
   mysql5:
     hostname: mysql5
-    container_name: nde-mysql5
+    container_name: mysql5
     image: mysql:5
     command: 
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
       - --default-authentication-plugin=mysql_native_password
       - --sql_mode=ONLY_FULL_GROUP_BY
-    # ports:
-    #   - 3306:3306
+    ports:
+      - 3306:3306
     volumes:
       - ./db/mysql5:/var/lib/mysql
       - ./cfg/d.bashrc:/etc/bash.bashrc
@@ -95,15 +95,15 @@ services:
 
   # mysql8:
   #   hostname: mysql8
-  #   container_name: nde-mysql8
+  #   container_name: mysql8
   #   image: mysql
   #   command: 
   #     - --character-set-server=utf8mb4
   #     - --collation-server=utf8mb4_unicode_ci
   #     - --default-authentication-plugin=mysql_native_password
   #     - --sql_mode=ONLY_FULL_GROUP_BY
-  #   # ports:
-  #   #   - 3308:3306
+  #   ports:
+  #     - 3308:3306
   #   volumes:
   #     - ./db/mysql8:/var/lib/mysql
   #     - ./cfg/d.bashrc:/etc/bash.bashrc
@@ -114,15 +114,15 @@ services:
 
   # maria:
   #   hostname: maria
-  #   container_name: nde-maria
+  #   container_name: maria
   #   image: mariadb
   #   command: 
   #     - --character-set-server=utf8mb4
   #     - --collation-server=utf8mb4_unicode_ci
   #     - --default-authentication-plugin=mysql_native_password
   #     - --sql_mode=ONLY_FULL_GROUP_BY
-  #   # ports:
-  #   #   - 3305:3306
+  #   ports:
+  #     - 3305:3306
   #   volumes:
   #     - ./db/maria:/var/lib/mysql
   #     - ./cfg/d.bashrc:/etc/bash.bashrc
@@ -131,30 +131,19 @@ services:
   #     MYSQL_PASSWORD: secret
   #     MYSQL_ROOT_PASSWORD: secret
 
-  # dns-old:
-  #   hostname: dns-old
-  #   container_name: nde-dns
-  #   restart: always
-  #   image: andyshinn/dnsmasq
-  #   volumes:
-  #     - ./cfg/dnsmasq.conf:/etc/dnsmasq.conf
-  #   ports:
-  #    - "53:53/udp"
-  #   cap_add:
-  #     - NET_ADMIN
-
   dns:
     hostname: dns
-    container_name: nde-dns
+    container_name: dns
     image: defreitas/dns-proxy-server
-    # ports:
-    #  - "53:53/udp"
+    ports:
+      - 53:53/udp
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /etc/resolv.conf:/etc/resolv.conf
-      - ./cfg/dns:/app/conf
+      - ./cfg/dns.json:/app/conf/config.json
+      - ./cfg/d.bashrc:/etc/bash.bashrc
   
   mail:
     hostname: mail
-    container_name: nde-mail
+    container_name: mail
     image: mailhog/mailhog

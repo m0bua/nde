@@ -58,10 +58,10 @@ try {
   }
 
   if (!$args[0]){
-    $params = $(docker ps --format '{{.Names}}' | select-string "^nde-.*$default_container" | select -first 1)
+    $params = $(docker ps --format '{{.Names}}' | select-string "^.*$default_container" | select -first 1)
   } else {
     $cont = $args[0]
-    $params = "$(docker ps --format '{{.Names}}' | select-string "^nde-.*$cont" | select -first 1)"
+    $params = "$(docker ps --format '{{.Names}}' | select-string "^.*$cont" | select -first 1)"
   }
 
   if ($params){ 

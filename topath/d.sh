@@ -56,9 +56,9 @@ if [[ $1 == -kill ]]; then
 fi; fi
 
 if [[ -z $1 ]]; then params=$(docker ps --format {{.Names}} 2> /dev/null \
-  | grep -E "^nde-.*$default_container" | head -n 1)
+  | grep -E "^.*$default_container" | head -n 1)
 else params=$(docker ps --format {{.Names}} 2> /dev/null \
-  | grep -E "^nde-.*$1" | head -n 1); fi
+  | grep -E "^.*$1" | head -n 1); fi
 
 if [[ ! -z $params ]]; then
   command="docker exec -it"

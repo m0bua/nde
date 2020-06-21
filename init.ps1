@@ -13,7 +13,8 @@ if([System.IO.Directory]::Exists(('{0}\cfg' -f $PSScriptRoot))){
   $link = Read-Host "Rewrite configs? [yN]"
 } else {$link = 'y'}
 if($link -match '^yes|y$'){
-  Copy-Item -Force -Path "$PSScriptRoot\example\*" -Destination $PSScriptRoot
+  Get-ChildItem -Path "$PSScriptRoot\example\*" | Copy-Item -Destination $PSScriptRoot -Recurse -Container -Force
+  (Get-Content $PSScriptRoot\cfg\dns.json).replace('"type": "CNAME"', '"type": "A"') | Set-Content $PSScriptRoot\cfg\dns.json
   $prj_path = Read-Host "Put your projects folder path"
   $prj_path = ($prj_path -replace "/", "\")
   if([System.IO.Directory]::Exists($prj_path)){

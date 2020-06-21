@@ -1,6 +1,6 @@
 {
 	"version": 2,
-	"remoteDnsServers": [],
+	"remoteDnsServers": ["45.90.30.0", "45.90.28.0"],
 	"envs": [
 		{
 			"name": "",
@@ -15,7 +15,7 @@
 				},
 				{
 					"id": 1592581703731853834,
-					"hostname": ".d74",
+					"hostname": ".d56",
 					"ip": "127.0.0.1",
 					"target": "nginx",
 					"ttl": 60,
@@ -23,30 +23,6 @@
 				},
 				{
 					"id": 1592581706226667775,
-					"hostname": ".d73",
-					"ip": "127.0.0.1",
-					"target": "nginx",
-					"ttl": 60,
-					"type": "CNAME"
-				},
-				{
-					"id": 1592581707704606410,
-					"hostname": ".d72",
-					"ip": "127.0.0.1",
-					"target": "nginx",
-					"ttl": 60,
-					"type": "CNAME"
-				},
-				{
-					"id": 1592581708498372995,
-					"hostname": ".d71",
-					"ip": "127.0.0.1",
-					"target": "nginx",
-					"ttl": 60,
-					"type": "CNAME"
-				},
-				{
-					"id": 1592581709648935039,
 					"hostname": ".d70",
 					"ip": "127.0.0.1",
 					"target": "nginx",
@@ -54,10 +30,58 @@
 					"type": "CNAME"
 				},
 				{
-					"id": 1592581711993067167,
-					"hostname": ".d56",
+					"id": 1592581707704606410,
+					"hostname": ".d71",
 					"ip": "127.0.0.1",
 					"target": "nginx",
+					"ttl": 60,
+					"type": "CNAME"
+				},
+				{
+					"id": 1592581708498372995,
+					"hostname": ".d72",
+					"ip": "127.0.0.1",
+					"target": "nginx",
+					"ttl": 60,
+					"type": "CNAME"
+				},
+				{
+					"id": 1592581709648935039,
+					"hostname": ".d73",
+					"ip": "127.0.0.1",
+					"target": "nginx",
+					"ttl": 60,
+					"type": "CNAME"
+				},
+				{
+					"id": 1592581711993067167,
+					"hostname": ".d74",
+					"ip": "127.0.0.1",
+					"target": "nginx",
+					"ttl": 60,
+					"type": "CNAME"
+				},
+				{
+					"id": 1592581711993067167,
+					"hostname": "mysql5.db",
+					"ip": "127.0.0.1",
+					"target": "mysql5",
+					"ttl": 60,
+					"type": "CNAME"
+				},
+				{
+					"id": 1592581711993067167,
+					"hostname": "mysql8.db",
+					"ip": "127.0.0.1",
+					"target": "mysql8",
+					"ttl": 60,
+					"type": "CNAME"
+				},
+				{
+					"id": 1592581711993067167,
+					"hostname": "maria.db",
+					"ip": "127.0.0.1",
+					"target": "maria",
 					"ttl": 60,
 					"type": "CNAME"
 				}
