@@ -17,6 +17,10 @@ services:
   php56:
     hostname: php56
     container_name: php56
+    build:
+      context: ./cfg/php
+      args:
+        CONT: "chialab/php-dev:5.6-fpm"
     image: chialab/php-dev:5.6-fpm
     volumes:
       - ~/prj:/var/www
@@ -24,39 +28,13 @@ services:
       - ./cfg/php/php.ini:/usr/local/etc/php/php.ini
       - ./cfg/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
 
-  # php70:
-  #   hostname: php70
-  #   container_name: php70
-  #   image: chialab/php-dev:7.0-fpm
-  #   volumes:
-  #     - ~/prj:/var/www
-  #     - ./cfg/d.bashrc:/etc/bash.bashrc
-  #     - ./cfg/php/php.ini:/usr/local/etc/php/php.ini
-  #     - ./cfg/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
-
-  # php71:
-  #   hostname: php71
-  #   container_name: php71
-  #   image: chialab/php-dev:7.1-fpm
-  #   volumes:
-  #     - ~/prj:/var/www
-  #     - ./cfg/d.bashrc:/etc/bash.bashrc
-  #     - ./cfg/php/php.ini:/usr/local/etc/php/php.ini
-  #     - ./cfg/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
-
-  # php72:
-  #   hostname: php72
-  #   container_name: php72
-  #   image: chialab/php-dev:7.2-fpm
-  #   volumes:
-  #     - ~/prj:/var/www
-  #     - ./cfg/d.bashrc:/etc/bash.bashrc
-  #     - ./cfg/php/php.ini:/usr/local/etc/php/php.ini
-  #     - ./cfg/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
-
   php73:
     hostname: php73
     container_name: php73
+    build:
+      context: ./cfg/php
+      args:
+        CONT: "chialab/php-dev:7.3-fpm"
     image: chialab/php-dev:7.3-fpm
     volumes:
       - ~/prj:/var/www
@@ -67,6 +45,10 @@ services:
   php74:
     hostname: php74
     container_name: php74
+    build:
+      context: ./cfg/php
+      args:
+        CONT: "chialab/php-dev:7.4-fpm"
     image: chialab/php-dev:7.4-fpm
     volumes:
       - ~/prj:/var/www
