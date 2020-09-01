@@ -1,5 +1,5 @@
-ARG	CONT=$CONT
-FROM ${CONT}
+ARG	cont
+FROM ${cont}
 
 RUN apt-get update && apt-get install -y libmagickwand-dev --no-install-recommends ghostscript \
 	&& yes '' | pecl install imagick && docker-php-ext-enable imagick \

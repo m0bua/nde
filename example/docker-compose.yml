@@ -1,4 +1,4 @@
-version: '3.5'
+version: '3.8'
 
 services:
   nginx:
@@ -20,8 +20,7 @@ services:
     build:
       context: ./cfg/php
       args:
-        CONT: "chialab/php-dev:5.6-fpm"
-    image: chialab/php-dev:5.6-fpm
+        cont: "chialab/php-dev:5.6-fpm"
     volumes:
       - ~/prj:/var/www
       - ./cfg/d.bashrc:/etc/bash.bashrc
@@ -34,8 +33,7 @@ services:
     build:
       context: ./cfg/php
       args:
-        CONT: "chialab/php-dev:7.3-fpm"
-    image: chialab/php-dev:7.3-fpm
+        cont: "chialab/php-dev:7.3-fpm"
     volumes:
       - ~/prj:/var/www
       - ./cfg/d.bashrc:/etc/bash.bashrc
@@ -48,18 +46,26 @@ services:
     build:
       context: ./cfg/php
       args:
-        CONT: "chialab/php-dev:7.4-fpm"
-    image: chialab/php-dev:7.4-fpm
+        cont: "chialab/php-dev:7.4-fpm"
     volumes:
       - ~/prj:/var/www
       - ./cfg/d.bashrc:/etc/bash.bashrc
       - ./cfg/php/php.ini:/usr/local/etc/php/php.ini
       - ./cfg/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
 
-  mysql5:
-    hostname: mysql5
-    container_name: mysql5
-    image: mysql:5
+  maria:
+    hostname: maria
+    container_name: maria
+    image: mariadb
+  ###########################
+  #   hostname: mysql8
+  #   container_name: mysql8
+  #   image: mysql
+  ###########################
+  #   hostname: mysql5
+  #   container_name: mysql5
+  #   image: mysql5
+  ###########################
     command: 
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
@@ -68,50 +74,12 @@ services:
     ports:
       - 3306:3306
     volumes:
-      - ./db/mysql5:/var/lib/mysql
+      - ./db/maria:/var/lib/mysql
       - ./cfg/d.bashrc:/etc/bash.bashrc
     environment:
       MYSQL_USER: user
       MYSQL_PASSWORD: secret
       MYSQL_ROOT_PASSWORD: secret
-
-  # mysql8:
-  #   hostname: mysql8
-  #   container_name: mysql8
-  #   image: mysql
-  #   command: 
-  #     - --character-set-server=utf8mb4
-  #     - --collation-server=utf8mb4_unicode_ci
-  #     - --default-authentication-plugin=mysql_native_password
-  #     - --sql_mode=ONLY_FULL_GROUP_BY
-  #   ports:
-  #     - 3308:3306
-  #   volumes:
-  #     - ./db/mysql8:/var/lib/mysql
-  #     - ./cfg/d.bashrc:/etc/bash.bashrc
-  #   environment:
-  #     MYSQL_USER: user
-  #     MYSQL_PASSWORD: secret
-  #     MYSQL_ROOT_PASSWORD: secret
-
-  # maria:
-  #   hostname: maria
-  #   container_name: maria
-  #   image: mariadb
-  #   command: 
-  #     - --character-set-server=utf8mb4
-  #     - --collation-server=utf8mb4_unicode_ci
-  #     - --default-authentication-plugin=mysql_native_password
-  #     - --sql_mode=ONLY_FULL_GROUP_BY
-  #   ports:
-  #     - 3305:3306
-  #   volumes:
-  #     - ./db/maria:/var/lib/mysql
-  #     - ./cfg/d.bashrc:/etc/bash.bashrc
-  #   environment:
-  #     MYSQL_USER: user
-  #     MYSQL_PASSWORD: secret
-  #     MYSQL_ROOT_PASSWORD: secret
 
   dns:
     hostname: dns
