@@ -53,19 +53,12 @@ services:
       - ./cfg/php/php.ini:/usr/local/etc/php/php.ini
       - ./cfg/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
 
-  maria:
-    hostname: maria
-    container_name: maria
+  db:
+    hostname: db
+    container_name: db
     image: mariadb
-  ###########################
-  #   hostname: mysql8
-  #   container_name: mysql8
-  #   image: mysql
-  ###########################
-  #   hostname: mysql5
-  #   container_name: mysql5
-  #   image: mysql5
-  ###########################
+    # image: mysql
+    # image: mysql5
     command: 
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
@@ -86,7 +79,7 @@ services:
     container_name: dns
     image: defreitas/dns-proxy-server
     ports:
-      - 8053:5380
+      # - 8053:5380
       - 53:53/udp
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
