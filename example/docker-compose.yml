@@ -17,10 +17,7 @@ services:
   php56:
     hostname: php56
     container_name: php56
-    build:
-      context: ./cfg/php
-      args:
-        cont: "chialab/php-dev:5.6-fpm"
+    image: "m0bua/php-fpm-dev:5.6"
     volumes:
       - ~/prj:/var/www
       - ./cfg/d.bashrc:/etc/bash.bashrc
@@ -30,10 +27,7 @@ services:
   php73:
     hostname: php73
     container_name: php73
-    build:
-      context: ./cfg/php
-      args:
-        cont: "chialab/php-dev:7.3-fpm"
+    image: "m0bua/php-fpm-dev:7.3"
     volumes:
       - ~/prj:/var/www
       - ./cfg/d.bashrc:/etc/bash.bashrc
@@ -43,10 +37,7 @@ services:
   php74:
     hostname: php74
     container_name: php74
-    build:
-      context: ./cfg/php
-      args:
-        cont: "chialab/php-dev:7.4-fpm"
+    image: "m0bua/php-fpm-dev:7.4"
     volumes:
       - ~/prj:/var/www
       - ./cfg/d.bashrc:/etc/bash.bashrc
