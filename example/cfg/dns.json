@@ -33,7 +33,7 @@
 					"type": "A"
 				},
 				{
-					"id": 1592581711993067167,
+					"id": 1599123461581367675,
 					"hostname": ".d74",
 					"ip": "127.0.0.1",
 					"target": "nginx",
@@ -41,10 +41,18 @@
 					"type": "A"
 				},
 				{
-					"id": 1592581711993067167,
-					"hostname": "maria.db",
+					"id": 1599123422158009088,
+					"hostname": "dns.d",
 					"ip": "127.0.0.1",
-					"target": "maria",
+					"target": "dns",
+					"ttl": 60,
+					"type": "A"
+				},
+				{
+					"id": 1592581711993067167,
+					"hostname": "db.d",
+					"ip": "127.0.0.1",
+					"target": "db",
 					"ttl": 60,
 					"type": "CNAME"
 				}

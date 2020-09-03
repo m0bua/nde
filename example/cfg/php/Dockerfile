@@ -1,7 +1,7 @@
 ARG	cont
 FROM ${cont}
 
-RUN apt-get update && apt-get upgrade \
+RUN apt-get update && apt-get upgrade -y \
 	&& apt-get install -y libmagickwand-dev --no-install-recommends ghostscript \
 	&& yes '' | pecl install imagick && docker-php-ext-enable imagick \
 	&& sed -i 's/none/read|write/' /etc/ImageMagick-*/policy.xml
