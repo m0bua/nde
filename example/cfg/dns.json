@@ -1,73 +1,23 @@
 {
 	"version": 2,
-	"remoteDnsServers": [
-		"45.90.30.0:53",
-		"45.90.28.0:53"
-	],
-	"envs": [
-		{
-			"name": "",
-			"hostnames": [
-				{
-					"id": 1592581699060624673,
-					"hostname": ".d",
-					"ip": "127.0.0.1",
-					"target": "nginx",
-					"ttl": 60,
-					"type": "A"
-				},
-				{
-					"id": 1592581703731853834,
-					"hostname": ".d56",
-					"ip": "127.0.0.1",
-					"target": "nginx",
-					"ttl": 60,
-					"type": "A"
-				},
-				{
-					"id": 1592581709648935039,
-					"hostname": ".d73",
-					"ip": "127.0.0.1",
-					"target": "nginx",
-					"ttl": 60,
-					"type": "A"
-				},
-				{
-					"id": 1599123461581367675,
-					"hostname": ".d74",
-					"ip": "127.0.0.1",
-					"target": "nginx",
-					"ttl": 60,
-					"type": "A"
-				},
-				{
-					"id": 1599123422158009088,
-					"hostname": "dns.d",
-					"ip": "127.0.0.1",
-					"target": "dns",
-					"ttl": 60,
-					"type": "A"
-				},
-				{
-					"id": 1592581711993067167,
-					"hostname": "db.d",
-					"ip": "127.0.0.1",
-					"target": "db",
-					"ttl": 60,
-					"type": "CNAME"
-				}
-			]
-		}
-	],
+	"remoteDnsServers": ["45.90.30.0","45.90.28.0"],
+	"envs": [{"name": "","hostnames": [
+				{"id": 1592581699060624673,"hostname": ".d","ip": "127.0.0.1","target": "nginx","ttl": 60,"type": "A"},
+				{"id": 1592581703731853834,"hostname": ".d56","ip": "127.0.0.1","target": "nginx","ttl": 60,"type": "A"},
+				{"id": 1592581709648935039,"hostname": ".d73","ip": "127.0.0.1","target": "nginx","ttl": 60,"type": "A"},
+				{"id": 1599123461581367675,"hostname": ".d74","ip": "127.0.0.1","target": "nginx","ttl": 60,"type": "A"},
+				{"id": 1599123422158009088,"hostname": "dns.d","ip": "127.0.0.1","target": "dns","ttl": 60,"type": "A"},
+				{"id": 1592581711993067167,"hostname": "db.d","ip": "127.0.0.1","target": "db","ttl": 60,"type": "CNAME"}
+	]}],
 	"activeEnv": "",
 	"webServerPort": 0,
 	"dnsServerPort": 0,
 	"defaultDns": null,
-	"logLevel": "",
-	"logFile": "",
+	"logLevel": "DEBUG",
+	"logFile": "console",
 	"registerContainerNames": null,
 	"hostMachineHostname": "",
-	"domain": "",
-	"dpsNetwork": null,
-	"dpsNetworkAutoConnect": null
+	"domain": "dns",
+	"dpsNetwork": false,
+	"dpsNetworkAutoConnect": false
 }
