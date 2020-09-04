@@ -58,7 +58,7 @@ services:
     ports:
       - 3306:3306
     volumes:
-      - ./db/maria:/var/lib/mysql
+      - ./db/data:/var/lib/mysql
       - ./cfg/d.bashrc:/etc/bash.bashrc
     environment:
       MYSQL_USER: user
