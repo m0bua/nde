@@ -15,9 +15,9 @@
 	"defaultDns": null,
 	"logLevel": "DEBUG",
 	"logFile": "console",
-	"registerContainerNames": null,
+	"registerContainerNames": true,
 	"hostMachineHostname": "",
-	"domain": "dns",
+	"domain": "nde",
 	"dpsNetwork": false,
 	"dpsNetworkAutoConnect": false
 }
