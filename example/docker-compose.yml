@@ -17,7 +17,7 @@ services:
   php56:
     hostname: php56
     container_name: php56
-    image: "m0bua/php-fpm-dev:5.6"
+    image: "m0bua/php:5.6-fpm-dev"
     volumes:
       - ~/prj:/var/www
       - ./cfg/d.bashrc:/etc/bash.bashrc
@@ -27,7 +27,7 @@ services:
   php73:
     hostname: php73
     container_name: php73
-    image: "m0bua/php-fpm-dev:7.3"
+    image: "m0bua/php:7.3-fpm-dev"
     volumes:
       - ~/prj:/var/www
       - ./cfg/d.bashrc:/etc/bash.bashrc
@@ -37,7 +37,7 @@ services:
   php74:
     hostname: php74
     container_name: php74
-    image: "m0bua/php-fpm-dev:7.4"
+    image: "m0bua/php:7.4-fpm-dev"
     volumes:
       - ~/prj:/var/www
       - ./cfg/d.bashrc:/etc/bash.bashrc
