@@ -2,6 +2,8 @@
 /*/*
 !.gitignore
 !.gitattributes
+!README.md
+!LICENSE
 !/init.sh
 !/init.ps1
 !/topath
