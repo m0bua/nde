@@ -18,6 +18,8 @@ try {
   if ($params -eq '-init') {./init.ps1 script; exit}
 
   if ($params -eq '-purge') {
+    echo " Stopping NDE:"
+    $params="down"; run($false)
     $command='docker'
     echo " Killing all running containers:"
     $extra_params=$(docker ps -q)
@@ -38,6 +40,8 @@ try {
   }
 
   if ($params -eq '-delete') {
+    echo " Stopping NDE:"
+    $params="down"; run($false)
     $command='docker'
     echo " Killing all running containers:"
     $extra_params=$(docker ps -q)
@@ -53,6 +57,8 @@ try {
   }
 
   if ( $params -eq '-kill') {
+    echo " Stopping NDE:"
+    $params="down"; run($false)
     if ( $(docker ps -q) -match '[\w\d]+' ){$command='docker';$params="kill $(docker ps -q)"}
     else {echo "   No containers to kill";exit}
   }

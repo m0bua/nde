@@ -15,6 +15,8 @@ exit=true
 if [[ $params == '-init' ]]; then ./init.sh script; exit; fi
 
 if [[ $1 == -purge ]]; then
+  echo " Stopping NDE:"
+  params="down"; exit='false'; run
   command='docker'
   echo " Killing all running containers:"
   extra_params=$(docker ps -q)
@@ -35,6 +37,8 @@ if [[ $1 == -purge ]]; then
 fi
 
 if [[ $1 == -delete ]]; then
+  echo " Stopping NDE:"
+  params="down"; exit='false'; run
   command='docker'
   echo " Killing all running containers:"
   extra_params=$(docker ps -q)
@@ -50,8 +54,10 @@ if [[ $1 == -delete ]]; then
 fi
 
 if [[ $1 == -kill ]]; then
+  echo " Stopping NDE:"
+  params="down"; exit='false'; run
   if [[ $(docker ps -q) =~ [\w\d]+ ]]; then
-    $command='docker';$params="kill $(docker ps -q)"
+    command='docker';$params="kill $(docker ps -q)"
   else echo "   No containers to kill"; exit
 fi; fi
 
