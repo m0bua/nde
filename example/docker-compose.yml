@@ -4,7 +4,7 @@ services:
   nginx:
     hostname: nginx
     container_name: nginx
-    image: nginx:latest
+    image: nginx
     ports:
       - 80:80
       - 443:443
@@ -47,9 +47,10 @@ services:
   db:
     hostname: db
     container_name: db
-    image: mariadb
-    # image: mysql
-    # image: mysql5
+    image: mariadb:latest
+    # image: mysql:latest
+    # image: mysql:8
+    # image: mysql:5
     command: 
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
