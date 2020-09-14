@@ -23,6 +23,7 @@ services:
       - ./cfg/d.bashrc:/root/.bashrc
       - ./cfg/php/php.ini:/usr/local/etc/php/php.ini
       - ./cfg/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+      # - ./cfg/ImageMagick-policy.xml:/etc/ImageMagick-6/policy.xml #debian based only
 
   php73:
     hostname: php73
@@ -33,6 +34,7 @@ services:
       - ./cfg/d.bashrc:/root/.bashrc
       - ./cfg/php/php.ini:/usr/local/etc/php/php.ini
       - ./cfg/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+      # - ./cfg/ImageMagick-policy.xml:/etc/ImageMagick-6/policy.xml #debian based only
 
   php74:
     hostname: php74
@@ -43,6 +45,7 @@ services:
       - ./cfg/d.bashrc:/root/.bashrc
       - ./cfg/php/php.ini:/usr/local/etc/php/php.ini
       - ./cfg/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+      # - ./cfg/ImageMagick-policy.xml:/etc/ImageMagick-6/policy.xml #debian based only
 
   db:
     hostname: db
