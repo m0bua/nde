@@ -50,8 +50,8 @@ services:
   db:
     hostname: db
     container_name: db
-    image: mariadb:latest
-    # image: mysql:latest
+    image: mariadb
+    # image: mysql
     # image: mysql:8
     # image: mysql:5
     command: 
@@ -86,3 +86,9 @@ services:
     hostname: mail
     container_name: mail
     image: mailhog/mailhog
+
+  adminer:
+    hostname: adminer
+    container_name: adminer
+    image: adminer
+    restart: always
