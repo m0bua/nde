@@ -5,6 +5,7 @@ services:
     hostname: nginx
     container_name: nginx
     image: nginx
+    # restart: always
     ports:
       - 80:80
       - 443:443
@@ -18,6 +19,7 @@ services:
     hostname: php56
     container_name: php56
     image: "m0bua/php:5.6-fpm-alpine-dev"
+    # restart: always
     volumes:
       - ~/prj:/var/www
       - ./cfg/d.bashrc:/root/.bashrc
@@ -29,6 +31,7 @@ services:
     hostname: php73
     container_name: php73
     image: "m0bua/php:7.3-fpm-alpine-dev"
+    # restart: always
     volumes:
       - ~/prj:/var/www
       - ./cfg/d.bashrc:/root/.bashrc
@@ -40,6 +43,7 @@ services:
     hostname: php74
     container_name: php74
     image: "m0bua/php:7.4-fpm-alpine-dev"
+    # restart: always
     volumes:
       - ~/prj:/var/www
       - ./cfg/d.bashrc:/root/.bashrc
@@ -54,6 +58,7 @@ services:
     # image: mysql
     # image: mysql:8
     # image: mysql:5
+    # restart: always
     command: 
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
@@ -73,6 +78,7 @@ services:
     hostname: dns
     container_name: dns
     image: defreitas/dns-proxy-server
+    # restart: always
     ports:
       # - 8053:5380
       - 53:53/udp
@@ -86,9 +92,10 @@ services:
     hostname: mail
     container_name: mail
     image: mailhog/mailhog
+    # restart: always
 
   adminer:
     hostname: adminer
     container_name: adminer
     image: adminer
-    restart: always
+    # restart: always
