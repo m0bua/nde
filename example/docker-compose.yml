@@ -67,7 +67,7 @@ services:
     ports:
       - 3306:3306
     volumes:
-      - ./db/data:/var/lib/mysql
+      - db:/var/lib/mysql
       - ./cfg/d.bashrc:/root/.bashrc
     environment:
       MYSQL_USER: user
@@ -99,3 +99,9 @@ services:
     container_name: adminer
     image: adminer
     # restart: always
+
+volumes:
+  db:
+  # mysql:
+  # mysql8:
+  # mysql5:
