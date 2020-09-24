@@ -10,7 +10,7 @@ services:
       - 80:80
       - 443:443
     volumes:
-      - ~/prj:/var/www
+      - www:/var/www
       - ./cfg/nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./cfg/nginx/cert:/etc/nginx/cert
       - ./cfg/d.bashrc:/root/.bashrc
@@ -21,7 +21,7 @@ services:
     image: "m0bua/php:5.6-fpm-alpine-dev"
     # restart: always
     volumes:
-      - ~/prj:/var/www
+      - www:/var/www
       - ./cfg/d.bashrc:/root/.bashrc
       - ./cfg/php/php.ini:/usr/local/etc/php/php.ini
       - ./cfg/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
@@ -33,7 +33,7 @@ services:
     image: "m0bua/php:7.3-fpm-alpine-dev"
     # restart: always
     volumes:
-      - ~/prj:/var/www
+      - www:/var/www
       - ./cfg/d.bashrc:/root/.bashrc
       - ./cfg/php/php.ini:/usr/local/etc/php/php.ini
       - ./cfg/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
@@ -105,3 +105,9 @@ volumes:
   # mysql:
   # mysql8:
   # mysql5:
+  www:
+    driver: local
+    driver_opts:
+      type: none
+      device: ~/prj
+      o: bind
