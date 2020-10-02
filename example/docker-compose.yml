@@ -1,4 +1,16 @@
-version: '3.8'
+version: '3.3'
+
+volumes:
+  www:
+    # driver: local
+    # driver_opts:
+    #   type: none
+    #   device: ~/prj
+    #   o: bind
+  db:
+  # mysql:
+  # mysql8:
+  # mysql5:
 
 services:
   nginx:
@@ -45,7 +57,7 @@ services:
     image: "m0bua/php:7.4-fpm-alpine-dev"
     # restart: always
     volumes:
-      - ~/prj:/var/www
+      - www:/var/www
       - ./cfg/d.bashrc:/root/.bashrc
       - ./cfg/php/php.ini:/usr/local/etc/php/php.ini
       - ./cfg/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
@@ -100,14 +112,18 @@ services:
     image: adminer
     # restart: always
 
-volumes:
-  db:
-  # mysql:
-  # mysql8:
-  # mysql5:
-  www:
-    driver: local
-    driver_opts:
-      type: none
-      device: ~/prj
-      o: bind
+  ftp:
+    hostname: ftp
+    container_name: ftp
+    image: million12/vsftpd
+    volumes:
+      - www:/var/ftp/www
+      - www:/home/vsftpd/root/www
+      - ./cfg/d.bashrc:/root/.bashrc
+    ports:
+      - 20-21:20-21
+      # - 21100-21110:21100-21110
+    environment:
+      - FTP_USER=root
+      - FTP_PASS=secret
+      # - ANONYMOUS_ACCESS=true

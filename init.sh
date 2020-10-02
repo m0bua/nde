@@ -12,18 +12,18 @@ if [[ -d "$topath" ]] && [[ -f "$topath/d.sh" ]];then
 else echo 'Path error!' $topath; fi
 
 if [[ -d "$nde_path/cfg" ]];then
-read -p "Rewrite configs? [yN]: " link
+	read -p "Rewrite configs? [yN]: " link
 else link='y'; fi
 if [[ $link =~ ^yes|y$ ]];then 
   cp -rf $nde_path/example/* $nde_path
-  read -p "Put your projects folder path: " prj_path
-  if [[ -d $prj_path ]];then 
-    sed -i "s|~/prj|$prj_path|g" docker-compose.yml
-  else
-    if [[ ! -z $prj_path ]]; then
-      echo="$prj_path is not a folder. "; fi
-    echo "${echo}Will keep default (~/prj)"
-  fi
+  # read -p "Put your projects folder path: " prj_path
+  # if [[ -d $prj_path ]];then 
+  #   sed -i "s|~/prj|$prj_path|g" docker-compose.yml
+  # else
+  #   if [[ ! -z $prj_path ]]; then
+  #     echo="$prj_path is not a folder. "; fi
+  #   echo "${echo}Will keep default (~/prj)"
+  # fi
 fi
 
 if [[ "$*" != 'script' ]];then read -p "Ready!"; fi
