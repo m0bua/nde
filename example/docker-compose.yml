@@ -22,8 +22,8 @@ services:
       - www:/var/ftp/www
       - ./cfg/d.bashrc:/root/.bashrc
     ports:
-      - 20-21:20-21
-      # - 30000-30010:30000-30010
+      - 127.0.0.1:20-21:20-21
+      - 127.0.0.1:30000-30010:30000-30010
 
   dns:
     hostname: dns
@@ -31,8 +31,8 @@ services:
     image: defreitas/dns-proxy-server
     # restart: always
     ports:
-      # - 8053:5380
-      - 53:53/udp
+      # - 127.0.0.1:8053:5380
+      - 127.0.0.1:53:53/udp
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /etc/resolv.conf:/etc/resolv.conf
@@ -45,8 +45,8 @@ services:
     image: nginx
     # restart: always
     ports:
-      - 80:80
-      - 443:443
+      - 127.0.0.1:80:80
+      - 127.0.0.1:443:443
     volumes:
       - www:/var/www
       - ./cfg/nginx/nginx.conf:/etc/nginx/nginx.conf
@@ -103,7 +103,7 @@ services:
       - --default-authentication-plugin=mysql_native_password
       - --sql_mode=ONLY_FULL_GROUP_BY
     ports:
-      - 3306:3306
+      - 127.0.0.1:3306:3306
     volumes:
       - db:/var/lib/mysql
       - ./cfg/d.bashrc:/root/.bashrc
