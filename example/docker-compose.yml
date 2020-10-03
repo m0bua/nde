@@ -13,6 +13,32 @@ volumes:
   # mysql5:
 
 services:
+  ftp:
+    hostname: ftp
+    container_name: ftp
+    image: m0bua/ftp
+    # restart: always
+    volumes:
+      - www:/var/ftp/www
+      - ./cfg/d.bashrc:/root/.bashrc
+    ports:
+      - 20-21:20-21
+      # - 30000-30010:30000-30010
+
+  dns:
+    hostname: dns
+    container_name: dns
+    image: defreitas/dns-proxy-server
+    # restart: always
+    ports:
+      # - 8053:5380
+      - 53:53/udp
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /etc/resolv.conf:/etc/resolv.conf
+      - ./cfg/dns.json:/app/conf/config.json
+      - ./cfg/d.bashrc:/root/.bashrc
+
   nginx:
     hostname: nginx
     container_name: nginx
@@ -27,10 +53,10 @@ services:
       - ./cfg/nginx/cert:/etc/nginx/cert
       - ./cfg/d.bashrc:/root/.bashrc
 
-  php56:
-    hostname: php56
-    container_name: php56
-    image: "m0bua/php:5.6-fpm-alpine-dev"
+  php74:
+    hostname: php74
+    container_name: php74
+    image: "m0bua/php:7.4-fpm-alpine-dev"
     # restart: always
     volumes:
       - www:/var/www
@@ -51,10 +77,10 @@ services:
       - ./cfg/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
       # - ./cfg/ImageMagick-policy.xml:/etc/ImageMagick-6/policy.xml #debian based only
 
-  php74:
-    hostname: php74
-    container_name: php74
-    image: "m0bua/php:7.4-fpm-alpine-dev"
+  php56:
+    hostname: php56
+    container_name: php56
+    image: "m0bua/php:5.6-fpm-alpine-dev"
     # restart: always
     volumes:
       - www:/var/www
@@ -85,20 +111,6 @@ services:
       MYSQL_USER: user
       MYSQL_PASSWORD: secret
       MYSQL_ROOT_PASSWORD: secret
-
-  dns:
-    hostname: dns
-    container_name: dns
-    image: defreitas/dns-proxy-server
-    # restart: always
-    ports:
-      # - 8053:5380
-      - 53:53/udp
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /etc/resolv.conf:/etc/resolv.conf
-      - ./cfg/dns.json:/app/conf/config.json
-      - ./cfg/d.bashrc:/root/.bashrc
   
   mail:
     hostname: mail
@@ -111,19 +123,3 @@ services:
     container_name: adminer
     image: adminer
     # restart: always
-
-  ftp:
-    hostname: ftp
-    container_name: ftp
-    image: million12/vsftpd
-    volumes:
-      - www:/var/ftp/www
-      - www:/home/vsftpd/root/www
-      - ./cfg/d.bashrc:/root/.bashrc
-    ports:
-      - 20-21:20-21
-      # - 21100-21110:21100-21110
-    environment:
-      - FTP_USER=root
-      - FTP_PASS=secret
-      # - ANONYMOUS_ACCESS=true
