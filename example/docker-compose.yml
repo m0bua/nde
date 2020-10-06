@@ -13,17 +13,29 @@ volumes:
   # mysql5:
 
 services:
-  ftp:
-    hostname: ftp
-    container_name: ftp
-    image: m0bua/ftp
+  sftp:
+    hostname: sftp
+    container_name: sftp
+    image: atmoz/sftp:alpine
     # restart: always
     volumes:
-      - www:/var/ftp/www
+      - www:/home/user/www
       - ./cfg/d.bashrc:/root/.bashrc
     ports:
-      - 127.0.0.1:20-21:20-21
-      - 127.0.0.1:30000-30010:30000-30010
+        - 127.0.0.1:22:22
+    command: user:secret:82:82
+
+  # ftp:
+  #   hostname: ftp
+  #   container_name: ftp
+  #   image: m0bua/ftp
+  #   # restart: always
+  #   volumes:
+  #     - www:/var/ftp/www
+  #     - ./cfg/d.bashrc:/root/.bashrc
+  #   ports:
+  #     - 127.0.0.1:20-21:20-21
+  #     - 127.0.0.1:30000-30010:30000-30010
 
   dns:
     hostname: dns
@@ -56,7 +68,7 @@ services:
   php73:
     hostname: php73
     container_name: php73
-    image: "m0bua/php:7.3-fpm-alpine"
+    image: m0bua/php:7.3-fpm-alpine
     # restart: always
     volumes:
       - www:/var/www
@@ -68,7 +80,7 @@ services:
   php74dev:
     hostname: php74dev
     container_name: php74dev
-    image: "m0bua/php:7.4-fpm-alpine-dev"
+    image: m0bua/php:7.4-fpm-alpine-dev
     # restart: always
     volumes:
       - www:/var/www
@@ -80,7 +92,7 @@ services:
   php73dev:
     hostname: php73dev
     container_name: php73dev
-    image: "m0bua/php:7.3-fpm-alpine-dev"
+    image: m0bua/php:7.3-fpm-alpine-dev
     # restart: always
     volumes:
       - www:/var/www
@@ -92,7 +104,7 @@ services:
   php56dev:
     hostname: php56dev
     container_name: php56dev
-    image: "m0bua/php:5.6-fpm-alpine-dev"
+    image: m0bua/php:5.6-fpm-alpine-dev
     # restart: always
     volumes:
       - www:/var/www
