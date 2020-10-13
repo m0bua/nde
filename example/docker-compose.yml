@@ -13,29 +13,33 @@ volumes:
   # mysql5:
 
 services:
-  sftp:
-    hostname: sftp
-    container_name: sftp
-    image: atmoz/sftp:alpine
+  ftp:
+    hostname: ftp
+    container_name: ftp
+    image: wildscamp/vsftpd
     # restart: always
     volumes:
-      - www:/home/user/www
+      - www:/home/virtual/ftp/www
       - ./cfg/d.bashrc:/root/.bashrc
     ports:
-        - 127.0.0.1:22:22
-    command: user:secret:82:82
-
-  # ftp:
-  #   hostname: ftp
-  #   container_name: ftp
-  #   image: m0bua/ftp
+      - 127.0.0.1:21:21
+      - 127.0.0.1:30000-30010:30000-30010
+    environment:
+      PASV_MIN_PORT: 30000
+      PASV_MAX_PORT: 30010
+      VSFTPD_USER_1: "ftp:secret:82:82"
+  
+  # sftp:
+  #   hostname: sftp
+  #   container_name: sftp
+  #   image: atmoz/sftp:alpine
   #   # restart: always
   #   volumes:
-  #     - www:/var/ftp/www
+  #     - www:/home/user/www
   #     - ./cfg/d.bashrc:/root/.bashrc
   #   ports:
-  #     - 127.0.0.1:20-21:20-21
-  #     - 127.0.0.1:30000-30010:30000-30010
+  #       - 127.0.0.1:22:22
+  #   command: user:secret:82:82
 
   dns:
     hostname: dns
