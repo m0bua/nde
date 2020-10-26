@@ -81,9 +81,9 @@ services:
       - ./cfg/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
       # - ./cfg/ImageMagick-policy.xml:/etc/ImageMagick-6/policy.xml #debian based only
 
-  php74dev:
-    hostname: php74dev
-    container_name: php74dev
+  php74d:
+    hostname: php74d
+    container_name: php74d
     image: m0bua/php:7.4-fpm-alpine-dev
     # restart: always
     volumes:
@@ -93,9 +93,9 @@ services:
       - ./cfg/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
       # - ./cfg/ImageMagick-policy.xml:/etc/ImageMagick-6/policy.xml #debian based only
 
-  php73dev:
-    hostname: php73dev
-    container_name: php73dev
+  php73d:
+    hostname: php73d
+    container_name: php73d
     image: m0bua/php:7.3-fpm-alpine-dev
     # restart: always
     volumes:
@@ -105,9 +105,9 @@ services:
       - ./cfg/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
       # - ./cfg/ImageMagick-policy.xml:/etc/ImageMagick-6/policy.xml #debian based only
 
-  php56dev:
-    hostname: php56dev
-    container_name: php56dev
+  php56d:
+    hostname: php56d
+    container_name: php56d
     image: m0bua/php:5.6-fpm-alpine-dev
     # restart: always
     volumes:
