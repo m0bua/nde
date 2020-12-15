@@ -61,10 +61,9 @@ if [[ $1 == -kill ]]; then
   else echo "   No containers to kill"; exit
 fi; fi
 
-if [[ -z $1 ]]; then params=$(docker ps --format {{.Names}} 2> /dev/null \
-  | grep -E "^.*$default_container" | head -n 1)
-else params=$(docker ps --format {{.Names}} 2> /dev/null \
-  | grep -E "^.*$1" | head -n 1); fi
+if [[ ! -z $1 ]]; then default_container=$1; fi
+params=$(docker ps --format {{.Names}} 2> /dev/null \
+  | grep -E "^.*$default_container" | sort | head -n 1)
 
 if [[ ! -z $params ]]; then
   command="docker exec -it"

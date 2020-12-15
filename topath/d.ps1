@@ -59,16 +59,14 @@ try {
   if ( $params -eq '-kill') {
     echo " Stopping NDE:"
     $params="down"; run($false)
-    if ( $(docker ps -q) -match '[\w\d]+' ){$command='docker';$params="kill $(docker ps -q)"}
+    if ( $(docker ps -q) -match '[\w\d]+' )
+      {$command='docker';$params="kill $(docker ps -q)"}
     else {echo "   No containers to kill";exit}
   }
 
-  if (!$args[0]){
-    $params = $(docker ps --format '{{.Names}}' | select-string "^.*$default_container" | select -first 1)
-  } else {
-    $cont = $args[0]
-    $params = "$(docker ps --format '{{.Names}}' | select-string "^.*$cont" | select -first 1)"
-  }
+  if ($args[0]){$default_container = $args[0]}
+  $params = $(docker ps --format '{{.Names}}' | Sort-Object)
+  $params = $($params | select-string "^.*$default_container" | select -first 1)
 
   if ($params){ 
     $command="docker exec -it";$extra_params="bash"
