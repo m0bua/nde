@@ -84,7 +84,7 @@ services:
   php74d:
     hostname: php74d
     container_name: php74d
-    image: m0bua/php:7.4-fpm-alpine-dev
+    image: m0bua/php-dev:7.4-fpm-alpine
     # restart: always
     volumes:
       - www:/var/www
@@ -96,7 +96,7 @@ services:
   php73d:
     hostname: php73d
     container_name: php73d
-    image: m0bua/php:7.3-fpm-alpine-dev
+    image: m0bua/php-dev:7.3-fpm-alpine
     # restart: always
     volumes:
       - www:/var/www
@@ -108,7 +108,7 @@ services:
   php56d:
     hostname: php56d
     container_name: php56d
-    image: m0bua/php:5.6-fpm-alpine-dev
+    image: m0bua/php-dev:5.6-fpm-alpine
     # restart: always
     volumes:
       - www:/var/www
