@@ -69,10 +69,10 @@ services:
       - ./cfg/nginx/cert:/etc/nginx/cert
       - ./cfg/d.bashrc:/root/.bashrc
 
-  php73:
-    hostname: php73
-    container_name: php73
-    image: m0bua/php:7.3-fpm-alpine
+  php8:
+    hostname: php8
+    container_name: php8
+    image: m0bua/php:8-fpm-alpine
     # restart: always
     volumes:
       - www:/var/www
@@ -81,10 +81,46 @@ services:
       - ./cfg/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
       # - ./cfg/ImageMagick-policy.xml:/etc/ImageMagick-6/policy.xml #debian based only
 
-  php74d:
-    hostname: php74d
-    container_name: php74d
-    image: m0bua/php-dev:7.4-fpm-alpine
+  php8d:
+    hostname: php8d
+    container_name: php8d
+    image: m0bua/php-dev:8-fpm-alpine
+    # restart: always
+    volumes:
+      - www:/var/www
+      - ./cfg/d.bashrc:/root/.bashrc
+      - ./cfg/php/php.ini:/usr/local/etc/php/php.ini
+      - ./cfg/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+      # - ./cfg/ImageMagick-policy.xml:/etc/ImageMagick-6/policy.xml #debian based only
+
+  php7:
+    hostname: php7
+    container_name: php7
+    image: m0bua/php:7-fpm-alpine
+    # restart: always
+    volumes:
+      - www:/var/www
+      - ./cfg/d.bashrc:/root/.bashrc
+      - ./cfg/php/php.ini:/usr/local/etc/php/php.ini
+      - ./cfg/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+      # - ./cfg/ImageMagick-policy.xml:/etc/ImageMagick-6/policy.xml #debian based only
+
+  php7d:
+    hostname: php7d
+    container_name: php7d
+    image: m0bua/php-dev:7-fpm-alpine
+    # restart: always
+    volumes:
+      - www:/var/www
+      - ./cfg/d.bashrc:/root/.bashrc
+      - ./cfg/php/php.ini:/usr/local/etc/php/php.ini
+      - ./cfg/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+      # - ./cfg/ImageMagick-policy.xml:/etc/ImageMagick-6/policy.xml #debian based only
+
+  php73:
+    hostname: php73
+    container_name: php73
+    image: m0bua/php:7.3-fpm-alpine
     # restart: always
     volumes:
       - www:/var/www
@@ -105,10 +141,22 @@ services:
       - ./cfg/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
       # - ./cfg/ImageMagick-policy.xml:/etc/ImageMagick-6/policy.xml #debian based only
 
-  php56d:
-    hostname: php56d
-    container_name: php56d
-    image: m0bua/php-dev:5.6-fpm-alpine
+  php5:
+    hostname: php5
+    container_name: php5
+    image: m0bua/php:5-fpm-alpine
+    # restart: always
+    volumes:
+      - www:/var/www
+      - ./cfg/d.bashrc:/root/.bashrc
+      - ./cfg/php/php.ini:/usr/local/etc/php/php.ini
+      - ./cfg/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+      # - ./cfg/ImageMagick-policy.xml:/etc/ImageMagick-6/policy.xml #debian based only
+
+  php5d:
+    hostname: php5d
+    container_name: php5d
+    image: m0bua/php-dev:5-fpm-alpine
     # restart: always
     volumes:
       - www:/var/www

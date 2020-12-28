@@ -1,14 +1,34 @@
 {
 	"version": 2,
-	"remoteDnsServers": ["45.90.30.0","45.90.28.0"],
-	"envs": [{"name": "","hostnames": [
+	"remoteDnsServers": ["45.90.30.0:53","45.90.28.0:53"],
+	"envs": [
+		{
+			"name": "",
+			"hostnames": [
 				{"id": 1592581699060624673,"hostname": ".d","ip": "127.0.0.1","target": "nginx","ttl": 60,"type": "A"},
-				{"id": 1592581703731853834,"hostname": ".d56","ip": "127.0.0.1","target": "nginx","ttl": 60,"type": "A"},
+				{"id": 1592581703731853834,"hostname": ".d5","ip": "127.0.0.1","target": "nginx","ttl": 60,"type": "A"},
+				{"id": 1592581709648935039,"hostname": ".d70","ip": "127.0.0.1","target": "nginx","ttl": 60,"type": "A"},
+				{"id": 1592581709648935039,"hostname": ".d71","ip": "127.0.0.1","target": "nginx","ttl": 60,"type": "A"},
+				{"id": 1592581709648935039,"hostname": ".d72","ip": "127.0.0.1","target": "nginx","ttl": 60,"type": "A"},
 				{"id": 1592581709648935039,"hostname": ".d73","ip": "127.0.0.1","target": "nginx","ttl": 60,"type": "A"},
 				{"id": 1599123461581367675,"hostname": ".d74","ip": "127.0.0.1","target": "nginx","ttl": 60,"type": "A"},
+				{"id": 1599123461581367675,"hostname": ".d7","ip": "127.0.0.1","target": "nginx","ttl": 60,"type": "A"},
+				{"id": 1599123461581367675,"hostname": ".d80","ip": "127.0.0.1","target": "nginx","ttl": 60,"type": "A"},
+				{"id": 1599123461581367675,"hostname": ".d8","ip": "127.0.0.1","target": "nginx","ttl": 60,"type": "A"},
+				{"id": 1592581703731853834,"hostname": ".d5d","ip": "127.0.0.1","target": "nginx","ttl": 60,"type": "A"},
+				{"id": 1592581709648935039,"hostname": ".d70d","ip": "127.0.0.1","target": "nginx","ttl": 60,"type": "A"},
+				{"id": 1592581709648935039,"hostname": ".d71d","ip": "127.0.0.1","target": "nginx","ttl": 60,"type": "A"},
+				{"id": 1592581709648935039,"hostname": ".d72d","ip": "127.0.0.1","target": "nginx","ttl": 60,"type": "A"},
+				{"id": 1592581709648935039,"hostname": ".d73d","ip": "127.0.0.1","target": "nginx","ttl": 60,"type": "A"},
+				{"id": 1599123461581367675,"hostname": ".d74d","ip": "127.0.0.1","target": "nginx","ttl": 60,"type": "A"},
+				{"id": 1599123461581367675,"hostname": ".d7d","ip": "127.0.0.1","target": "nginx","ttl": 60,"type": "A"},
+				{"id": 1599123461581367675,"hostname": ".d80d","ip": "127.0.0.1","target": "nginx","ttl": 60,"type": "A"},
+				{"id": 1599123461581367675,"hostname": ".d8d","ip": "127.0.0.1","target": "nginx","ttl": 60,"type": "A"},
 				{"id": 1599123422158009088,"hostname": "dns.d","ip": "127.0.0.1","target": "dns","ttl": 60,"type": "A"},
 				{"id": 1592581711993067167,"hostname": "db.d","ip": "127.0.0.1","target": "db","ttl": 60,"type": "CNAME"}
-	]}],
+			]
+		}
+	],
 	"activeEnv": "",
 	"webServerPort": 0,
 	"dnsServerPort": 0,

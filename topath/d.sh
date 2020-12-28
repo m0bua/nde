@@ -1,5 +1,5 @@
 #!/bin/bash
-default_container=php73
+default_container=php7
 
 run () {
   $command $params $extra_params
