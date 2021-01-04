@@ -9,57 +9,32 @@ volumes:
     #   o: bind
   db:
   # mysql:
-  # mysql8:
-  # mysql5:
+
+x-php: &php
+    volumes:
+      - www:/var/www
+      - ./cfg/d.bashrc:/root/.bashrc:ro
+      - ./cfg/php/php.ini:/usr/local/etc/php/php.ini:ro
+      - ./cfg/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini:ro
+      # - ./cfg/ImageMagick-policy.xml:/etc/ImageMagick-6/policy.xml #debian based only
+
+x-db: &db
+    command: 
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --default-authentication-plugin=mysql_native_password
+      - --sql_mode=ONLY_FULL_GROUP_BY
+    environment:
+      MYSQL_USER: user
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: secret
 
 services:
-  ftp:
-    hostname: ftp
-    container_name: ftp
-    image: wildscamp/vsftpd
-    # restart: always
-    volumes:
-      - www:/home/virtual/ftp/www
-      - ./cfg/d.bashrc:/root/.bashrc
-    ports:
-      - 127.0.0.1:21:21
-      - 127.0.0.1:30000-30010:30000-30010
-    environment:
-      PASV_MIN_PORT: 30000
-      PASV_MAX_PORT: 30010
-      VSFTPD_USER_1: "ftp:secret:82:82"
-  
-  # sftp:
-  #   hostname: sftp
-  #   container_name: sftp
-  #   image: atmoz/sftp:alpine
-  #   # restart: always
-  #   volumes:
-  #     - www:/home/user/www
-  #     - ./cfg/d.bashrc:/root/.bashrc
-  #   ports:
-  #       - 127.0.0.1:22:22
-  #   command: user:secret:82:82
-
-  dns:
-    hostname: dns
-    container_name: dns
-    image: defreitas/dns-proxy-server
-    # restart: always
-    ports:
-      # - 127.0.0.1:8053:5380
-      - 127.0.0.1:53:53/udp
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /etc/resolv.conf:/etc/resolv.conf
-      - ./cfg/dns.json:/app/conf/config.json
-      - ./cfg/d.bashrc:/root/.bashrc
 
   nginx:
     hostname: nginx
     container_name: nginx
     image: nginx
-    # restart: always
     ports:
       - 127.0.0.1:80:80
       - 127.0.0.1:443:443
@@ -73,129 +48,106 @@ services:
     hostname: php8
     container_name: php8
     image: m0bua/php:8-fpm-alpine
-    # restart: always
-    volumes:
-      - www:/var/www
-      - ./cfg/d.bashrc:/root/.bashrc
-      - ./cfg/php/php.ini:/usr/local/etc/php/php.ini
-      - ./cfg/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
-      # - ./cfg/ImageMagick-policy.xml:/etc/ImageMagick-6/policy.xml #debian based only
+    <<: *php
 
   php8d:
     hostname: php8d
     container_name: php8d
     image: m0bua/php-dev:8-fpm-alpine
-    # restart: always
-    volumes:
-      - www:/var/www
-      - ./cfg/d.bashrc:/root/.bashrc
-      - ./cfg/php/php.ini:/usr/local/etc/php/php.ini
-      - ./cfg/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
-      # - ./cfg/ImageMagick-policy.xml:/etc/ImageMagick-6/policy.xml #debian based only
+    <<: *php
 
   php7:
     hostname: php7
     container_name: php7
     image: m0bua/php:7-fpm-alpine
-    # restart: always
-    volumes:
-      - www:/var/www
-      - ./cfg/d.bashrc:/root/.bashrc
-      - ./cfg/php/php.ini:/usr/local/etc/php/php.ini
-      - ./cfg/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
-      # - ./cfg/ImageMagick-policy.xml:/etc/ImageMagick-6/policy.xml #debian based only
+    <<: *php
 
   php7d:
     hostname: php7d
     container_name: php7d
     image: m0bua/php-dev:7-fpm-alpine
-    # restart: always
-    volumes:
-      - www:/var/www
-      - ./cfg/d.bashrc:/root/.bashrc
-      - ./cfg/php/php.ini:/usr/local/etc/php/php.ini
-      - ./cfg/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
-      # - ./cfg/ImageMagick-policy.xml:/etc/ImageMagick-6/policy.xml #debian based only
+    <<: *php
 
   php73:
     hostname: php73
     container_name: php73
     image: m0bua/php:7.3-fpm-alpine
-    # restart: always
-    volumes:
-      - www:/var/www
-      - ./cfg/d.bashrc:/root/.bashrc
-      - ./cfg/php/php.ini:/usr/local/etc/php/php.ini
-      - ./cfg/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
-      # - ./cfg/ImageMagick-policy.xml:/etc/ImageMagick-6/policy.xml #debian based only
+    <<: *php
 
   php73d:
     hostname: php73d
     container_name: php73d
     image: m0bua/php-dev:7.3-fpm-alpine
-    # restart: always
-    volumes:
-      - www:/var/www
-      - ./cfg/d.bashrc:/root/.bashrc
-      - ./cfg/php/php.ini:/usr/local/etc/php/php.ini
-      - ./cfg/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
-      # - ./cfg/ImageMagick-policy.xml:/etc/ImageMagick-6/policy.xml #debian based only
+    <<: *php
 
   php5:
     hostname: php5
     container_name: php5
     image: m0bua/php:5-fpm-alpine
-    # restart: always
-    volumes:
-      - www:/var/www
-      - ./cfg/d.bashrc:/root/.bashrc
-      - ./cfg/php/php.ini:/usr/local/etc/php/php.ini
-      - ./cfg/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
-      # - ./cfg/ImageMagick-policy.xml:/etc/ImageMagick-6/policy.xml #debian based only
+    <<: *php
 
   php5d:
     hostname: php5d
     container_name: php5d
     image: m0bua/php-dev:5-fpm-alpine
-    # restart: always
-    volumes:
-      - www:/var/www
-      - ./cfg/d.bashrc:/root/.bashrc
-      - ./cfg/php/php.ini:/usr/local/etc/php/php.ini
-      - ./cfg/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
-      # - ./cfg/ImageMagick-policy.xml:/etc/ImageMagick-6/policy.xml #debian based only
+    <<: *php
 
   db:
     hostname: db
     container_name: db
     image: mariadb
-    # image: mysql
-    # image: mysql:8
-    # image: mysql:5
-    # restart: always
-    command: 
-      - --character-set-server=utf8mb4
-      - --collation-server=utf8mb4_unicode_ci
-      - --default-authentication-plugin=mysql_native_password
-      - --sql_mode=ONLY_FULL_GROUP_BY
     ports:
       - 127.0.0.1:3306:3306
     volumes:
       - db:/var/lib/mysql
       - ./cfg/d.bashrc:/root/.bashrc
-    environment:
-      MYSQL_USER: user
-      MYSQL_PASSWORD: secret
-      MYSQL_ROOT_PASSWORD: secret
-  
-  mail:
-    hostname: mail
-    container_name: mail
-    image: mailhog/mailhog
-    # restart: always
+    <<: *db
+
+  # mysql:
+  #   hostname: mysql
+  #   container_name: mysql
+  #   image: mysql #mysql:8, mysql:5
+  #   ports:
+  #     - 127.0.0.1:3305:3306
+  #   volumes:
+  #     - mysql:/var/lib/mysql
+  #     - ./cfg/d.bashrc:/root/.bashrc
+  #   <<: *db
 
   adminer:
     hostname: adminer
     container_name: adminer
     image: adminer
-    # restart: always
+
+  mail:
+    hostname: mail
+    container_name: mail
+    image: mailhog/mailhog
+
+  dns:
+    hostname: dns
+    container_name: dns
+    image: defreitas/dns-proxy-server
+    ports:
+      # - 127.0.0.1:8053:5380
+      - 127.0.0.1:53:53/udp
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /etc/resolv.conf:/etc/resolv.conf
+      - ./cfg/dns.json:/app/conf/config.json
+      - ./cfg/d.bashrc:/root/.bashrc
+
+  ftp:
+    hostname: ftp
+    container_name: ftp
+    image: wildscamp/vsftpd
+    volumes:
+      - www:/home/virtual/ftp/www
+      - ./cfg/d.bashrc:/root/.bashrc
+    ports:
+      - 127.0.0.1:21:21
+      - 127.0.0.1:30000-30010:30000-30010
+    environment:
+      PASV_MIN_PORT: 30000
+      PASV_MAX_PORT: 30010
+      VSFTPD_USER_1: "ftp:secret:82:82"
