@@ -44,6 +44,18 @@ services:
       - ./cfg/nginx/cert:/etc/nginx/cert
       - ./cfg/d.bashrc:/root/.bashrc
 
+  php:
+    hostname: php
+    container_name: php
+    image: m0bua/php:7.3-fpm-alpine
+    <<: *php
+
+  phpd:
+    hostname: phpd
+    container_name: phpd
+    image: m0bua/php-dev:7.3-fpm-alpine
+    <<: *php
+
   php8:
     hostname: php8
     container_name: php8
@@ -66,18 +78,6 @@ services:
     hostname: php7d
     container_name: php7d
     image: m0bua/php-dev:7-fpm-alpine
-    <<: *php
-
-  php73:
-    hostname: php73
-    container_name: php73
-    image: m0bua/php:7.3-fpm-alpine
-    <<: *php
-
-  php73d:
-    hostname: php73d
-    container_name: php73d
-    image: m0bua/php-dev:7.3-fpm-alpine
     <<: *php
 
   php5:

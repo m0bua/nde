@@ -1,4 +1,4 @@
-$default_container='php7'
+$default_container='php'
 
 $dir = Split-Path -parent $PSScriptRoot;
 
