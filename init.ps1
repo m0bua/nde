@@ -15,14 +15,18 @@ if([System.IO.Directory]::Exists(('{0}\cfg' -f $PSScriptRoot))){
 if($link -match '^yes|y$'){
   Get-ChildItem -Path "$PSScriptRoot\example\*" | Copy-Item -Destination $PSScriptRoot -Recurse -Container -Force
   (Get-Content $PSScriptRoot\cfg\dns.json).replace('"type": "CNAME"', '"type": "A"') | Set-Content $PSScriptRoot\cfg\dns.json
-  # $prj_path = Read-Host "Put your projects folder path"
-  # $prj_path = ($prj_path -replace "/", "\")
-  # if([System.IO.Directory]::Exists($prj_path)){
-  #   (Get-Content docker-compose.yml).replace('~/prj', $prj_path) | Set-Content docker-compose.yml
-  # } else {
-  #   if($prj_path){$echo = "$prj_path is not a folder. "}
-  #   echo "${echo}Will keep default (~/prj)"
-  # }
+}
+
+if([System.IO.File]::Exists(('{0}\cfg\nginx\cert\NdeRootCA.crt' -f $PSScriptRoot))){
+  $crt = Read-Host "Generate nginx certificates? [yN]"
+} else {$crt='y'}
+if($crt -match '^yes|y$'){
+  cd ('{0}\cfg\nginx\cert\' -f $PSScriptRoot)
+  bash cert.sh
+  $importCrt = Read-Host "Import nginx root certificate? [yN]"
+  if($importCrt -match '^yes|y$'){
+    Import-Certificate -FilePath ('{0}\cfg\nginx\cert\NdeRootCA.crt' -f $PSScriptRoot) -CertStoreLocation Cert:\CurrentUser\Root
+  }
 }
 
 if(!($args -eq 'script')){

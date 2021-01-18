@@ -2,11 +2,11 @@ version: '3.3'
 
 volumes:
   www:
-    # driver: local
-    # driver_opts:
-    #   type: none
-    #   device: ~/prj
-    #   o: bind
+#    driver: local
+#    driver_opts:
+#      type: none
+#      device: ~/prj
+#      o: bind
   db:
   # mysql:
 
