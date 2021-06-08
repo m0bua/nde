@@ -1,4 +1,4 @@
-echo 'NDE init!'
+Write-Output 'NDE init!'
 
 $topath = $PSScriptRoot;
 if([System.IO.Directory]::Exists("$topath\topath") -and [System.IO.File]::Exists("$topath\topath\d.ps1")){
@@ -7,7 +7,7 @@ if([System.IO.Directory]::Exists("$topath\topath") -and [System.IO.File]::Exists
   if (!($path -match ($topath -replace "\\", "\\")) ) {
     [Environment]::SetEnvironmentVariable("path", "$path;$topath", [System.EnvironmentVariableTarget]::User)
   }
-} else {echo 'Path error!'}
+} else {Write-Output 'Path error!'}
 
 if([System.IO.Directory]::Exists(('{0}\cfg' -f $PSScriptRoot))){
   $link = Read-Host "Rewrite configs? [yN]"

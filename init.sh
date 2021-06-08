@@ -6,6 +6,7 @@ echo 'NDE init!'
 topath="$nde_path/topath"
 if [[ -d "$topath" ]] && [[ -f "$topath/d.sh" ]];then
   if [[ $(id -u) != 0 ]]; then
+    chmod +x "$topath/d.sh"
     echo 'Need sudo for symlink!'
     sudo ln -fs "$topath/d.sh" /usr/local/bin/d
   else ln -fs "$topath/d.sh" /usr/local/bin/d; fi

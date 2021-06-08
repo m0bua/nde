@@ -5,9 +5,15 @@ run () {
   $command $params $extra_params
   if [[ $exit == 'true' ]]; then exit; fi
 }
-cd $(dirname $(dirname $(realpath ${BASH_SOURCE[0]})))
+path=$(dirname $(dirname $(realpath ${BASH_SOURCE[0]})));
+config=${path}/docker-compose.yml
 
-command="docker-compose"
+export USER_NAME=$(id -un)
+export GROUP_NAME=$(id -gn)
+export USER_ID=$(id -u)
+export GROUP_ID=$(id -g)
+
+command="docker-compose -f ${config}"
 params="$*"
 extra_params=""
 exit=true
