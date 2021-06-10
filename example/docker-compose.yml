@@ -1,12 +1,6 @@
 version: '3.3'
 
 volumes:
-  www:
-#    driver: local
-#    driver_opts:
-#      type: none
-#      device: ~/prj
-#      o: bind
   db:
   # mysql:
 
@@ -18,7 +12,7 @@ x-args: &args
 
 x-php: &php
     volumes:
-      - www:/var/www
+      - ~/prj:/var/www
       - ./cfg/d.bashrc:/root/.bashrc:ro
       - ./cfg/d.bashrc:/home/${USER_NAME:-user}/.bashrc:ro
       - ~/.ssh:/home/${USER_NAME:-user}/.ssh:ro
@@ -29,7 +23,7 @@ x-php: &php
       XDEBUG_CONFIG: "remote_port=9001"
 
 x-db: &db
-    command: 
+    command:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
       - --default-authentication-plugin=mysql_native_password
@@ -53,7 +47,7 @@ services:
       - 127.0.0.1:80:80
       - 127.0.0.1:443:443
     volumes:
-      - www:/var/www
+      - ~/prj:/var/www
       - ./cfg/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./cfg/nginx/cert:/etc/nginx/cert:ro
       - ./cfg/d.bashrc:/root/.bashrc:ro
@@ -64,7 +58,7 @@ services:
     build: 
       context: ./cfg/php
       args: 
-        IMAGE: php:7.3-fpm-alpine
+        IMAGE: php:7-fpm-alpine
         <<: *args
     <<: *php
 
@@ -74,65 +68,7 @@ services:
     build:
       context: ./cfg/php
       args:
-        IMAGE: php-dev:7.3-fpm-alpine
-        <<: *args
-    <<: *php
-
-  php8:
-    hostname: php8
-    container_name: php8
-    build:
-      context: ./cfg/php
-      args:
-        IMAGE: php:8-fpm-alpine
-        <<: *args
-    <<: *php
-
-  php8d:
-    hostname: php8d
-    container_name: php8d
-    build:
-      context: ./cfg/php
-      args:
-        IMAGE: php-dev:8-fpm-alpin
-    <<: *php
-
-  php7:
-    hostname: php7
-    container_name: php7
-    build:
-      context: ./cfg/php
-      args:
-        IMAGE: php:7-fpm-alpine
-        <<: *args
-    <<: *php
-
-  php7d:
-    hostname: php7d
-    container_name: php7d
-    build:
-      context: ./cfg/php
-      args:
-        IMAGE: php-dev:7-fpm-alpin
-    <<: *php
-
-  php5:
-    hostname: php5
-    container_name: php5
-    build:
-      context: ./cfg/php
-      args:
-        IMAGE: php:5-fpm-alpine
-        <<: *args
-    <<: *php
-
-  php5d:
-    hostname: php5d
-    container_name: php5d
-    build:
-      context: ./cfg/php
-      args:
-        IMAGE: php-dev:5-fpm-alpine
+        IMAGE: php-dev:7-fpm-alpine
         <<: *args
     <<: *php
 
@@ -180,16 +116,3 @@ services:
       - /etc/resolv.conf:/etc/resolv.conf
       - ./cfg/dns.json:/app/conf/config.json
       - ./cfg/d.bashrc:/root/.bashrc:ro
-
-  # ftp:
-  #   hostname: ftp
-  #   container_name: ftp
-  #   image: wildscamp/vsftpd
-  #   volumes:
-  #     - www:/home/virtual/ftp/www
-  #     - ./cfg/d.bashrc:/root/.bashrc
-  #   ports:
-  #     - 127.0.0.1:21:21
-  #     - 127.0.0.1:30000-30010:30000-30010
-  #   environment:
-  #     PASV_MIN_PORT: 30000

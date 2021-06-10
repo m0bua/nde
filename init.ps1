@@ -1,32 +1,55 @@
 Write-Output 'NDE init!'
 
-$topath = $PSScriptRoot;
-if([System.IO.Directory]::Exists("$topath\topath") -and [System.IO.File]::Exists("$topath\topath\d.ps1")){
-  $topath += '\topath'
+$basePath = $PSScriptRoot
+$topath = '{0}\topath' -f $basePath;
+$exec = '{0}\d.ps1' -f $topath;
+if ([System.IO.Directory]::Exists($topath) -and [System.IO.File]::Exists($exec)) {
   $path = [Environment]::GetEnvironmentVariable("path", [System.EnvironmentVariableTarget]::User)
   if (!($path -match ($topath -replace "\\", "\\")) ) {
     [Environment]::SetEnvironmentVariable("path", "$path;$topath", [System.EnvironmentVariableTarget]::User)
   }
-} else {Write-Output 'Path error!'}
+}
+else { Write-Output 'Path error!' }
 
-if([System.IO.Directory]::Exists(('{0}\cfg' -f $PSScriptRoot))){
-  $link = Read-Host "Rewrite configs? [yN]"
-} else {$link = 'y'}
-if($link -match '^yes|y$'){
-  Get-ChildItem -Path "$PSScriptRoot\example\*" | Copy-Item -Destination $PSScriptRoot -Recurse -Container -Force
-  (Get-Content $PSScriptRoot\cfg\dns.json).replace('"type": "CNAME"', '"type": "A"') | Set-Content $PSScriptRoot\cfg\dns.json
+$user = (wsl whoami) -replace '[^\w\d_]', ''
+$internalPath = '/home/{0}/nde' -f $user
+$distro = (wsl -l) -replace '[^A-Za-z() ]', ''
+$distro = $distro | Select-String '(Default)' -CaseSensitive -SimpleMatch
+$distro = $distro -replace '\W+\(.*', '' 
+$distro = $distro -replace '\W', '' 
+$externalPath = '\\wsl$\{0}{1}' -f $distro, $internalPath
+$externalPath = $externalPath -replace ' / ', '\'
+
+$copy = 'y'
+if ([System.IO.Directory]::Exists($externalPath)) {
+  $copy = Read-Host "Replace distro? [yN]"
+  if ($copy -match '^yes|y$') {
+    Remove-Item $externalPath -Recurse -Force
+  }
 }
 
-if([System.IO.File]::Exists(('{0}\cfg\nginx\cert\NdeRootCA.crt' -f $PSScriptRoot))){
-  $crt = Read-Host "Generate nginx certificates? [yN]"
-} else {$crt='y'}
-if($crt -match '^yes|y$'){
-  cd ('{0}\cfg\nginx\cert\' -f $PSScriptRoot)
-  bash cert.sh
-  $importCrt = Read-Host "Import nginx root certificate? [yN]"
-  if($importCrt -match '^yes|y$'){
-    Import-Certificate -FilePath ('{0}\cfg\nginx\cert\NdeRootCA.crt' -f $PSScriptRoot) -CertStoreLocation Cert:\CurrentUser\Root
+if ($copy -match '^yes|y$') {
+  Copy-Item $basePath -Destination $externalPath -Recurse
+  wsl chmod +x "$internalPath/topath/d.sh"
+  wsl chmod +x "$internalPath/init.sh"
+}
+
+$init_path = '{0}/init.sh' -f $internalPath
+wsl $init_path ps1
+
+$importCrt = Read-Host "Import nginx root certificate? [yN]"
+if ($importCrt -match '^yes|y$') {
+  $path = '{0}\cfg\nginx\cert\NdeRootCA.crt' -f $externalPath
+
+  $delCrt = Read-Host "Delete old root certificates? [Yn]"
+  if (!($delCrt -match '^no|n$')) {
+    Get-ChildItem Cert:\CurrentUser\Root |
+    Where-Object { $_.Subject -match 'NDE-Root-CA' } |
+    Remove-Item
   }
+
+  Write-Output "Importing $path"
+  Import-Certificate -FilePath $path -CertStoreLocation Cert:\CurrentUser\Root
 }
 
 if(!($args -eq 'script')){
