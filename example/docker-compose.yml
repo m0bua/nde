@@ -19,8 +19,6 @@ x-php: &php
       - ./cfg/php/php.ini:/usr/local/etc/php/php.ini:ro
       - ./cfg/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini:ro
       # - ./cfg/ImageMagick-policy.xml:/etc/ImageMagick-6/policy.xml:ro #debian based conainer only
-    environment:
-      XDEBUG_CONFIG: "remote_port=9001"
 
 x-db: &db
     command:
@@ -58,17 +56,27 @@ services:
     build: 
       context: ./cfg/php
       args: 
+        IMAGE: php:7-fpm-alpine-dev
+        <<: *args
+    <<: *php
+
+  php7:
+    hostname: php7
+    container_name: php7
+    build:
+      context: ./cfg/php
+      args:
         IMAGE: php:7-fpm-alpine
         <<: *args
     <<: *php
 
-  phpd:
-    hostname: phpd
-    container_name: phpd
+  php8:
+    hostname: php8
+    container_name: php8
     build:
       context: ./cfg/php
       args:
-        IMAGE: php:7-fpm-alpine-dev
+        IMAGE: php:8-fpm-alpine
         <<: *args
     <<: *php
 
