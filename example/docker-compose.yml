@@ -68,7 +68,7 @@ services:
     build:
       context: ./cfg/php
       args:
-        IMAGE: php-dev:7-fpm-alpine
+        IMAGE: php:7-fpm-alpine-dev
         <<: *args
     <<: *php
 
