@@ -19,6 +19,9 @@ x-php: &php
       - ./cfg/php/php.ini:/usr/local/etc/php/php.ini:ro
       - ./cfg/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini:ro
       # - ./cfg/ImageMagick-policy.xml:/etc/ImageMagick-6/policy.xml:ro #debian based conainer only
+    dns:
+      - 45.90.30.0
+      - 45.90.28.0
 
 x-db: &db
     command:
