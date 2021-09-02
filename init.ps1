@@ -52,6 +52,21 @@ if ($importCrt -match '^yes|y$') {
   Import-Certificate -FilePath $path -CertStoreLocation Cert:\CurrentUser\Root
 }
 
+if (!($rule = (Get-NetFirewallRule -DisplayName "dWSL" 2> $null)) -or ($rule.Enabled -eq $false)) {
+  $fwr = Read-Host "Create FireWall rule for WSL Xdebug? [Yn]"
+  if (!($fwr -match '^no|n$')) {
+    function sudo(){
+      param([String] $code)
+      $code = "function Run{$code};Run $args"
+      $encoded = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($code))
+      Start-Process PowerShell -WindowStyle Hidden -Verb RunAs -Argumentlist '-noexit -encodedCommand',$encoded
+    }
+    sudo { 
+      New-NetFirewallRule -DisplayName "dWSL" -Direction inbound -InterfaceAlias "vEthernet (WSL)" -Action Allow
+    }
+  }
+}
+
 if(!($args -eq 'script')){
   Write-Host -NoNewLine 'Ready!'
   $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
