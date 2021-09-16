@@ -26,7 +26,7 @@ if [[ $params == '-init' ]]; then ./init.sh script; exit; fi
 
 if [[ $1 == -purge ]]; then
   echo " Stopping NDE:"
-  params="down"; exit='false'; run
+  params='down'; exit='false'; run
   command='docker'
   echo " Killing all running containers:"
   extra_params=$(docker ps -q)
@@ -48,7 +48,7 @@ fi
 
 if [[ $1 == -delete ]]; then
   echo " Stopping NDE:"
-  params="down"; exit='false'; run
+  params='down'; exit='false'; run
   command='docker'
   echo " Killing all running containers:"
   extra_params=$(docker ps -q)
@@ -65,7 +65,7 @@ fi
 
 if [[ $1 == -kill ]]; then
   echo " Stopping NDE:"
-  params="down"; exit='false'; run
+  params='down'; exit='false'; run
   if [[ $(docker ps -q) =~ [\w\d]+ ]]; then
     command='docker';$params="kill $(docker ps -q)"
   else echo "   No containers to kill"; exit
@@ -89,5 +89,18 @@ if [[ $params =~ halt ]]
 if [[ $params =~ ^up.*-a ]]; then params=$(echo $params | sed 's/ -a//')
 elif [[ $params =~ ^up ]] && [[ ! $params =~ -d ]]
   then extra_params='-d'; fi
+
+if [[ $params =~ ^up ]] && [[ $params =~ -o ]]; then
+  params=$(echo $params | sed 's/ -o//')
+  tmp_params=$params; tmp_command=$command; tmp_extra_params=$extra_params
+  extra_params=''
+  ps=$(docker ps -q); if [[ $ps =~ [\w\d]+ ]]; then
+    command='docker';params="stop $ps"; exit='false'; run
+  fi
+  ps=$(docker ps -q); if [[ $ps =~ [\w\d]+ ]]; then
+    command='docker';params="kill $ps"; run
+  fi
+  params=$tmp_params; command=$tmp_command; extra_params=$tmp_extra_params
+fi
 
 run
