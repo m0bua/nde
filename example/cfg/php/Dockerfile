@@ -1,17 +1,17 @@
 ARG IMAGE
 FROM m0bua/${IMAGE}
 
-ARG UserName=user
-ARG GroupName=group
-ARG UserID=1000
-ARG GroupID=${UserID}
+ARG UserName=${USER_NAME}
+ARG UserID=${USER_ID}
+ARG GroupName=${GROUP_NAME}
+ARG GroupID=${GROUP_ID}
 
 RUN DISTRO="$(cat /etc/os-release | grep -E ^ID= | cut -d = -f 2)"; \
-  if [ "${DISTRO}" = "ubuntu" ]; then \
+  if [ "${DISTRO}" = "debian" ] || [ "${DISTRO}" = "ubuntu" ]; then \
     DEBIAN_FRONTEND=noninteractive apt-get update -q -y; \
     DEBIAN_FRONTEND=noninteractive apt-get upgrade -q -y; \
-    DEBIAN_FRONTEND=noninteractive apt-get install -qq -y sudo; \
-    groupadd -g ${GroupID} -o ${UserName}; \
+    DEBIAN_FRONTEND=noninteractive apt-get install -qq -y sudo bash; \
+    groupadd -g ${GroupID} -o ${GroupName}; \
     useradd -m -u ${UserID} -g ${GroupID} -o -s /bin/bash ${UserName}; \
   fi; \
   if [ "${DISTRO}" = "alpine" ]; then \
