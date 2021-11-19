@@ -1,10 +1,10 @@
 ARG IMAGE
 FROM m0bua/${IMAGE}
 
-ARG UserName=${USER_NAME}
-ARG UserID=${USER_ID}
-ARG GroupName=${GROUP_NAME}
-ARG GroupID=${GROUP_ID}
+ARG UserName=${UserName}
+ARG GroupName=${UserID}
+ARG UserID=${GroupName}
+ARG GroupID=${GroupID}
 
 RUN DISTRO="$(cat /etc/os-release | grep -E ^ID= | cut -d = -f 2)"; \
   if [ "${DISTRO}" = "debian" ] || [ "${DISTRO}" = "ubuntu" ]; then \

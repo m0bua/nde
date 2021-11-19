@@ -6,11 +6,11 @@ volumes:
 
 x-args: &args
   UserName: ${USER_NAME:-user}
-  GroupName: ${GROUP_NAME:-group}
   UserID: ${USER_ID:-1000}
+  GroupName: ${GROUP_NAME:-group}
   GroupID: ${GROUP_ID:-1000}
 
-x-php: &php
+x-exec: &exec
     volumes:
       - ~/prj:/var/www
       - ./cfg/d.bashrc:/root/.bashrc:ro
@@ -58,32 +58,32 @@ services:
   php:
     hostname: php
     container_name: php
-    build: 
+    build:
       context: ./cfg/php
-      args: 
+      args:
         IMAGE: php:7-fpm-alpine-dev
         <<: *args
-    <<: *php
+    <<: *exec
 
-  php7:
-    hostname: php7
-    container_name: php7
-    build:
-      context: ./cfg/php
-      args:
-        IMAGE: php:7-fpm-alpine
-        <<: *args
-    <<: *php
+  # php7:
+  #   hostname: php7
+  #   container_name: php7
+  #   build:
+  #     context: ./cfg/php
+  #     args:
+  #       IMAGE: php:7-fpm-alpine
+  #       <<: *args
+  #   <<: *exec
 
-  php8:
-    hostname: php8
-    container_name: php8
-    build:
-      context: ./cfg/php
-      args:
-        IMAGE: php:8-fpm-alpine
-        <<: *args
-    <<: *php
+  # php8:
+  #   hostname: php8
+  #   container_name: php8
+  #   build:
+  #     context: ./cfg/php
+  #     args:
+  #       IMAGE: php:8-fpm-alpine
+  #       <<: *args
+  #   <<: *exec
 
   db:
     hostname: db
@@ -129,3 +129,12 @@ services:
       - /etc/resolv.conf:/etc/resolv.conf
       - ./cfg/dns.json:/app/conf/config.json
       - ./cfg/d.bashrc:/root/.bashrc:ro
+
+  # gulp:
+  #   hostname: gulp
+  #   container_name: gulp
+  #   build:
+  #     context: ./cfg/gulp
+  #     args:
+  #       <<: *args
+  #   <<: *exec
