@@ -23,4 +23,4 @@ RUN DISTRO="$(cat /etc/os-release | grep -E ^ID= | cut -d = -f 2)"; \
   sed -i 's/\/bin\/ash/\/bin\/bash/' /etc/passwd; \
   echo "${UserName} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
-USER ${UserName}
+USER ${GroupID}
