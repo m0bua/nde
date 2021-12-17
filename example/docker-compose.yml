@@ -130,11 +130,11 @@ services:
       - ./cfg/dns.json:/app/conf/config.json
       - ./cfg/d.bashrc:/root/.bashrc:ro
 
-  # gulp:
-  #   hostname: gulp
-  #   container_name: gulp
-  #   build:
-  #     context: ./cfg/gulp
-  #     args:
-  #       <<: *args
-  #   <<: *exec
+  gulp:
+    hostname: gulp
+    container_name: gulp
+    build:
+      context: ./cfg/gulp
+      args:
+        <<: *args
+    <<: *exec
