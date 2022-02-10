@@ -25,18 +25,3 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
-
-if [ -d ~/.bashrc.d ]; then for file in ~/.bashrc.d/*.bashrc; do
-    if [ -f $file ]; then source $file; fi
-done; fi
-
-ssh-add -l &>/dev/null
-if [ "$?" == 2 ]; then
-  test -r ~/.ssh-agent-env && \
-    eval "$(<~/.ssh-agent-env)" >/dev/null
-  ssh-add -l &>/dev/null
-  if [ "$?" == 2 ]; then
-    (umask 066; ssh-agent > ~/.ssh-agent-env)
-    eval "$(<~/.ssh-agent-env)" >/dev/null
-  fi
-fi

@@ -16,6 +16,7 @@ x-exec: &exec
       - ./cfg/d.bashrc:/root/.bashrc:ro
       - ./cfg/d.bashrc:/home/${USER_NAME:-user}/.bashrc:ro
       - ~/.ssh:/home/${USER_NAME:-user}/.ssh:ro
+      - $SSH_AUTH_SOCK:/run/ssh-auth.sock
       - ./cfg/php/php.ini:/usr/local/etc/php/php.ini:ro
       - ./cfg/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini:ro
       # - ./cfg/ImageMagick-policy.xml:/etc/ImageMagick-6/policy.xml:ro #debian based conainer only
@@ -24,6 +25,8 @@ x-exec: &exec
       - 45.90.28.0
     extra_hosts:
       - xdebug.docker.internal:${XDEBUG_ADDRESS:-host-gateway}
+    environment:
+      SSH_AUTH_SOCK: /run/ssh-auth.sock
 
 x-db: &db
     command:
