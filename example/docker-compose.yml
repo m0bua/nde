@@ -1,8 +1,8 @@
-version: '3.3'
+version: '3.7'
 
 volumes:
   db:
-  # mysql:
+  # maria:
 
 x-args: &args
   UserName: ${USER_NAME:-user}
@@ -91,7 +91,7 @@ services:
   db:
     hostname: db
     container_name: db
-    image: mariadb
+    image: mysql #mysql:8, mysql:5
     ports:
       - 127.0.0.1:3306:3306
     volumes:
@@ -99,14 +99,14 @@ services:
       - ./cfg/d.bashrc:/root/.bashrc:ro
     <<: *db
 
-  # mysql:
-  #   hostname: mysql
-  #   container_name: mysql
-  #   image: mysql #mysql:8, mysql:5
+  # mariadb:
+  #   hostname: mariadb
+  #   container_name: mariadb
+  #   image: mariadb
   #   ports:
   #     - 127.0.0.1:3305:3306
   #   volumes:
-  #     - mysql:/var/lib/mysql
+  #     - mariadb:/var/lib/mysql
   #     - ./cfg/d.bashrc:/root/.bashrc
   #   <<: *db
 
