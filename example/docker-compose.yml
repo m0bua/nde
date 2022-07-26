@@ -68,23 +68,13 @@ services:
         <<: *args
     <<: *exec
 
-  # php7:
-  #   hostname: php7
-  #   container_name: php7
-  #   build:
-  #     context: ./cfg/php
-  #     args:
-  #       IMAGE: php:7-fpm-alpine
-  #       <<: *args
-  #   <<: *exec
-
   # php8:
   #   hostname: php8
   #   container_name: php8
   #   build:
   #     context: ./cfg/php
   #     args:
-  #       IMAGE: php:8-fpm-alpine
+  #       IMAGE: php:8-fpm-alpine-dev
   #       <<: *args
   #   <<: *exec
 
