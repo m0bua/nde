@@ -73,14 +73,13 @@ fi; fi
 
 if [[ ! -z $1 ]]; then default_container=$1; fi
 params=$(docker ps --format {{.Names}} -f label=com.docker.compose.project=nde 2> /dev/null \
-  | grep -E "^.*$default_container" | sort | head -n 1)
+  | grep -E "$default_container" | sort | head -n 1)
 
 if [[ ! -z $params ]]; then
   command="docker exec -it"
   extra_params="bash"
   if [[ $2 =~ [^\s]+ ]]; then extra_params=$2; fi
-elif [[ -z "$(docker ps --format {{.Names}} -f label=com.docker.compose.project=nde 2> /dev/null)" ]] \
-  && [[ -z $1 ]];then params="up"; extra_params="-d"
+elif [[ -z $params ]] && [[ -z $1 ]];then params="up"; extra_params="-d"
 else params="$*"; fi
 
 if [[ $1 == df ]]; then docker system df; exit; fi
