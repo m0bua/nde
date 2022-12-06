@@ -15,7 +15,8 @@ RUN packages="curl openssh git zip unzip zlib zlib-dev bash sudo"; \
     adduser -u ${UserID} -G ${GroupName} -s /bin/bash -S ${UserName} ; \
     sed -i 's/\/bin\/sh/\/bin\/bash/' /etc/passwd; \
     sed -i 's/\/bin\/ash/\/bin\/bash/' /etc/passwd; \
-    echo "${UserName} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+    echo "${UserName} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers; \
+    npm install -g npm
 
 USER ${GroupID}
 
