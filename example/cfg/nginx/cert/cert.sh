@@ -23,7 +23,7 @@ i=0
 for d in 'v' 'a' 'd' 'm' 'g' 'adminer' 'db' 'mail' 'dns' 'gulp'; do
   (( i++ )); echo "DNS.${i} = ${d}.d" >> domains.txt
 done
-for v in '' '5' '7' '8' '56' '70' '71' '72' '73' '74' '80' '81'; do for d in '' 'd'; do
+for v in '' '5' '7' '8' '56' '70' '71' '72' '73' '74' '80' '81' '82' '83'; do for d in '' 'd'; do
   (( i++ )); echo "DNS.${i} = *.php${v}${d}.d" >> domains.txt
 done; done
 

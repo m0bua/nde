@@ -62,19 +62,19 @@ services:
     build:
       context: ./cfg/php
       args:
-        IMAGE: php:7-fpm-alpine-dev
+        IMAGE: php:8-fpm-alpine-dev
         <<: *args
     <<: *exec
 
-  # php8:
-  #   hostname: php8
-  #   container_name: php8
-  #   build:
-  #     context: ./cfg/php
-  #     args:
-  #       IMAGE: php:8-fpm-alpine-dev
-  #       <<: *args
-  #   <<: *exec
+  php7:
+    hostname: php7
+    container_name: php7
+    build:
+      context: ./cfg/php
+      args:
+        IMAGE: php:7-fpm-alpine-dev
+        <<: *args
+    <<: *exec
 
   db:
     hostname: db
@@ -106,7 +106,7 @@ services:
       - 127.0.0.1:53:53/udp
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /etc/resolv.conf:/etc/resolv.conf
+      # - /etc/resolv.conf:/etc/resolv.conf
       - ./cfg/dns.json:/app/conf/config.json
       - ./cfg/d.bashrc:/root/.bashrc:ro
 
