@@ -15,7 +15,11 @@ RUN DISTRO="$(cat /etc/os-release | grep -E ^ID= | cut -d = -f 2)"; \
     useradd -m -u ${UserID} -g ${GroupID} -o -s /bin/bash ${UserName}; \
   fi; \
   if [ "${DISTRO}" = "alpine" ]; then \
-    apk update; apk upgrade; apk add sudo; rm /var/cache/apk/*; \
+    packages="curl openssh git zip unzip zlib zlib-dev bash sudo npm"; \
+    packages="${packages} automake make alpine-sdk nasm autoconf build-base shadow gcc musl-dev libtool pkgconf"; \
+    packages="${packages} file tiff jpeg libpng libpng-dev libwebp libwebp-dev libjpeg-turbo libjpeg-turbo-dev"; \
+    apk update --no-cache; apk upgrade --no-cache; apk add --no-cache ${packages}; rm /var/cache/apk/*; \
+    yarn install; npm install --global gulp gulp-cli; deluser --remove-home node; \
     addgroup -g ${GroupID} -S ${GroupName}; \
     adduser -u ${UserID} -G ${GroupName} -s /bin/bash -S ${UserName} ; \
   fi; \
