@@ -27,10 +27,11 @@ x-exec: &exec
 
 x-db: &db
     command:
+      - --default-authentication-plugin=mysql_native_password
+      # - --mysql-native-password
+      - --sql_mode=ONLY_FULL_GROUP_BY
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
-      - --default-authentication-plugin=mysql_native_password
-      - --sql_mode=ONLY_FULL_GROUP_BY
     environment:
       MYSQL_USER: ${MYSQL_USER:-user}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD:-secret}
@@ -68,7 +69,7 @@ services:
   db:
     hostname: db
     container_name: db
-    image: mysql #mysql:8, mysql:5
+    image: mariadb #mysql:8, mysql:5
     ports:
       - 127.0.0.1:3306:3306
     volumes:
