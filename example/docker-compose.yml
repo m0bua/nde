@@ -1,5 +1,6 @@
 volumes:
   db:
+  redis:
 
 x-args: &args
   UserName: ${USER_NAME:-user}
@@ -36,6 +37,8 @@ x-db: &db
       MYSQL_USER: ${MYSQL_USER:-user}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD:-secret}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-secret}
+    volumes:
+      - ./cfg/d.bashrc:/root/.bashrc:ro
 
 services:
 
@@ -62,7 +65,7 @@ services:
     build:
       context: ./cfg/php
       args:
-        IMAGE: php:8-fpm-alpine-dev
+        IMAGE: php:fpm-alpine-dev
         <<: *args
     <<: *exec
 
@@ -77,6 +80,25 @@ services:
       - ./cfg/d.bashrc:/root/.bashrc:ro
     <<: *db
 
+  redis:
+    hostname: redis
+    container_name: redis
+    image: redis
+    volumes:
+      - redis:/data
+      - ./cfg/d.bashrc:/root/.bashrc:ro
+
+  dns:
+    hostname: dns
+    container_name: dns
+    image: defreitas/dns-proxy-server
+    ports:
+      - 127.0.0.1:53:53/udp
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./cfg/dns.json:/app/conf/config.json
+      - ./cfg/d.bashrc:/root/.bashrc:ro
+
   adminer:
     hostname: adminer
     container_name: adminer
@@ -86,16 +108,3 @@ services:
     hostname: mail
     container_name: mail
     image: mailhog/mailhog
-
-  dns:
-    hostname: dns
-    container_name: dns
-    image: defreitas/dns-proxy-server
-    ports:
-      # - 127.0.0.1:8053:5380
-      - 127.0.0.1:53:53/udp
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      # - /etc/resolv.conf:/etc/resolv.conf
-      - ./cfg/dns.json:/app/conf/config.json
-      - ./cfg/d.bashrc:/root/.bashrc:ro
