@@ -10,11 +10,11 @@ x-args: &args
 
 x-exec: &exec
     volumes:
+      - $SSH_AUTH_SOCK:/run/ssh-auth.sock
+      - ~/.ssh:/home/${USER_NAME:-user}/.ssh:ro
       - ~/prj:/var/www
       - ./cfg/d.bashrc:/root/.bashrc:ro
       - ./cfg/d.bashrc:/home/${USER_NAME:-user}/.bashrc:ro
-      - ~/.ssh:/home/${USER_NAME:-user}/.ssh:ro
-      - $SSH_AUTH_SOCK:/run/ssh-auth.sock
       - ./cfg/php/php.ini:/usr/local/etc/php/php.ini:ro
       - ./cfg/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini:ro
     dns:
@@ -27,18 +27,10 @@ x-exec: &exec
       SSH_AUTH_SOCK: /run/ssh-auth.sock
 
 x-db: &db
-    command:
-      - --default-authentication-plugin=mysql_native_password
-      # - --mysql-native-password
-      - --sql_mode=ONLY_FULL_GROUP_BY
-      - --character-set-server=utf8mb4
-      - --collation-server=utf8mb4_unicode_ci
     environment:
       MYSQL_USER: ${MYSQL_USER:-user}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD:-secret}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-secret}
-    volumes:
-      - ./cfg/d.bashrc:/root/.bashrc:ro
 
 services:
 
@@ -72,12 +64,18 @@ services:
   db:
     hostname: db
     container_name: db
-    image: mariadb #mysql:8, mysql:5
+    image: mariadb #mysql:8, mysql:5, mariadb
     ports:
       - 127.0.0.1:3306:3306
     volumes:
       - db:/var/lib/mysql
       - ./cfg/d.bashrc:/root/.bashrc:ro
+    command:
+      # - --mysql-native-password
+      - --default-authentication-plugin=mysql_native_password
+      - --collation-server=utf8mb4_unicode_ci
+      - --character-set-server=utf8mb4
+      - --sql_mode=ONLY_FULL_GROUP_BY
     <<: *db
 
   redis:
@@ -103,6 +101,15 @@ services:
     hostname: adminer
     container_name: adminer
     image: adminer
+    command: [
+      "php",
+      "-S", "0.0.0.0:8080",
+      "-t", "/var/www/html",
+      "-d", "memory_limit=1G",
+      "-d", "post_max_size=1G",
+      "-d", "upload_max_filesize=1G",
+      "-d", "max_execution_time=180",
+    ]
 
   mail:
     hostname: mail
