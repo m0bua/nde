@@ -19,16 +19,19 @@ echo 'basicConstraints=CA:FALSE' >> domains.txt
 echo 'keyUsage = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment' >> domains.txt
 echo 'subjectAltName = @alt_names' >> domains.txt
 echo '[alt_names]' >> domains.txt
-i=0
-for d in 'v' 'a' 'd' 'm' 'g' 'adminer' 'db' 'mail' 'dns' 'gulp'; do
-  (( i++ )); echo "DNS.${i} = ${d}.d" >> domains.txt
+count=0
+for suffix in 'd' 'local' 'l' ; do
+  for service in 'adminer' 'db' 'mail' 'dns' 'a' 'd' 'm' 'v' ; do
+      (( count++ )); echo "DNS.${count} = ${service}.${suffix}" >> domains.txt
+  done
+  for isdev in '' '-xdebug' '-xdeb' '-x' '-dev' '-d' 'xdebug' 'xdeb' 'x' 'dev' 'd'; do
+    for version in '' '-prod' '-p' 'prod' 'p' '8' '83' '82' '81' '80' '7' '74' '73' '72' '71' '70' '5' '56'; do
+      for exe in 'p' 'php'; do
+          (( count++ )); echo "DNS.${count} = *.${exe}${version}${isdev}.${suffix}" >> domains.txt
+      done
+    done
+  done
 done
-for v in '' 'p' '5' '7' '8'; do for d in '' 'd'; do
-  (( i++ )); echo "DNS.${i} = *.p${v}${d}.d" >> domains.txt
-done; done
-for v in '' 'p' '5' '7' '8' '56' '70' '71' '72' '73' '74' '80' '81' '82' '83'; do for d in '' 'd'; do
-  (( i++ )); echo "DNS.${i} = *.php${v}${d}.d" >> domains.txt
-done; done
 
 openssl req -new -nodes -newkey rsa:2048 -keyout nginx-selfsigned.key -out nginx-selfsigned.crt \
   -subj "/C=UA/ST=Ukraine/L=Kyiv/O=NDE-Certificates/CN=NDE-Selfsigned"
