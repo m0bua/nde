@@ -15,8 +15,8 @@ $user = (wsl whoami) -replace '[^\w\d_]', ''
 $internalPath = '/home/{0}/nde' -f $user
 $distro = (wsl -l) -replace '[^A-Za-z() ]', ''
 $distro = $distro | Select-String '(Default)' -CaseSensitive -SimpleMatch
-$distro = $distro -replace '\W+\(.*', '' 
-$distro = $distro -replace '\W', '' 
+$distro = $distro -replace '\W+\(.*', ''
+$distro = $distro -replace '\W', ''
 $externalPath = '\\wsl$\{0}{1}' -f $distro, $internalPath
 $externalPath = $externalPath -replace ' / ', '\'
 
@@ -37,8 +37,8 @@ if ($copy -match '^yes|y$') {
 $init_path = '{0}/init.sh' -f $internalPath
 wsl $init_path ps1
 
-$importCrt = Read-Host "Import nginx root certificate? [yN]"
-if ($importCrt -match '^yes|y$') {
+$importCrt = Read-Host "Import nginx root certificate? [Yn]"
+if (!($importCrt -match '^no|n$')) {
   $path = '{0}\cfg\nginx\cert\NdeRootCA.crt' -f $externalPath
 
   $delCrt = Read-Host "Delete old root certificates? [Yn]"
@@ -61,7 +61,7 @@ if (!($rule = (Get-NetFirewallRule -DisplayName "dWSL" 2> $null)) -or ($rule.Ena
       $encoded = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($code))
       Start-Process PowerShell -WindowStyle Hidden -Verb RunAs -Argumentlist '-noexit -encodedCommand',$encoded
     }
-    sudo { 
+    sudo {
       New-NetFirewallRule -DisplayName "dWSL" -Direction inbound -InterfaceAlias "vEthernet (WSL)" -Action Allow
     }
   }
