@@ -32,6 +32,12 @@ x-db: &db
       MYSQL_PASSWORD: ${MYSQL_PASSWORD:-secret}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-secret}
 
+x-adminer: &adminer
+    environment:
+      ADMINER_DEFAULT_SERVER: ${ADMINER_DEFAULT_SERVER:-db}
+      ADMINER_DEFAULT_USER: ${ADMINER_DEFAULT_USER:-root}
+      ADMINER_DEFAULT_PASSWORD: ${ADMINER_DEFAULT_PASSWORD:-secret}
+
 services:
 
   nginx:
@@ -74,14 +80,6 @@ services:
       - --sql_mode=ONLY_FULL_GROUP_BY
     <<: *db
 
-  redis:
-    hostname: redis
-    container_name: redis
-    image: redis
-    volumes:
-      - redis:/data
-      - ./cfg/d.bashrc:/root/.bashrc:ro
-
   adminer:
     hostname: adminer
     container_name: adminer
@@ -95,6 +93,19 @@ services:
       "-d", "upload_max_filesize=5G",
       "-d", "max_execution_time=180",
     ]
+    volumes:
+      - ./cfg/adminer.css:/var/www/html/adminer.css
+      - ./cfg/adminer.php:/var/www/html/index.php
+      - ./cfg/d.bashrc:/home/adminer/.bashrc:ro
+    <<: *adminer
+
+  redis:
+    hostname: redis
+    container_name: redis
+    image: redis
+    volumes:
+      - redis:/data
+      - ./cfg/d.bashrc:/root/.bashrc:ro
 
   mail:
     hostname: mail

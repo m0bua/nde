@@ -1,0 +1,116 @@
+html {
+  background-color: #111;
+}
+
+body,
+h1,
+h2,
+code,
+th,
+thead td,
+thead th,
+tbody tr:hover td,
+tbody tr:hover th,
+#breadcrumb,
+#logins a,
+#tables a,
+#tables span,
+.footer>div,
+.odd td {
+  background-color: transparent;
+}
+
+pre,
+input,
+select,
+textarea,
+tr:hover,
+.message,
+.error,
+.icon,
+.js .checkable .checked td,
+.js .checkable .checked th {
+  background-color: #333;
+}
+
+html,
+body,
+td,
+th,
+label,
+legend,
+#breadcrumb {
+  color: #aaa;
+}
+
+h2,
+pre,
+input,
+select,
+textarea,
+.jush-sql_code,
+.footer>div {
+  color: #fff;
+}
+
+.jush {
+  color: #ca7;
+}
+
+.jush-js_key,
+.jush-js_key .jush-quo,
+.jush-js_key .jush-apo {
+  color: lightpink;
+}
+
+input[disabled] {
+  font-style: italic;
+  color: #777;
+}
+
+.jush a,
+a {
+  color: #570;
+}
+
+a:visited {
+  color: #790;
+}
+
+#menu {
+  padding: 0;
+  border-right: 1px dotted #777;
+}
+
+h1,
+#menu p,
+#logins,
+#tables {
+  border-top: 1px dotted #777;
+  border-bottom: 1px dotted #777;
+}
+
+pre,
+input,
+select {
+  border: 1px solid #777;
+  border-radius: .3em;
+  padding: .3em .5em;
+  accent-color: #570;
+}
+
+.message,
+.error {
+  border-radius: .7em;
+  border-radius: .5em;
+}
+
+.footer {
+  background-color: #222e;
+  border: 1px solid #777;
+  border-radius: .5em;
+  padding: .7em 1em;
+  margin-top: 1em;
+  margin-right: 1em;
+  margin-bottom: .5em;
+}
