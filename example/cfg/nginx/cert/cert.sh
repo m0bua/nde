@@ -20,6 +20,7 @@ echo 'keyUsage = digitalSignature, nonRepudiation, keyEncipherment, dataEncipher
 echo 'subjectAltName = @alt_names' >> domains.txt
 echo '[alt_names]' >> domains.txt
 count=0
+(( count++ )); echo "DNS.${count} = localhost" >> domains.txt
 for suffix in 'd' 'local' 'l' ; do
   for service in 'main' 'adminer' 'mail' 'm' ; do
       (( count++ )); echo "DNS.${count} = ${service}.${suffix}" >> domains.txt
