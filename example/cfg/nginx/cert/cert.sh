@@ -20,15 +20,14 @@ echo 'keyUsage = digitalSignature, nonRepudiation, keyEncipherment, dataEncipher
 echo 'subjectAltName = @alt_names' >> domains.txt
 echo '[alt_names]' >> domains.txt
 count=0
+(( count++ )); echo "DNS.${count} = localhost" >> domains.txt
 for suffix in 'd' 'local' 'l' ; do
-  for service in 'adminer' 'db' 'mail' 'dns' 'a' 'd' 'm' 'v' ; do
+  for service in 'main' 'adminer' 'mail' 'm' ; do
       (( count++ )); echo "DNS.${count} = ${service}.${suffix}" >> domains.txt
   done
-  for isdev in '' '-xdebug' '-xdeb' '-x' '-dev' '-d' 'xdebug' 'xdeb' 'x' 'dev' 'd'; do
-    for version in '' '-prod' '-p' 'prod' 'p' '8' '83' '82' '81' '80' '7' '74' '73' '72' '71' '70' '5' '56'; do
-      for exe in 'p' 'php'; do
-          (( count++ )); echo "DNS.${count} = *.${exe}${version}${isdev}.${suffix}" >> domains.txt
-      done
+  for version in '' '8' '84' '83' '82' '81' '80' '7' '74' '73' '72' '71' '70' '5'; do
+    for exe in 'p' 'php'; do
+        (( count++ )); echo "DNS.${count} = *.${exe}${version}${isdev}.${suffix}" >> domains.txt
     done
   done
 done

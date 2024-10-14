@@ -1,5 +1,5 @@
 html {
-  background-color: #111;
+  background-color: #222;
 }
 
 body,
@@ -20,6 +20,10 @@ tbody tr:hover th,
   background-color: transparent;
 }
 
+table {
+  background-color: #111;
+}
+
 pre,
 input,
 select,
@@ -30,7 +34,7 @@ tr:hover,
 .icon,
 .js .checkable .checked td,
 .js .checkable .checked th {
-  background-color: #333;
+  background-color: #222;
 }
 
 html,
@@ -106,7 +110,7 @@ select {
 }
 
 .footer {
-  background-color: #222e;
+  background-color: #111e;
   border: 1px solid #777;
   border-radius: .5em;
   padding: .7em 1em;
