@@ -1,53 +1,110 @@
 <?php
+
+### Configs ###
+
+$prjName = 'nde';
+$prjFolder = '/var/www';
+$prjFoldersIgnore = ['.', '..', 'html'];
+$redisAddress = 'redis';
+$redisPort = 6379;
+$xdebugOn = 'debug,develop';
+$xdebugOff = 'develop';
+
+### Code ###
+
+if (($_POST['cache'] ?? false) == 'clear') {
+    $redis = new Redis;
+    $redis->connect($redisAddress, $redisPort);
+    $redis->flushall();
+    header('Location: ' . $_SERVER['HTTP_HOST']);
+    exit;
+}
+
 $host = explode('.', $_SERVER['HTTP_HOST']);
+$ver = $host[count($host) - 2];
+$suffix = $host[count($host) - 1];
 $host[0] = '';
 $host = implode('.', $host);
 
-if (isset($_POST['xdebug_mode'])) {
-    setcookie('xdebug_mode', $_POST['xdebug_mode'], ['domain' => $host]);
-    header("Location: /");
-}
+$dirs = array_filter(
+    scandir($prjFolder),
+    function ($i) use ($prjFolder, $prjFoldersIgnore) {
+        return is_dir("$prjFolder/$i") &&
+            !in_array($i, $prjFoldersIgnore);
+    }
+);
 
-$blocks = [
-    INFO_GENERAL,
-    INFO_CONFIGURATION,
-    INFO_VARIABLES,
-    INFO_ENVIRONMENT,
-    INFO_MODULES
-];
+$xDeb = function_exists('xdebug_info') && !empty(xdebug_info('mode'))
+    ? implode(',', xdebug_info('mode')) : 'off';
 
-foreach ($blocks as $block) {
+$ch = curl_init('http:/localhost/containers/json');
+curl_setopt($ch, CURLOPT_UNIX_SOCKET_PATH, '/var/run/docker.sock');
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+$conData = json_decode(curl_exec($ch), true) ?? [];
+curl_close($ch);
+$conteiners = array_map(function ($i) {
+    return $i['Labels']['com.docker.compose.service'];
+}, array_filter($conData, function ($i) use ($prjName) {
+    return $i['Command'] === 'docker-php-entrypoint php-fpm' &&
+        $i['Labels']['com.docker.compose.project'] = $prjName;
+}));
+$conList = array_map(function ($i) {
+    return $i['Labels']['com.docker.compose.service'];
+}, $conData);
+
+sort($conteiners);
+
+foreach (
+    [
+        INFO_GENERAL,
+        INFO_CONFIGURATION,
+        INFO_VARIABLES,
+        INFO_ENVIRONMENT,
+        INFO_MODULES
+    ] as $block
+) {
     ob_start();
     phpinfo($block);
     [$_, $body] = explode('<div class="center">', ob_get_contents());
     $body = preg_replace('/([^,>]{30,},)\s/', '$1<br>', $body);
     $body = preg_replace('/,([^,])/', ', $1', $body);
-    [$php[]] = explode('</div></body>', $body);
+    [$phpInfos[]] = explode('</div></body>', $body);
     ob_get_clean();
 }
-$body = implode("\n", $php);
-
-$path = '/var/www';
-$isOn = strtolower($_POST['xdebug_mode'] ?? $_COOKIE['xdebug_mode'] ?? '') == 'xdebug';
+$body = implode("\n", $phpInfos);
 ?>
 <!DOCTYPE html>
 <html>
 
 <body>
-    <div id="header">
-        <a href="//adminer.d/">adminer</a>
-        <a href="//mail.d/">mail</a>
-        <?php foreach (scandir($path) as $dir): ?>
-            <?php if (is_dir("$path/$dir") && !in_array($dir, ['.', '..', 'html'])): ?>
-                <a href="//<?= "$dir$host" ?>"><?= $dir ?></a>
-            <?php endif ?>
-        <?php endforeach ?>
 
+    <div id="header">
+        <div>
+            <a href="//adminer.<?= $suffix ?>/" style="font-weight:900">adminer</a>
+            <a href="//mail.<?= $suffix ?>/" style="font-weight:900">mail</a>
+            <?php foreach ($dirs as $dir): ?>
+                <a href="//<?= "$dir$host" ?>"><?= $dir ?></a>
+            <?php endforeach ?>
+        </div>
         <div class="right">
-            <form method="post">
-                <input type="hidden" name="xdebug_mode" value="<?= $isOn ? '' : 'xdebug' ?>">
-                <button>XDebug: <?= $isOn ? 'On' : 'Off' ?></button>
-            </form><button id="toggle">Show all</button>
+            <?php if (!empty($conteiners)): ?>
+                <select>
+                    <?php foreach ($conteiners as $conteiner): ?>
+                        <option value="<?= $conteiner ?>" <?php if ($ver === $conteiner):
+                                                            ?> selected="selected" <?php endif ?>>
+                            <?= $conteiner ?>
+                        </option>
+                    <?php endforeach ?>
+                </select>
+            <?php endif ?>
+            <button id="xdebug">XDebug: <?= $xDeb ?></button>
+            <?php if (in_array($redisAddress, $conList)): ?>
+                <form method="post">
+                    <input type="hidden" name="cache" value="clear">
+                    <button>Redis cls</button>
+                </form>
+            <?php endif ?>
+            <button id="toggle">Show all</button>
         </div>
     </div>
     <div class="center">
@@ -67,27 +124,37 @@ $isOn = strtolower($_POST['xdebug_mode'] ?? $_COOKIE['xdebug_mode'] ?? '') == 'x
         }
 
         .right {
-            margin-left: 1em;
+            text-align: center;
         }
 
         .right>form,
-        .right>button {
-            font-size: 24px;
+        .right>select,
+        .right button {
             display: inline-block;
         }
 
-        .right :not(:first-child) {
-            margin-left: 1em;
-        }
-
+        .right>select,
         .right button {
-            font-size: 18px;
-            line-height: 1;
-            padding: .5em .7em;
             color: #ccc;
             background-color: #000;
+            line-height: 1;
+            font-size: 18px;
+            padding: .5em .7em;
             border-color: #777;
             border-radius: .3em;
+        }
+
+        .right>select {
+            padding: .4em .7em;
+        }
+
+        .right>* {
+            margin: .1em 0 .1em 1em;
+            text-align: center;
+        }
+
+        .right>form {
+            margin-left: .7em;
         }
 
         #toggle {
@@ -174,7 +241,7 @@ $isOn = strtolower($_POST['xdebug_mode'] ?? $_COOKIE['xdebug_mode'] ?? '') == 'x
             color: #999;
             font-size: 18px;
             display: inline-block;
-            padding: .51em;
+            padding: .5em;
             cursor: pointer;
             margin: .3em .5em;
         }
@@ -195,7 +262,7 @@ $isOn = strtolower($_POST['xdebug_mode'] ?? $_COOKIE['xdebug_mode'] ?? '') == 'x
             display: block;
         }
 
-        div.center>h2.open{
+        div.center>h2.open {
             border: 1.5px solid;
             border-radius: .3em;
         }
@@ -216,6 +283,23 @@ $isOn = strtolower($_POST['xdebug_mode'] ?? $_COOKIE['xdebug_mode'] ?? '') == 'x
             document.querySelectorAll(clickEls).forEach((el) => {
                 toggle(el, status ? 'show' : 'hide');
             });
+        });
+
+        document.querySelector('#header>.right>select').addEventListener('change', (event) => {
+            let href = window.location.href.split('.');
+            href[href.length - 2] = event.target.value;
+            window.location.href = href.join('.');
+        });
+
+        document.querySelector('#xdebug').addEventListener('click', (event) => {
+            let domain = window.location.hostname.split('.');
+            domain[0] = '';
+
+            document.cookie = 'xdebug_mode=' +
+                (cookies().xdebug_mode == '<?= $xdebugOff ?>' ?
+                    '<?= $xdebugOn ?>' : '<?= $xdebugOff ?>') +
+                '; domain=' + domain.join('.') + '; SameSite=Lax'
+            window.location.href = window.location.href;
         });
 
         function toggle(el, status = '') {
@@ -241,7 +325,17 @@ $isOn = strtolower($_POST['xdebug_mode'] ?? $_COOKIE['xdebug_mode'] ?? '') == 'x
                 }
             }
         }
+
+        function cookies(key = null) {
+            let cookies = {};
+            document.cookie.split('; ').forEach(($i) => {
+                cookies[$i.split('=')[0]] = $i.split('=')[1];
+            });
+
+            return cookies[key] ?? cookies;
+        }
     </script>
+
 </body>
 
 </html>

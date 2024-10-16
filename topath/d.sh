@@ -55,6 +55,7 @@ export USER_NAME=$(id -un)
 export GROUP_NAME=$(id -gn)
 export USER_ID=$(id -u)
 export GROUP_ID=$(id -g)
+export DOCKER_GID=$(getent group docker | cut -d: -f3)
 
 command="docker-compose -f ${config}"
 params="$*"
