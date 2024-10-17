@@ -12,11 +12,12 @@ $xdebugOff = 'develop';
 
 ### Code ###
 
-if (($_POST['cache'] ?? false) == 'clear') {
+if (($_POST['cache'] ?? null) == 'clear') {
     $redis = new Redis;
     $redis->connect($redisAddress, $redisPort);
     $redis->flushall();
-    header('Location: ' . $_SERVER['HTTP_HOST']);
+    header('Content-type: application/json');
+    echo '{"result":"ok"}';
     exit;
 }
 
@@ -34,9 +35,6 @@ $dirs = array_filter(
     }
 );
 
-$xDeb = function_exists('xdebug_info') && !empty(xdebug_info('mode'))
-    ? implode(',', xdebug_info('mode')) : 'off';
-
 $ch = curl_init('http:/localhost/containers/json');
 curl_setopt($ch, CURLOPT_UNIX_SOCKET_PATH, '/var/run/docker.sock');
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -51,8 +49,12 @@ $conteiners = array_map(function ($i) {
 $conList = array_map(function ($i) {
     return $i['Labels']['com.docker.compose.service'];
 }, $conData);
-
 sort($conteiners);
+
+if (function_exists('xdebug_info')) {
+    $xModes = ['develop', 'debug', 'coverage', 'trace', 'gcstats', 'profile'];
+    $xDebs = empty(xdebug_info('mode')) ? ['off'] : xdebug_info('mode');
+}
 
 foreach (
     [
@@ -76,6 +78,10 @@ $body = implode("\n", $phpInfos);
 <!DOCTYPE html>
 <html>
 
+<head>
+    <title>NDE <?= strtoupper($ver) ?> <?= phpversion() ?></title>
+</head>
+
 <body>
 
     <div id="header">
@@ -88,21 +94,31 @@ $body = implode("\n", $phpInfos);
         </div>
         <div class="right">
             <?php if (!empty($conteiners)): ?>
-                <select>
+                <select id="containers">
                     <?php foreach ($conteiners as $conteiner): ?>
-                        <option value="<?= $conteiner ?>" <?php if ($ver === $conteiner):
-                                                            ?> selected="selected" <?php endif ?>>
+                        <option value="<?= $conteiner ?>"
+                            <?php if ($ver === $conteiner): ?> selected="selected" <?php endif ?>>
                             <?= $conteiner ?>
                         </option>
                     <?php endforeach ?>
                 </select>
             <?php endif ?>
-            <button id="xdebug">XDebug: <?= $xDeb ?></button>
+            <?php if (!empty($xModes)): ?>
+                <div id="xBlk">
+                    <button id="xdebug">Xdebug</button>
+                    <div id="xModes" class="hide">
+                        <?php foreach ($xModes as $mode): ?>
+                            <label>
+                                <input type="checkbox" name="xMode[]" value="<?= $mode ?>"
+                                    <?php if (in_array($mode, $xDebs)): ?>checked<?php endif ?>>
+                                <?= $mode ?>
+                            </label>
+                        <?php endforeach ?>
+                    </div>
+                </div>
+            <?php endif ?>
             <?php if (in_array($redisAddress, $conList)): ?>
-                <form method="post">
-                    <input type="hidden" name="cache" value="clear">
-                    <button>Redis cls</button>
-                </form>
+                <button id="redis">Redis cls</button>
             <?php endif ?>
             <button id="toggle">Show all</button>
         </div>
@@ -125,6 +141,7 @@ $body = implode("\n", $phpInfos);
 
         .right {
             text-align: center;
+            position: relative;
         }
 
         .right>form,
@@ -155,6 +172,35 @@ $body = implode("\n", $phpInfos);
 
         .right>form {
             margin-left: .7em;
+        }
+
+        .right>#xBlk {
+            display: inline-block;
+            position: relative;
+        }
+
+        .right>#xBlk>#xModes {
+            position: absolute;
+            background-color: #333e;
+            padding: .5em;
+            border-radius: .3em;
+            z-index: 10;
+            right: 0;
+            top: 100%;
+            top: calc(100% + 1em);
+        }
+
+        .right>#xBlk>#xModes>label {
+            display: block;
+            padding: .3em;
+            display: flex;
+            justify-content: left;
+            align-items: left;
+            word-wrap: none;
+        }
+
+        .right>#xBlk>#xModes>label>input {
+            margin-right: 1em;
         }
 
         #toggle {
@@ -251,12 +297,6 @@ $body = implode("\n", $phpInfos);
             display: table;
         }
 
-        div.center>table.hide,
-        div.center>h1.hide,
-        div.center>h2.hide {
-            display: none;
-        }
-
         div.center>h1.show,
         div.center>h2.show {
             display: block;
@@ -266,8 +306,58 @@ $body = implode("\n", $phpInfos);
             border: 1.5px solid;
             border-radius: .3em;
         }
+
+        .hide {
+            display: none !important;
+        }
     </style>
     <script>
+        document.querySelector('#containers').addEventListener('change', (event) => {
+            let domain = document.domain.split('.');
+            domain[domain.length - 2] = event.target.value;
+            window.location.href = window.location.href.replace(document.domain, domain.join('.'));
+        });
+
+        document.querySelector('#xdebug').addEventListener('click', (event) => {
+            let el = document.querySelector('#xModes');
+
+            if (el.classList.value.includes('hide')) {
+                el.classList.remove('hide');
+            } else {
+                el.classList.add('hide');
+            }
+        });
+
+        document.querySelectorAll('#xModes input').forEach((el) => {
+            el.addEventListener('click', (event) => {
+                let domain = window.location.hostname.split('.'),
+                    els = document.querySelectorAll('#xModes input:checked'),
+                    modes = Array.from(els, node => node.value),
+                    cookie = modes.length > 0 ? modes.join(',') : 'off';
+                domain[0] = '';
+                document.cookie = 'xdebug_mode=' + cookie +
+                    '; domain=' + domain.join('.') + '; SameSite=Lax'
+                window.location.href = window.location.href;
+            });
+        });
+
+        document.querySelector('#redis').addEventListener('click', (event) => {
+            if (confirm('Are you sure clearing all cache?')) {
+                let formData = new FormData;
+                formData.append('cache', 'clear');
+                fetch(window.location.href, {
+                        method: "POST",
+                        body: formData,
+                    })
+                    .then(function(a) {
+                        return a.json(); // call the json method on the response to get JSON
+                    })
+                    .then(function(json) {
+                        if (json.result == 'ok') alert('All Done');
+                    })
+            }
+        });
+
         let clickEls = '.center > table:first-child, .center > h2';
 
         document.querySelectorAll('.center > h2 > a').forEach((el) => {
@@ -283,23 +373,6 @@ $body = implode("\n", $phpInfos);
             document.querySelectorAll(clickEls).forEach((el) => {
                 toggle(el, status ? 'show' : 'hide');
             });
-        });
-
-        document.querySelector('#header>.right>select').addEventListener('change', (event) => {
-            let href = window.location.href.split('.');
-            href[href.length - 2] = event.target.value;
-            window.location.href = href.join('.');
-        });
-
-        document.querySelector('#xdebug').addEventListener('click', (event) => {
-            let domain = window.location.hostname.split('.');
-            domain[0] = '';
-
-            document.cookie = 'xdebug_mode=' +
-                (cookies().xdebug_mode == '<?= $xdebugOff ?>' ?
-                    '<?= $xdebugOn ?>' : '<?= $xdebugOff ?>') +
-                '; domain=' + domain.join('.') + '; SameSite=Lax'
-            window.location.href = window.location.href;
         });
 
         function toggle(el, status = '') {
