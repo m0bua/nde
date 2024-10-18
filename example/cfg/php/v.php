@@ -336,6 +336,13 @@ $body = implode("\n", $phpInfos);
             }
         });
 
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                shownBlkList(xdebug.innerText, false);
+                document.querySelector('#xModes').classList.add('hide');
+            }
+        });
+
         if (xdebugInput) xdebugInput.forEach((el) => el.addEventListener('click', (event) => {
             modes = Array.from(document.querySelectorAll('#xModes input:checked'), node => node.value);
             setCookie('xdebug_mode', modes.length > 0 ? modes.join(',') : 'off');
