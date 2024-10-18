@@ -21,13 +21,13 @@ echo 'subjectAltName = @alt_names' >> domains.txt
 echo '[alt_names]' >> domains.txt
 count=0
 (( count++ )); echo "DNS.${count} = localhost" >> domains.txt
-for suffix in 'd' 'local' 'l' ; do
-  for service in 'main' 'adminer' 'mail' 'm' ; do
+for suffix in 'local' ; do
+  for service in 'main' 'adminer' 'mail' ; do
       (( count++ )); echo "DNS.${count} = ${service}.${suffix}" >> domains.txt
   done
   for version in '' '8' '84' '83' '82' '81' '80' '7' '74' '73' '72' '71' '70' '5'; do
-    for exe in 'p' 'php'; do
-        (( count++ )); echo "DNS.${count} = *.${exe}${version}${isdev}.${suffix}" >> domains.txt
+    for exe in 'php'; do
+        (( count++ )); echo "DNS.${count} = *.${exe}${version}.${suffix}" >> domains.txt
     done
   done
 done
