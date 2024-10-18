@@ -94,11 +94,6 @@ services:
       "-d", "post_max_size=10G",
       "-d", "upload_max_filesize=10G",
       "-d", "max_execution_time=360",
-      "-d", "pm.start_servers = 10",
-      "-d", "pm.min_spare_servers = 10",
-      "-d", "pm.max_spare_servers = 20",
-      "-d", "pm.max_requests = 1000",
-      "-d", "pm.max_children = 35",
     ]
     volumes:
       - ./cfg/adminer.css:/var/www/html/adminer.css
