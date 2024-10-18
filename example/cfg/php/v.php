@@ -305,34 +305,40 @@ $body = implode("\n", $phpInfos);
     </style>
     <script>
 
-        let containers = document.querySelector('#containers'),
+        let shownBlocks = getCookies('shown_blocks'),
+            containers = document.querySelector('#containers'),
             xdebug = document.querySelector('#xdebug'),
             xdebugInput = document.querySelectorAll('#xModes input'),
             redis = document.querySelector('#redis'),
             toggle = document.querySelector('#toggle'),
             clickEls = document.querySelectorAll('.center > table:first-child, .center > h2');
 
+        shownBlocks = shownBlocks.length ? shownBlocks.split('||') : [];
+
         if (containers) containers.addEventListener('change', (event) => {
-            domain = document.domain.split('.');
-            domain[domain.length - 2] = event.target.value;
-            window.location.href = window.location.href.replace(document.domain, domain.join('.'));
+            dom = document.domain.split('.');
+            dom[dom.length - 2] = event.target.value;
+            window.location.href = window.location.href.replace(document.domain, dom.join('.'));
         });
+
+        if (shownBlocks.filter((value) => value == xdebug.innerText).length) {
+            document.querySelector('#xModes').classList.remove('hide');
+        }
 
         if (xdebug) xdebug.addEventListener('click', (event) => {
             el = document.querySelector('#xModes');
-            if (el.classList.value.includes('hide'))
+            if (el.classList.value.includes('hide')) {
+                shownBlkList(event.target.innerText, true);
                 el.classList.remove('hide');
-            else el.classList.add('hide');
+            } else {
+                shownBlkList(event.target.innerText, false);
+                el.classList.add('hide');
+            }
         });
 
         if (xdebugInput) xdebugInput.forEach((el) => el.addEventListener('click', (event) => {
-            let domain = window.location.hostname.split('.'),
-                els = document.querySelectorAll('#xModes input:checked'),
-                modes = Array.from(els, node => node.value),
-                cookie = modes.length > 0 ? modes.join(',') : 'off';
-            domain[0] = '';
-            document.cookie = 'xdebug_mode=' + cookie +
-                '; domain=' + domain.join('.') + '; SameSite=Lax'
+            modes = Array.from(document.querySelectorAll('#xModes input:checked'), node => node.value);
+            setCookie('xdebug_mode', modes.length > 0 ? modes.join(',') : 'off');
             window.location.href = window.location.href;
         }));
 
@@ -346,10 +352,13 @@ $body = implode("\n", $phpInfos);
             }
         });
 
-        if (clickEls) clickEls.forEach((el) => el.addEventListener('click', (event) => toggleBlk(event.target)));
+        if (clickEls) clickEls.forEach((el) => {
+            el.addEventListener('click', (event) => toggleBlk(event.target));
+            if (shownBlocks.filter((v) => v == el.innerText).length) toggleBlk(el, 'show');
+        });
 
         if (toggle) toggle.addEventListener('click', (event) => {
-            let status = event.target.innerHTML == 'Show all';
+            let status = event.target.innerText == 'Show all';
             clickEls.forEach((el) => toggleBlk(el, status ? 'show' : 'hide'));
         });
 
@@ -358,17 +367,53 @@ $body = implode("\n", $phpInfos);
         function toggleBlk(el, status = '') {
             while (!el.parentElement.classList.contains('center')) el = el.parentElement;
             if (status.length == 0) status = el.classList.contains('open') ? 'hide' : 'show';
-            if (status == 'hide') el.classList.remove('open');
-            else el.classList.add('open');
+            if (status == 'hide') {
+                shownBlkList(el.innerText, false);
+                el.classList.remove('open');
+            } else {
+                shownBlkList(el.innerText, true);
+                el.classList.add('open');
+            }
             while (el.nextElementSibling && el.nextElementSibling.tagName == 'TABLE') {
                 el = el.nextElementSibling;
                 if (status.length == 0) status = el.classList.contains('show') ? 'hide' : 'show';
                 el.classList.remove(status == 'show' ? 'hide' : 'show');
                 el.classList.add(status);
-                if (status == 'show') document.querySelector('#toggle').innerHTML = 'Hide all';
+                if (status == 'show') document.querySelector('#toggle').innerText = 'Hide all';
                 else if (!document.querySelectorAll('.center > table:not(:first-child).show').length)
-                    document.querySelector('#toggle').innerHTML = 'Show all';
+                    document.querySelector('#toggle').innerText = 'Show all';
             }
+        }
+
+        function shownBlkList(name, status) {
+            blks = getCookies('shown_blocks');
+            blks = blks.length ? blks.split('||') : [];
+
+            if (status) blks.push(name);
+            else blks = blks.filter((value) => value != name);
+
+            blks = blks.filter((value, index, array) =>
+                array.indexOf(value) == index).sort();
+
+            setCookie('shown_blocks', blks.join('||'));
+        }
+
+        function getCookies(key = null, def = '') {
+            let cookies = {};
+            document.cookie.split('; ').forEach(($i) => {
+                cookies[$i.split('=')[0]] = $i.split('=')[1];
+            });
+
+            return key ? cookies[key] ?? def : cookies ?? def;
+        }
+
+        function setCookie(key, val) {
+            dom = document.domain.split('.');
+            dom[0] = '';
+
+            document.cookie = key + '=' + val
+                + '; domain=' + dom.join('.')
+                + '; SameSite=lax';
         }
     </script>
 
