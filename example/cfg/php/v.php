@@ -11,7 +11,6 @@ $xdebugOn = 'debug,develop';
 $xdebugOff = 'develop';
 
 ### Code ###
-
 if (($_POST['cache'] ?? null) == 'clear') {
     $redis = new Redis;
     $redis->connect($redisAddress, $redisPort);
@@ -88,8 +87,8 @@ $body = implode("\n", $phpInfos);
             <?php if (!empty($conteiners) && count($conteiners) > 1): ?>
                 <select id="containers">
                     <?php foreach ($conteiners as $conteiner): ?>
-                        <option value="<?= $conteiner ?>" <?php if ($ver === $conteiner):
-                              ?> selected="selected" <?php endif ?>>
+                        <option value="<?= $conteiner ?>"
+                            <?php if ($ver === $conteiner): ?> selected="selected" <?php endif ?>>
                             <?= $conteiner ?>
                         </option>
                     <?php endforeach ?>
@@ -99,13 +98,23 @@ $body = implode("\n", $phpInfos);
                 <div id="xBlk">
                     <button id="xdebug">Xdebug</button>
                     <div id="xModes" class="hide">
-                        <?php foreach ($xModes as $mode): ?>
+                        <?php if (version_compare(phpversion('xdebug'), '3.2.0') >= 0): ?>
                             <label>
-                                <input type="checkbox" name="xMode[]" value="<?= $mode ?>" <?php
-                                  if (in_array($mode, $xDebs)): ?>checked<?php endif ?>>
-                                <?= $mode ?>
+                                <input type="checkbox" name="xdebug.start_with_request" value="on"
+                                    <?php if (ini_get('xdebug.start_with_request') == '1'): ?>checked<?php endif ?>>
+                                Status
+                                <input type="hidden" name="xdebug.start_with_request" value="off">
                             </label>
-                        <?php endforeach ?>
+                        <?php else:  ?>
+                            <?php foreach ($xModes as $mode): ?>
+                                <label>
+                                    <input type="checkbox" name="xdebug.mode[]" value="<?= $mode ?>"
+                                        <?php if (in_array($mode, $xDebs)): ?>checked<?php endif ?>>
+                                    <?= $mode ?>
+                                </label>
+                            <?php endforeach ?>
+                            <input type="hidden" name="xdebug.mode" value="off">
+                        <?php endif ?>
                     </div>
                 </div>
             <?php endif ?>
@@ -304,7 +313,6 @@ $body = implode("\n", $phpInfos);
         }
     </style>
     <script>
-
         let shownBlocks = getCookies('shown_blocks'),
             containers = document.querySelector('#containers'),
             xdebug = document.querySelector('#xdebug'),
@@ -343,9 +351,31 @@ $body = implode("\n", $phpInfos);
             }
         });
 
-        if (xdebugInput) xdebugInput.forEach((el) => el.addEventListener('click', (event) => {
-            modes = Array.from(document.querySelectorAll('#xModes input:checked'), node => node.value);
-            setCookie('xdebug_mode', modes.length > 0 ? modes.join(',') : 'off');
+        if (xdebugInput) xdebugInput.forEach((el) => el.addEventListener('change', (event) => {
+            let name = event.target.name,
+                val;
+
+            selector = '#xModes [name="' + name + '"]';
+            if (event.target.type = 'checkbox') selector += ':checked';
+            document.querySelectorAll(selector).forEach((el) => {
+                if (el.name.includes('[]')) {
+                    if (val == undefined) val = [];
+                    val.push(el.value);
+                } else {
+                    val = el.value;
+                }
+            });
+
+            name = name.replace('[]', '');
+
+            if (val == undefined) {
+                el = document.querySelector('#xModes [name="' + name + '"][type=hidden]');
+                if (el != undefined) val = el.value;
+            }
+
+            if (Array.isArray(val)) val = val.join(',');
+
+            setCookie('php_val', name + '=' + val);
             window.location.href = window.location.href;
         }));
 
@@ -353,7 +383,10 @@ $body = implode("\n", $phpInfos);
             if (confirm('Are you sure clearing all cache?')) {
                 formData = new FormData;
                 formData.append('cache', 'clear');
-                fetch(window.location.href, { method: "POST", body: formData })
+                fetch(window.location.href, {
+                        method: "POST",
+                        body: formData
+                    })
                     .then((res) => res.json())
                     .then((json) => alert(json.result == 'ok' ? 'Done' : 'Error!'));
             }
@@ -407,20 +440,25 @@ $body = implode("\n", $phpInfos);
 
         function getCookies(key = null, def = '') {
             let cookies = {};
-            document.cookie.split('; ').forEach(($i) => {
-                cookies[$i.split('=')[0]] = $i.split('=')[1];
+            document.cookie.split('; ').forEach((i) => {
+                name = i.split('=')[0];
+                cookies[name] = i.replace(name + '=', '');
             });
 
             return key ? cookies[key] ?? def : cookies ?? def;
         }
 
-        function setCookie(key, val) {
+        function setCookie(key, val = null, expire = 0, site = 'lax') {
             dom = document.domain.split('.');
             dom[0] = '';
 
-            document.cookie = key + '=' + val
-                + '; domain=' + dom.join('.')
-                + '; SameSite=lax';
+            cookie = key + '=' + val +
+                '; domain=' + dom.join('.') +
+                '; SameSite=' + site;
+
+            if (expire != 0) cookie += '; expires=' + expire;
+
+            document.cookie = cookie
         }
     </script>
 
