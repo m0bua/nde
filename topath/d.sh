@@ -48,9 +48,6 @@ path=$(dirname $(dirname $(realpath ${BASH_SOURCE[0]})));
 config=${path}/docker-compose.yml
 
 set -e
-if grep -qEi "(Microsoft|WSL)" /proc/version &> /dev/null ; then
-    export XDEBUG_ADDRESS=$(hostname -I)
-fi
 export USER_NAME=$(id -un)
 export GROUP_NAME=$(id -gn)
 export USER_ID=$(id -u)

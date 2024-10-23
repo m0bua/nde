@@ -11,20 +11,19 @@ x-args: &args
 
 x-exec: &exec
   volumes:
-    - ${SSH_AUTH_SOCK:-/dev/null}:/run/ssh-auth.sock
-    - ~/.ssh:/home/${USER_NAME:-user}/.ssh:ro
     - ~/prj:/var/www
     - ./cfg/php/v.php:/var/www/html/index.php:ro
     - ./cfg/d.bashrc:/root/.bashrc:ro
     - ./cfg/d.bashrc:/home/${USER_NAME:-user}/.bashrc:ro
+    - ~/.ssh:/home/${USER_NAME:-user}/.ssh:ro
     - ./cfg/php/php.ini:/usr/local/etc/php/php.ini:ro
     - /var/run/docker.sock:/var/run/docker.sock:ro
+    - ${SSH_AUTH_SOCK:-/dev/null}:/run/ssh-auth.sock:ro
   dns:
-    - 45.90.30.0
-    - 45.90.28.0
+    - 1.1.1.1
+    - 8.8.8.8
   extra_hosts:
     - host.docker.internal:host-gateway
-    - xdebug.docker.internal:${XDEBUG_ADDRESS:-host-gateway}
   environment:
     SSH_AUTH_SOCK: /run/ssh-auth.sock
 
@@ -75,11 +74,11 @@ services:
       - db:/var/lib/mysql
       - ./cfg/d.bashrc:/root/.bashrc:ro
     command:
-      # - --mysql-native-password
       - --default-authentication-plugin=mysql_native_password
       - --collation-server=utf8mb4_unicode_ci
       - --character-set-server=utf8mb4
       - --sql_mode=ONLY_FULL_GROUP_BY
+      # - --mysql-native-password
     <<: *db
 
   adminer:
@@ -87,9 +86,7 @@ services:
     container_name: adminer
     image: adminer
     command: [
-      "php",
-      "-S", "0.0.0.0:8080",
-      "-t", "/var/www/html",
+      "php", "-S", "0.0.0.0:8080", "-t", "/var/www/html",
       "-d", "memory_limit=10G",
       "-d", "post_max_size=10G",
       "-d", "upload_max_filesize=10G",
