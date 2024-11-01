@@ -375,7 +375,7 @@ $body = implode("\n", $phpInfos);
 
             if (Array.isArray(val)) val = val.join(',');
 
-            setCookie('php_val', name + '=' + val);
+            setCookie('php_val', name + '=' + val, 3600 * 24 * 365);
             window.location.href = window.location.href;
         }));
 
@@ -448,7 +448,7 @@ $body = implode("\n", $phpInfos);
             return key ? cookies[key] ?? def : cookies ?? def;
         }
 
-        function setCookie(key, val = null, expire = 0, site = 'lax') {
+        function setCookie(key, val = null, age = 0, site = 'lax') {
             dom = document.domain.split('.');
             dom[0] = '';
 
@@ -456,7 +456,7 @@ $body = implode("\n", $phpInfos);
                 '; domain=' + dom.join('.') +
                 '; SameSite=' + site;
 
-            if (expire != 0) cookie += '; expires=' + expire;
+            if (age != 0) cookie += '; max-age=' + age;
 
             document.cookie = cookie
         }
