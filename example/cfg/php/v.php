@@ -1,7 +1,6 @@
 <?php
 
 ### Configs ###
-
 $prjName = 'nde';
 $prjFolder = '/var/www';
 $prjFoldersIgnore = ['.', '..', 'html'];
@@ -9,6 +8,10 @@ $redisAddress = 'redis';
 $redisPort = 6379;
 $xdebugOn = 'debug,develop';
 $xdebugOff = 'develop';
+$xdebugText = 'Xdbg';
+$cacheText = 'Cache';
+$showText = 'Show';
+$hideText = 'Hide';
 
 ### Code ###
 if (($_POST['cache'] ?? null) == 'clear') {
@@ -96,7 +99,7 @@ $body = implode("\n", $phpInfos);
             <?php endif ?>
             <?php if (!empty($xModes)): ?>
                 <div id="xBlk">
-                    <button id="xdebug">Xdebug</button>
+                    <button id="xdebug"><?= $xdebugText ?></button>
                     <div id="xModes" class="hide">
                         <?php if (version_compare(phpversion('xdebug'), '3.2.0') >= 0): ?>
                             <label>
@@ -119,9 +122,9 @@ $body = implode("\n", $phpInfos);
                 </div>
             <?php endif ?>
             <?php if (in_array($redisAddress, $conList)): ?>
-                <button id="redis">Redis cls</button>
+                <button id="redis"><?= $cacheText ?></button>
             <?php endif ?>
-            <button id="toggle">Show all</button>
+            <button id="toggle"><?= $showText ?></button>
         </div>
     </div>
     <div class="center">
@@ -133,54 +136,42 @@ $body = implode("\n", $phpInfos);
         }
 
         #header {
-            display: inline-block;
-            font-size: 24px;
-            line-height: 1.5;
             display: flex;
             justify-content: space-between;
+            font-size: 24px;
+            line-height: 2;
         }
 
-        .right {
-            text-align: center;
+        #header>div>* {
+            margin: .1em .3em;
+        }
+
+        #header .right {
+            text-align: right;
             position: relative;
         }
 
-        .right>form,
-        .right>select,
-        .right button {
+        #header .right>* {
             display: inline-block;
         }
 
-        .right>select,
-        .right button {
+        #header .right select,
+        #header .right button {
             color: #ccc;
             background-color: #000;
-            line-height: 1;
             font-size: 18px;
-            padding: .5em .7em;
             border-color: #777;
             border-radius: .3em;
-        }
-
-        .right>select {
-            padding: .4em .7em;
-        }
-
-        .right>* {
-            margin: .1em 0 .1em 1em;
+            width: 5em;
+            height: 2.5em;
             text-align: center;
         }
 
-        .right>form {
-            margin-left: .7em;
-        }
-
-        .right>#xBlk {
-            display: inline-block;
+        #header .right>#xBlk {
             position: relative;
         }
 
-        .right>#xBlk>#xModes {
+        #header .right>#xBlk>#xModes {
             position: absolute;
             background-color: #333e;
             padding: .5em;
@@ -191,16 +182,12 @@ $body = implode("\n", $phpInfos);
             top: calc(100% + 1em);
         }
 
-        .right>#xBlk>#xModes>label {
-            display: block;
-            padding: .3em;
+        #header .right>#xBlk>#xModes>label {
             display: flex;
-            justify-content: left;
-            align-items: left;
-            word-wrap: none;
+            margin: 0 .5em;
         }
 
-        .right>#xBlk>#xModes>label>input {
+        #header .right>#xBlk>#xModes>label>input {
             margin-right: 1em;
         }
 
@@ -398,7 +385,7 @@ $body = implode("\n", $phpInfos);
         });
 
         if (toggle) toggle.addEventListener('click', (event) => {
-            let status = event.target.innerText == 'Show all';
+            let status = toggle.innerText == '<?= $showText ?>';
             clickEls.forEach((el) => toggleBlk(el, status ? 'show' : 'hide'));
         });
 
@@ -419,9 +406,9 @@ $body = implode("\n", $phpInfos);
                 if (status.length == 0) status = el.classList.contains('show') ? 'hide' : 'show';
                 el.classList.remove(status == 'show' ? 'hide' : 'show');
                 el.classList.add(status);
-                if (status == 'show') document.querySelector('#toggle').innerText = 'Hide all';
+                if (status == 'show') toggle.innerText = '<?= $hideText ?>';
                 else if (!document.querySelectorAll('.center > table:not(:first-child).show').length)
-                    document.querySelector('#toggle').innerText = 'Show all';
+                    toggle.innerText = '<?= $showText ?>';
             }
         }
 
