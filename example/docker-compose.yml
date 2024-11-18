@@ -9,10 +9,22 @@ x-args: &args
   GroupID: ${GROUP_ID:-1000}
   DockerGID: ${DOCKER_GID:-1001}
 
+x-db: &db
+  environment:
+    MYSQL_USER: ${MYSQL_USER:-user}
+    MYSQL_PASSWORD: ${MYSQL_PASSWORD:-secret}
+    MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-secret}
+
+x-adminer: &adminer
+  ADMINER_DEFAULT_SERVER: ${ADMINER_DEFAULT_SERVER:-db}
+  ADMINER_DEFAULT_USER: ${ADMINER_DEFAULT_USER:-root}
+  ADMINER_DEFAULT_PASSWORD: ${ADMINER_DEFAULT_PASSWORD:-secret}
+
 x-exec: &exec
   volumes:
     - ~/prj:/var/www
     - ./cfg/php/v.php:/var/www/html/index.php:ro
+    - ./cfg/php/adminer.php:/var/www/adminer/index.php:ro
     - ./cfg/d.bashrc:/root/.bashrc:ro
     - ./cfg/d.bashrc:/home/${USER_NAME:-user}/.bashrc:ro
     - ~/.ssh:/home/${USER_NAME:-user}/.ssh:ro
@@ -26,18 +38,7 @@ x-exec: &exec
     - host.docker.internal:host-gateway
   environment:
     SSH_AUTH_SOCK: /run/ssh-auth.sock
-
-x-db: &db
-  environment:
-    MYSQL_USER: ${MYSQL_USER:-user}
-    MYSQL_PASSWORD: ${MYSQL_PASSWORD:-secret}
-    MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-secret}
-
-x-adminer: &adminer
-  environment:
-    ADMINER_DEFAULT_SERVER: ${ADMINER_DEFAULT_SERVER:-db}
-    ADMINER_DEFAULT_USER: ${ADMINER_DEFAULT_USER:-root}
-    ADMINER_DEFAULT_PASSWORD: ${ADMINER_DEFAULT_PASSWORD:-secret}
+    <<: *adminer
 
 services:
 
@@ -50,6 +51,7 @@ services:
       - 127.0.0.1:443:443
     volumes:
       - ~/prj:/var/www
+      - ./cfg/nginx/adminer.css:/var/www/adminer/adminer.css:ro
       - ./cfg/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./cfg/nginx/cert:/etc/nginx/cert:ro
       - ./cfg/d.bashrc:/root/.bashrc:ro
@@ -80,23 +82,6 @@ services:
       - --sql_mode=ONLY_FULL_GROUP_BY
       # - --mysql-native-password
     <<: *db
-
-  adminer:
-    hostname: adminer
-    container_name: adminer
-    image: adminer
-    command: [
-      "php", "-S", "0.0.0.0:8080", "-t", "/var/www/html",
-      "-d", "memory_limit=10G",
-      "-d", "post_max_size=10G",
-      "-d", "upload_max_filesize=10G",
-      "-d", "max_execution_time=360",
-    ]
-    volumes:
-      - ./cfg/adminer.css:/var/www/html/adminer.css
-      - ./cfg/adminer.php:/var/www/html/index.php
-      - ./cfg/d.bashrc:/home/adminer/.bashrc:ro
-    <<: *adminer
 
   redis:
     hostname: redis
