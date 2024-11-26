@@ -79,7 +79,7 @@ $body = implode("\n", $phpInfos);
 <body>
 
   <div id="header">
-    <div>
+    <div class="left">
       <a href="//adminer<?= $host ?>/" style="font-weight:900">adminer</a>
       <a href="//mail.<?= $suffix ?>/" style="font-weight:900">mail</a>
       <?php foreach ($dirs as $dir): ?>
@@ -87,44 +87,48 @@ $body = implode("\n", $phpInfos);
       <?php endforeach ?>
     </div>
     <div class="right">
-      <?php if (!empty($conteiners) && count($conteiners) > 1): ?>
-        <select id="containers">
-          <?php foreach ($conteiners as $conteiner): ?>
-            <option value="<?= $conteiner ?>"
-              <?php if ($ver === $conteiner): ?> selected="selected" <?php endif ?>>
-              <?= $conteiner ?>
-            </option>
-          <?php endforeach ?>
-        </select>
-      <?php endif ?>
-      <?php if (!empty($xModes)): ?>
-        <div id="xBlk">
-          <button id="xdebug"><?= $xdebugText ?></button>
-          <div id="xModes" class="hide">
-            <?php if (version_compare(phpversion('xdebug'), '3.2.0') >= 0): ?>
-              <label>
-                <input type="checkbox" name="xdebug.start_with_request" value="on"
-                  <?php if (ini_get('xdebug.start_with_request') == '1'): ?>checked<?php endif ?>>
-                Status
-                <input type="hidden" name="xdebug.start_with_request" value="off">
-              </label>
-            <?php else:  ?>
-              <?php foreach ($xModes as $mode): ?>
+      <div>
+          <?php if (!empty($xModes)): ?>
+          <div id="xBlk">
+            <button id="xdebug"><?= $xdebugText ?></button>
+            <div id="xModes" class="hide">
+              <?php if (version_compare(phpversion('xdebug'), '3.2.0') >= 0): ?>
                 <label>
-                  <input type="checkbox" name="xdebug.mode[]" value="<?= $mode ?>"
-                    <?php if (in_array($mode, $xDebs)): ?>checked<?php endif ?>>
-                  <?= $mode ?>
+                  <input type="checkbox" name="xdebug.start_with_request" value="on"
+                    <?php if (ini_get('xdebug.start_with_request') == '1'): ?>checked<?php endif ?>>
+                  Status
+                  <input type="hidden" name="xdebug.start_with_request" value="off">
                 </label>
-              <?php endforeach ?>
-              <input type="hidden" name="xdebug.mode" value="off">
-            <?php endif ?>
+              <?php else:  ?>
+                <?php foreach ($xModes as $mode): ?>
+                  <label>
+                    <input type="checkbox" name="xdebug.mode[]" value="<?= $mode ?>"
+                      <?php if (in_array($mode, $xDebs)): ?>checked<?php endif ?>>
+                    <?= $mode ?>
+                  </label>
+                <?php endforeach ?>
+                <input type="hidden" name="xdebug.mode" value="off">
+              <?php endif ?>
+            </div>
           </div>
-        </div>
-      <?php endif ?>
-      <?php if (in_array($redisAddress, $conList)): ?>
-        <button id="redis"><?= $cacheText ?></button>
-      <?php endif ?>
-      <button id="toggle"><?= $showText ?></button>
+        <?php endif ?>
+        <?php if (!empty($conteiners) && count($conteiners) > 1): ?>
+          <select id="containers">
+            <?php foreach ($conteiners as $conteiner): ?>
+              <option value="<?= $conteiner ?>"
+                <?php if ($ver === $conteiner): ?> selected="selected" <?php endif ?>>
+                <?= $conteiner ?>
+              </option>
+            <?php endforeach ?>
+          </select>
+        <?php endif ?>
+      </div>
+      <div>
+        <?php if (in_array($redisAddress, $conList)): ?>
+          <button id="redis"><?= $cacheText ?></button>
+        <?php endif ?>
+        <button id="toggle"><?= $showText ?></button>
+      </div>
     </div>
   </div>
   <div class="center">
@@ -142,8 +146,9 @@ $body = implode("\n", $phpInfos);
       line-height: 2;
     }
 
-    #header>div>* {
-      margin: .1em .3em;
+    #header>.left>a,
+    #header>.right>div>* {
+      margin: .17em;
     }
 
     #header .right {
@@ -151,7 +156,10 @@ $body = implode("\n", $phpInfos);
       position: relative;
     }
 
-    #header .right>* {
+    #header .right>div,
+    #header .right #xBlk,
+    #header .right select,
+    #header .right button {
       display: inline-block;
     }
 
@@ -167,11 +175,11 @@ $body = implode("\n", $phpInfos);
       text-align: center;
     }
 
-    #header .right>#xBlk {
+    #header .right #xBlk {
       position: relative;
     }
 
-    #header .right>#xBlk>#xModes {
+    #header .right #xBlk #xModes {
       position: absolute;
       background-color: #333e;
       padding: .5em;
@@ -182,12 +190,12 @@ $body = implode("\n", $phpInfos);
       top: calc(100% + 1em);
     }
 
-    #header .right>#xBlk>#xModes>label {
+    #header .right #xBlk #xModes>label {
       display: flex;
       margin: 0 .5em;
     }
 
-    #header .right>#xBlk>#xModes>label>input {
+    #header .right #xBlk #xModes>label>input {
       margin-right: 1em;
     }
 
