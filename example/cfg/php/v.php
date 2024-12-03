@@ -3,11 +3,8 @@
 ### Configs ###
 $prjName = 'nde';
 $prjFolder = '/var/www';
-$prjFoldersIgnore = ['.', '..', 'html', 'adminer'];
 $redisAddress = 'redis';
 $redisPort = 6379;
-$xdebugOn = 'debug,develop';
-$xdebugOff = 'develop';
 $xdebugText = 'Xdbg';
 $cacheText = 'Cache';
 $showText = 'Show';
@@ -29,13 +26,9 @@ $suffix = $host[count($host) - 1];
 $host[0] = '';
 $host = implode('.', $host);
 
-$dirs = array_filter(
-  scandir($prjFolder),
-  function ($i) use ($prjFolder, $prjFoldersIgnore) {
-    return is_dir("$prjFolder/$i") &&
-      !in_array($i, $prjFoldersIgnore);
-  }
-);
+$dirs = array_filter(scandir($prjFolder), function ($i) use ($prjFolder) {
+  return strpos($i, '.') !== 0 && $i !== 'html' && is_dir("$prjFolder/$i");
+});
 
 $ch = curl_init('http:/localhost/containers/json');
 curl_setopt($ch, CURLOPT_UNIX_SOCKET_PATH, '/var/run/docker.sock');
@@ -88,7 +81,7 @@ $body = implode("\n", $phpInfos);
     </div>
     <div class="right">
       <div>
-          <?php if (!empty($xModes)): ?>
+        <?php if (!empty($xModes)): ?>
           <div id="xBlk">
             <button id="xdebug"><?= $xdebugText ?></button>
             <div id="xModes" class="hide">
@@ -99,7 +92,7 @@ $body = implode("\n", $phpInfos);
                   Status
                   <input type="hidden" name="xdebug.start_with_request" value="off">
                 </label>
-              <?php else:  ?>
+              <?php else: ?>
                 <?php foreach ($xModes as $mode): ?>
                   <label>
                     <input type="checkbox" name="xdebug.mode[]" value="<?= $mode ?>"

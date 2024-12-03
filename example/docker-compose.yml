@@ -24,7 +24,7 @@ x-exec: &exec
   volumes:
     - ~/prj:/var/www
     - ./cfg/php/v.php:/var/www/html/index.php:ro
-    - ./cfg/php/adminer.php:/var/www/adminer/index.php:ro
+    - ./cfg/php/adminer.php:/var/www/.adminer/index.php:ro
     - ./cfg/d.bashrc:/root/.bashrc:ro
     - ./cfg/d.bashrc:/home/${USER_NAME:-user}/.bashrc:ro
     - ~/.ssh:/home/${USER_NAME:-user}/.ssh:ro
@@ -51,7 +51,7 @@ services:
       - 127.0.0.1:443:443
     volumes:
       - ~/prj:/var/www
-      - ./cfg/nginx/adminer.css:/var/www/adminer/adminer.css:ro
+      - ./cfg/nginx/adminer.css:/var/www/.adminer/adminer.css:ro
       - ./cfg/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./cfg/nginx/cert:/etc/nginx/cert:ro
       - ./cfg/d.bashrc:/root/.bashrc:ro
