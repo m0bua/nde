@@ -80,48 +80,44 @@ $body = implode("\n", $phpInfos);
       <?php endforeach ?>
     </div>
     <div class="right">
-      <div>
-        <?php if (!empty($xModes)): ?>
-          <div id="xBlk">
-            <button id="xdebug"><?= $xdebugText ?></button>
-            <div id="xModes" class="hide">
-              <?php if (version_compare(phpversion('xdebug'), '3.2.0') >= 0): ?>
+      <?php if (!empty($xModes)): ?>
+        <div id="xBlk">
+          <button id="xdebug"><?= $xdebugText ?></button>
+          <div id="xModes" class="hide">
+            <?php if (version_compare(phpversion('xdebug'), '3.2.0') >= 0): ?>
+              <label>
+                <input type="checkbox" name="xdebug.start_with_request" value="on"
+                  <?php if (ini_get('xdebug.start_with_request') == '1'): ?>checked<?php endif ?>>
+                Status
+                <input type="hidden" name="xdebug.start_with_request" value="off">
+              </label>
+            <?php else: ?>
+              <?php foreach ($xModes as $mode): ?>
                 <label>
-                  <input type="checkbox" name="xdebug.start_with_request" value="on"
-                    <?php if (ini_get('xdebug.start_with_request') == '1'): ?>checked<?php endif ?>>
-                  Status
-                  <input type="hidden" name="xdebug.start_with_request" value="off">
+                  <input type="checkbox" name="xdebug.mode[]" value="<?= $mode ?>"
+                    <?php if (in_array($mode, $xDebs)): ?>checked<?php endif ?>>
+                  <?= $mode ?>
                 </label>
-              <?php else: ?>
-                <?php foreach ($xModes as $mode): ?>
-                  <label>
-                    <input type="checkbox" name="xdebug.mode[]" value="<?= $mode ?>"
-                      <?php if (in_array($mode, $xDebs)): ?>checked<?php endif ?>>
-                    <?= $mode ?>
-                  </label>
-                <?php endforeach ?>
-                <input type="hidden" name="xdebug.mode" value="off">
-              <?php endif ?>
-            </div>
+              <?php endforeach ?>
+              <input type="hidden" name="xdebug.mode" value="off">
+            <?php endif ?>
           </div>
-        <?php endif ?>
-        <?php if (!empty($conteiners) && count($conteiners) > 1): ?>
-          <select id="containers">
-            <?php foreach ($conteiners as $conteiner): ?>
-              <option value="<?= $conteiner ?>"
-                <?php if ($ver === $conteiner): ?> selected="selected" <?php endif ?>>
-                <?= $conteiner ?>
-              </option>
-            <?php endforeach ?>
-          </select>
-        <?php endif ?>
-      </div>
-      <div>
-        <?php if (in_array($redisAddress, $conList)): ?>
-          <button id="redis"><?= $cacheText ?></button>
-        <?php endif ?>
-        <button id="toggle"><?= $showText ?></button>
-      </div>
+        </div>
+      <?php endif ?>
+      <?php if (!empty($conteiners) && count($conteiners) > 1): ?>
+        <select id="containers">
+          <?php foreach ($conteiners as $conteiner): ?>
+            <option value="<?= $conteiner ?>"
+              <?php if ($ver === $conteiner): ?> selected="selected" <?php endif ?>>
+              <?= $conteiner ?>
+            </option>
+          <?php endforeach ?>
+        </select>
+      <?php endif ?>
+      <?php if (in_array($redisAddress, $conList)): ?>
+        <button id="redis"><?= $cacheText ?></button>
+      <?php endif ?>
+      <button id="toggle"><?= $showText ?></button>
     </div>
   </div>
   <div class="center">
@@ -140,8 +136,8 @@ $body = implode("\n", $phpInfos);
     }
 
     #header>.left>a,
-    #header>.right>div>* {
-      margin: .17em;
+    #header>.right>* {
+      margin: 2px;
     }
 
     #header .right {
@@ -301,6 +297,9 @@ $body = implode("\n", $phpInfos);
     }
   </style>
   <script>
+    resize();
+    window.onresize = resize;
+
     let shownBlocks = getCookies('shown_blocks'),
       containers = document.querySelector('#containers'),
       xdebug = document.querySelector('#xdebug'),
@@ -447,6 +446,31 @@ $body = implode("\n", $phpInfos);
       if (age != 0) cookie += '; max-age=' + age;
 
       document.cookie = cookie
+    }
+
+    function resize() {
+      blk = document.querySelector('#header .right');
+      blk.style.width = blk.style.minWidth = 'auto';
+      els = document.querySelectorAll('#header .right > *');
+      widths = Array.prototype.map.call(els, (val) => val.offsetWidth);
+      fitNum = propCont(blk.offsetWidth / Math.max(...widths), widths);
+      maxChunk = 0;
+      for (let i = 0; i < widths.length; i += fitNum) {
+        sum = widths.slice(i, i + fitNum).reduce((acc, a) => acc + a, 0)
+        if (sum > maxChunk) maxChunk = sum;
+      }
+
+      blk.style.width = blk.style.minWidth =
+        (maxChunk + (8 * fitNum) + 10) + 'px';
+    }
+
+    function propCont(fitNum, widths) {
+      fitNum = Math.floor(fitNum);
+      prop = widths.length / fitNum;
+      if (prop > 1 && prop != Math.ceil(prop))
+        fitNum = propCont(fitNum - 1, widths);
+
+      return fitNum;
     }
   </script>
 
