@@ -358,11 +358,19 @@ $body = implode("\n", $phpInfos);
     });
 
     if (xdebugInput) xdebugInput.forEach((el) => el.addEventListener('change', (event) => {
-      let name = event.target.name,
-        val;
+      setXdebugCookie(event.target.name, event.target.type = 'checkbox');
+      window.location.href = window.location.href;
+    }));
+
+    if (getCookies('php_val').length == 0) {
+      setXdebugCookie(xdebugInput[0].name);
+    }
+
+    function setXdebugCookie(name, selected = true) {
+      let val;
 
       selector = '#xModes [name="' + name + '"]';
-      if (event.target.type = 'checkbox') selector += ':checked';
+      if (selected) selector += ':checked';
       document.querySelectorAll(selector).forEach((el) => {
         if (el.name.includes('[]')) {
           if (val == undefined) val = [];
@@ -381,9 +389,10 @@ $body = implode("\n", $phpInfos);
 
       if (Array.isArray(val)) val = val.join(',');
 
-      setCookie('php_val', name + '=' + val, 3600 * 24 * 365);
-      window.location.href = window.location.href;
-    }));
+      if (val != undefined)
+        setCookie('php_val', name + '=' + val, 3600 * 24 * 365);
+    }
+
 
     if (redis) redis.addEventListener('click', (event) => {
       if (confirm('Are you sure clearing all cache?')) {
