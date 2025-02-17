@@ -11,7 +11,7 @@ $showText = 'Show';
 $hideText = 'Hide';
 
 ### Code ###
-if (($_POST['cache'] ?? null) == 'clear') {
+if (isset($_POST['cache']) && ($_POST['cache']) == 'clear') {
   $redis = new Redis;
   $redis->connect($redisAddress, $redisPort);
   $redis->flushall();
@@ -30,21 +30,40 @@ $dirs = array_filter(scandir($prjFolder), function ($i) use ($prjFolder) {
   return strpos($i, '.') !== 0 && $i !== 'html' && is_dir("$prjFolder/$i");
 });
 
-$ch = curl_init('http:/localhost/containers/json');
-curl_setopt($ch, CURLOPT_UNIX_SOCKET_PATH, '/var/run/docker.sock');
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-$conData = json_decode(curl_exec($ch), true) ?? [];
-curl_close($ch);
-$conteiners = array_map(function ($i) {
-  return $i['Labels']['com.docker.compose.service'];
-}, array_filter($conData, function ($i) use ($prjName) {
-  return $i['Command'] === 'docker-php-entrypoint php-fpm' &&
-    $i['Labels']['com.docker.compose.project'] = $prjName;
-}));
-sort($conteiners);
-$conList = array_map(function ($i) {
-  return $i['Labels']['com.docker.compose.service'];
-}, $conData);
+if ($socket = stream_socket_client('unix:///var/run/docker.sock')) {
+  fwrite($socket, implode("\n", [
+    "GET /containers/json HTTP/1.1",
+    "Host:localhost",
+    "Connection: Close",
+    "",
+    "",
+  ]));
+  $r = stream_get_contents($socket);
+  fclose($socket);
+  $r = explode("\r\n\r\n", $r);
+  if (isset($r[1]))
+    $r = explode("\r\n", $r[1]);
+  if (isset($r[1])) $containers = $r[1];
+} elseif (defined('CURLOPT_UNIX_SOCKET_PATH')) {
+  $ch = curl_init('http:/localhost/containers/json');
+  curl_setopt($ch, CURLOPT_UNIX_SOCKET_PATH, '/var/run/docker.sock');
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  $containers = curl_exec($ch);
+  curl_close($ch);
+}
+if (!empty($containers)) {
+  $conData = json_decode($containers, true);
+  $conteiners = array_map(function ($i) {
+    return $i['Labels']['com.docker.compose.service'];
+  }, array_filter($conData, function ($i) use ($prjName) {
+    return $i['Command'] === 'docker-php-entrypoint php-fpm' &&
+      $i['Labels']['com.docker.compose.project'] = $prjName;
+  }));
+  sort($conteiners);
+  $conList = array_map(function ($i) {
+    return $i['Labels']['com.docker.compose.service'];
+  }, $conData);
+} else $conList = [];
 
 if (function_exists('xdebug_info')) {
   $xModes = ['develop', 'debug', 'coverage', 'trace', 'gcstats', 'profile'];
@@ -54,10 +73,10 @@ if (function_exists('xdebug_info')) {
 foreach ([INFO_GENERAL, INFO_CONFIGURATION, INFO_VARIABLES, INFO_ENVIRONMENT, INFO_MODULES] as $block) {
   ob_start();
   phpinfo($block);
-  [$_, $body] = explode('<div class="center">', ob_get_contents());
+  $body = explode('<div class="center">', ob_get_contents())[1];
   $body = preg_replace('/([^,>]{30,},)\s/', '$1<br>', $body);
   $body = preg_replace('/,([^,])/', ', $1', $body);
-  [$phpInfos[]] = explode('</div></body>', $body);
+  $phpInfos[] = explode('</div></body>', $body)[0];
   ob_get_clean();
 }
 $body = implode("\n", $phpInfos);
