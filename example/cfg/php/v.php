@@ -322,7 +322,8 @@ $body = implode("\n", $phpInfos);
     let shownBlocks = getCookies('shown_blocks'),
       containers = document.querySelector('#containers'),
       xdebug = document.querySelector('#xdebug'),
-      xdebugInput = document.querySelectorAll('#xModes input'),
+      xModes = document.querySelector('#xModes'),
+      xModesInput = document.querySelectorAll('#xModes input'),
       redis = document.querySelector('#redis'),
       toggle = document.querySelector('#toggle'),
       clickEls = document.querySelectorAll('.center > table:first-child, .center > h2');
@@ -335,64 +336,36 @@ $body = implode("\n", $phpInfos);
       window.location.href = window.location.href.replace(document.domain, dom.join('.'));
     });
 
-    if (shownBlocks.filter((value) => value == xdebug.innerText).length) {
-      document.querySelector('#xModes').classList.remove('hide');
-    }
-
-    if (xdebug) xdebug.addEventListener('click', (event) => {
-      el = document.querySelector('#xModes');
-      if (el.classList.value.includes('hide')) {
-        shownBlkList(event.target.innerText, true);
-        el.classList.remove('hide');
-      } else {
-        shownBlkList(event.target.innerText, false);
-        el.classList.add('hide');
+    if (xdebug) {
+      if (shownBlocks.filter((value) => value == xdebug.innerText).length) {
+        xModes.classList.remove('hide');
       }
-    });
 
-    document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape') {
-        shownBlkList(xdebug.innerText, false);
-        document.querySelector('#xModes').classList.add('hide');
-      }
-    });
-
-    if (xdebugInput) xdebugInput.forEach((el) => el.addEventListener('change', (event) => {
-      setXdebugCookie(event.target.name, event.target.type = 'checkbox');
-      window.location.href = window.location.href;
-    }));
-
-    if (getCookies('php_val').length == 0) {
-      setXdebugCookie(xdebugInput[0].name);
-    }
-
-    function setXdebugCookie(name, selected = true) {
-      let val;
-
-      selector = '#xModes [name="' + name + '"]';
-      if (selected) selector += ':checked';
-      document.querySelectorAll(selector).forEach((el) => {
-        if (el.name.includes('[]')) {
-          if (val == undefined) val = [];
-          val.push(el.value);
+      xdebug.addEventListener('click', (event) => {
+        if (xModes && xModes.classList.value.includes('hide')) {
+          shownBlkList(event.target.innerText, true);
+          xModes.classList.remove('hide');
         } else {
-          val = el.value;
+          shownBlkList(event.target.innerText, false);
+          xModes.classList.add('hide');
         }
       });
 
-      name = name.replace('[]', '');
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+          shownBlkList(xdebug.innerText, false);
+          if (xModes) xModes.classList.add('hide');
+        }
+      });
 
-      if (val == undefined) {
-        el = document.querySelector('#xModes [name="' + name + '"][type=hidden]');
-        if (el != undefined) val = el.value;
-      }
+      if (xModesInput) xModesInput.forEach((el) => el.addEventListener('change', (event) => {
+        setXdebugCookie(event.target.name, event.target.type = 'checkbox');
+        window.location.href = window.location.href;
 
-      if (Array.isArray(val)) val = val.join(',');
-
-      if (val != undefined)
-        setCookie('php_val', name + '=' + val, 3600 * 24 * 365);
+        if (getCookies('php_val').length == 0)
+          setXdebugCookie(xModesInput[0].name);
+      }));
     }
-
 
     if (redis) redis.addEventListener('click', (event) => {
       if (confirm('Are you sure clearing all cache?')) {
@@ -451,6 +424,33 @@ $body = implode("\n", $phpInfos);
         array.indexOf(value) == index).sort();
 
       setCookie('shown_blocks', blks.join('||'));
+    }
+
+    function setXdebugCookie(name, selected = true) {
+      let val;
+
+      selector = '#xModes [name="' + name + '"]';
+      if (selected) selector += ':checked';
+      document.querySelectorAll(selector).forEach((el) => {
+        if (el.name.includes('[]')) {
+          if (val == undefined) val = [];
+          val.push(el.value);
+        } else {
+          val = el.value;
+        }
+      });
+
+      name = name.replace('[]', '');
+
+      if (val == undefined) {
+        el = document.querySelector('#xModes [name="' + name + '"][type=hidden]');
+        if (el != undefined) val = el.value;
+      }
+
+      if (Array.isArray(val)) val = val.join(',');
+
+      if (val != undefined)
+        setCookie('php_val', name + '=' + val, 3600 * 24 * 365);
     }
 
     function getCookies(key = null, def = '') {
