@@ -145,6 +145,7 @@ $body = implode("\n", $phpInfos);
   <style>
     body {
       background-color: #222;
+      margin: 1em 3em;
     }
 
     #header {
@@ -267,7 +268,6 @@ $body = implode("\n", $phpInfos);
     #header,
     div.center {
       text-align: left;
-      max-width: 1200px;
       margin: .5em auto;
     }
 
