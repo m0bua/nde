@@ -70,16 +70,35 @@ if (function_exists('xdebug_info')) {
   $xDebs = empty(xdebug_info('mode')) ? ['off'] : xdebug_info('mode');
 }
 
+libxml_use_internal_errors(true);
 foreach ([INFO_GENERAL, INFO_CONFIGURATION, INFO_VARIABLES, INFO_ENVIRONMENT, INFO_MODULES] as $block) {
   ob_start();
   phpinfo($block);
-  $body = explode('<div class="center">', ob_get_contents())[1];
-  $body = preg_replace('/([^,>]{30,},)\s/', '$1<br>', $body);
-  $body = preg_replace('/,([^,])/', ', $1', $body);
-  $phpInfos[] = explode('</div></body>', $body)[0];
+  $html = ob_get_contents();
   ob_get_clean();
+
+  $dom = new DOMDocument();
+  $dom->loadHTML(mb_encode_numericentity(htmlspecialchars_decode(
+    htmlentities($html, ENT_NOQUOTES, 'UTF-8', false),
+    ENT_NOQUOTES
+  ), [0x80, 0x10FFFF, 0, ~0], 'UTF-8'));
+  $div = (new DOMXPath($dom))->query('/html/body/div')->item(0);
+
+  $body = '';
+  foreach ($div->childNodes as $node) {
+    if (in_array($node->nodeName, ['#text', 'hr', 'h1'])) continue;
+    $html = trim($dom->saveHTML($node));
+    $isHead = empty($body) || $node->nodeName == 'h2';
+    if ($isHead && !empty($body)) $body .= "</span>\n";
+    $body .= trim("\n$html");
+    if ($isHead) $body .= "<span>\n";
+  }
+  $phpInfos[] = "$body</span>";
 }
+
 $body = implode("\n", $phpInfos);
+$body = preg_replace('/([^,>]{30,},)\s/', '$1<br>', $body);
+$body = preg_replace('/,([^,])/', ', $1', $body);
 ?>
 <!DOCTYPE html>
 <html>
@@ -238,7 +257,7 @@ $body = implode("\n", $phpInfos);
       background-color: #000;
     }
 
-    div.center table:first-child td {
+    div.center>table:first-child td {
       padding: 1em 12em 1em 3em;
       position: relative;
     }
@@ -277,13 +296,21 @@ $body = implode("\n", $phpInfos);
       margin-top: 2em;
     }
 
-    div.center>table {
+    div.center>span {
       width: 100%;
-      margin: 1em 0 !important;
+      max-width: 100%;
+      text-align: center;
+      margin: 1em auto;
     }
 
-    div.center>hr,
-    div.center>table:not(:first-child) {
+    div.center table {
+      width: 100%;
+      max-width: 100%;
+      text-align: left;
+      margin: 1em auto;
+    }
+
+    div.center>span {
       display: none;
     }
 
@@ -296,19 +323,13 @@ $body = implode("\n", $phpInfos);
       margin: .3em .5em;
     }
 
-    div.center>table.show,
-    div.center>table.no_hide {
-      display: table;
-    }
-
-    div.center>h1.show,
-    div.center>h2.show {
-      display: block;
-    }
-
     div.center>h2.open {
       border: 1.5px solid;
       border-radius: .3em;
+    }
+
+    div.center>span.show {
+      display: block;
     }
 
     .hide {
@@ -402,15 +423,13 @@ $body = implode("\n", $phpInfos);
         shownBlkList(el.innerText, true);
         el.classList.add('open');
       }
-      while (el.nextElementSibling && el.nextElementSibling.tagName == 'TABLE') {
-        el = el.nextElementSibling;
-        if (status.length == 0) status = el.classList.contains('show') ? 'hide' : 'show';
-        el.classList.remove(status == 'show' ? 'hide' : 'show');
-        el.classList.add(status);
-        if (status == 'show') toggle.innerText = '<?= $hideText ?>';
-        else if (!document.querySelectorAll('.center > table:not(:first-child).show').length)
-          toggle.innerText = '<?= $showText ?>';
-      }
+      el = el.nextElementSibling;
+      if (status.length == 0) status = el.classList.contains('show') ? 'hide' : 'show';
+      el.classList.remove(status == 'show' ? 'hide' : 'show');
+      el.classList.add(status);
+      if (status == 'show') toggle.innerText = '<?= $hideText ?>';
+      else if (!document.querySelectorAll('.center > table:not(:first-child).show').length)
+        toggle.innerText = '<?= $showText ?>';
     }
 
     function shownBlkList(name, status) {
