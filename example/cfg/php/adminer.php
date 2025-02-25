@@ -10,7 +10,18 @@ ini_set('post_max_size', '10G');
 ini_set('upload_max_filesize', '10G');
 ini_set('max_execution_time', 360);
 
-if (!filesize($file) || date_create('@'. filemtime($file)) < date_create('-1 week'))
+if (!filesize($file)) update($file);
+else {
+  preg_match('/\$ga="([^"]+)"/', file_get_contents($file), $matches);
+  if (version_compare($_COOKIE['adminer_version'], $matches[1] ?? 0))
+    update($file);
+}
+
+if ((bool)filesize($file)) require_once $file;
+else echo 'Adminer file error!';
+
+function update($file)
+{
   file_put_contents($file, strtr(file_get_contents("https://adminer.org/$file"), [
     'value="\'.h(SERVER).\'"' =>
     'value="\'.h($_GET["server"]??$_ENV["ADMINER_DEFAULT_SERVER"]??"localhost").\'"',
@@ -21,6 +32,4 @@ if (!filesize($file) || date_create('@'. filemtime($file)) < date_create('-1 wee
     'auth[password]"' => 'auth[password]" value="\'.h(empty($_GET["table"])'
       . '?($_ENV["ADMINER_DEFAULT_PASSWORD"]??""):"").\'"',
   ]));
-
-if ((bool)filesize($file)) require_once $file;
-else echo 'Adminer file error!';
+}
