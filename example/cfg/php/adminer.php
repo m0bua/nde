@@ -31,5 +31,11 @@ function update($file)
 
     'auth[password]"' => 'auth[password]" value="\'.h(empty($_GET["table"])'
       . '?($_ENV["ADMINER_DEFAULT_PASSWORD"]??""):"").\'"',
+
+      "type='image'" => "type='button'",
+      "alt='+'" => "value='+'",
+      "alt='↑'" => "value='🡅'",
+      "alt='↓'" => "value='🡇'",
+      "alt='x'" => "value='❌'",
   ]));
 }
