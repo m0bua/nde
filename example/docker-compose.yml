@@ -23,14 +23,15 @@ x-adminer: &adminer
 x-exec: &exec
   volumes:
     - ~/prj:/var/www
-    - ./cfg/php/v.php:/var/www/html/index.php:ro
-    - ./cfg/php/adminer.php:/var/www/.adminer/index.php:ro
+    - php:/tmp/php
+    - ${SSH_AUTH_SOCK:-/dev/null}:/run/ssh-auth.sock:ro
+    - /var/run/docker.sock:/var/run/docker.sock:ro
+    - ~/.ssh:/home/${USER_NAME:-user}/.ssh:ro
     - ./cfg/d.bashrc:/root/.bashrc:ro
     - ./cfg/d.bashrc:/home/${USER_NAME:-user}/.bashrc:ro
-    - ~/.ssh:/home/${USER_NAME:-user}/.ssh:ro
     - ./cfg/php/php.ini:/usr/local/etc/php/php.ini:ro
-    - /var/run/docker.sock:/var/run/docker.sock:ro
-    - ${SSH_AUTH_SOCK:-/dev/null}:/run/ssh-auth.sock:ro
+    - ./cfg/php/v.php:/var/www/html/index.php:ro
+    - ./cfg/php/adminer.php:/var/www/.adminer/index.php:ro
   dns:
     - 1.1.1.1
     - 8.8.8.8
