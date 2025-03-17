@@ -70,7 +70,7 @@ services:
   db:
     hostname: db
     container_name: db
-    image: mariadb #mysql:8, mysql:5, mariadb
+    image: mysql #mysql:8, mysql:5, mariadb
     ports:
       - 127.0.0.1:3306:3306
     volumes:
