@@ -31,7 +31,7 @@ x-exec: &exec
     - ./cfg/d.bashrc:/root/.bashrc:ro
     - ./cfg/d.bashrc:/home/${USER_NAME:-user}/.bashrc:ro
     - ./cfg/php/php.ini:/usr/local/etc/php/php.ini:ro
-    - ./cfg/php/v.php:/var/www/html/index.php:ro
+    - ./cfg/php/info.php:/var/www/html/index.php:ro
     - ./cfg/php/adminer.php:/var/www/.adminer/index.php:ro
   dns:
     - 1.1.1.1

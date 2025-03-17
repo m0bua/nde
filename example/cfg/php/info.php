@@ -71,7 +71,7 @@ if (function_exists('xdebug_info')) {
 }
 
 libxml_use_internal_errors(true);
-foreach ([INFO_GENERAL, INFO_CONFIGURATION, INFO_VARIABLES, INFO_ENVIRONMENT, INFO_MODULES] as $block) {
+foreach ([INFO_GENERAL, INFO_VARIABLES, INFO_ENVIRONMENT, INFO_MODULES] as $block) {
   ob_start();
   phpinfo($block);
   $html = ob_get_contents();
