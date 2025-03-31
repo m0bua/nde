@@ -21,7 +21,7 @@ tbody tr:hover th,
   background-color: transparent;
 }
 
-table {
+table, thead {
   background-color: #111;
 }
 
