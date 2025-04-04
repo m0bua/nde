@@ -27,15 +27,17 @@ function update($file)
     'value="\'.h($_GET["server"]??$_ENV["ADMINER_DEFAULT_SERVER"]??"localhost").\'"',
 
     'value="\'.h($_GET["username"]).\'"' =>
-    'value="\'.h($_GET["username"]??$_ENV["ADMINER_DEFAULT_USER"]??"").\'"',
+    'value="\'.h($_GET["username"]??(empty($_GET["server"])'
+      . ' ? ($_ENV["ADMINER_DEFAULT_USER"]??""):"")).\'"',
 
-    'auth[password]"' => 'auth[password]" value="\'.h(empty($_GET["table"])'
-      . '?($_ENV["ADMINER_DEFAULT_PASSWORD"]??""):"").\'"',
+    'auth[password]"' => 'auth[password]"'
+      . '\'.(empty($_GET["server"]) && empty($_GET["username"])'
+      . '? \' value="\' . h($_ENV["ADMINER_DEFAULT_PASSWORD"] ?? "") . \'"\' : ""). \'',
 
-      "type='image'" => "type='button'",
-      "alt='+'" => "value='+'",
-      "alt='↑'" => "value='🡅'",
-      "alt='↓'" => "value='🡇'",
-      "alt='x'" => "value='❌'",
+    "type='image'" => "type='button'",
+    "alt='+'" => "value='+'",
+    "alt='↑'" => "value='🡅'",
+    "alt='↓'" => "value='🡇'",
+    "alt='x'" => "value='❌'",
   ]));
 }
