@@ -1,51 +1,17 @@
 html {
-  background-color: #222;
+  --accent: #890;
+  --data-bg: #111;
+  --background: #222;
+  --selected-bg: #333;
+  --button: #444;
+  --font: #aaa;
+  --border: #777;
+  --alpha: 0.9;
+
+  --dim: var(--selected-bg);
+
   color-scheme: dark;
-}
-
-body,
-h1,
-h2,
-code,
-th,
-thead td,
-thead th,
-tbody tr:hover td,
-tbody tr:hover th,
-#breadcrumb,
-#logins a,
-#tables a,
-#tables span,
-.footer>div,
-.odd td {
-  background-color: transparent;
-}
-
-table, thead {
-  background-color: #111;
-}
-
-tr:nth-child(2n) {
-  background-color: #222;
-}
-
-.odds tbody tr:nth-child(2n) td {
-  background-color: transparent;
-}
-
-pre,
-input,
-select,
-textarea,
-.message,
-.error,
-.icon {
-  background-color: #222 !important;
-}
-
-tr:hover td,
-.js .checkable .checked td {
-  background-color: #333 !important;
+  background: var(--background);
 }
 
 html,
@@ -55,7 +21,58 @@ th,
 label,
 legend,
 #breadcrumb {
-  color: #aaa;
+  color: var(--font);
+}
+
+body,
+h1,
+h2,
+code,
+th,
+thead td,
+thead th,
+#breadcrumb,
+#logins a,
+#tables a,
+#tables span,
+.footer>div,
+.odd td {
+  background: transparent;
+}
+
+#menu {
+  padding: 0;
+  border-right: 1px dotted var(--border);
+}
+
+h1,
+#menu p,
+#logins,
+#tables {
+  border-top: 1px dotted var(--border);
+  border-bottom: 1px dotted var(--border);
+}
+
+.footer {
+  background: rgb(from var(--background) r g b / var(--alpha));
+  border: 1px solid var(--border);
+  border-radius: .5em;
+  padding: .7em 1em;
+  margin-top: 1em;
+  margin-right: 1em;
+  margin-bottom: .5em;
+  box-shadow: unset;
+}
+
+.logout {
+  box-shadow: unset;
+  background: var(--background);
+}
+
+.message,
+.error {
+  border-radius: .7em;
+  border-radius: .5em;
 }
 
 h2,
@@ -65,11 +82,48 @@ select,
 textarea,
 .jush-sql_code,
 .footer>div {
-  color: #fff;
+  color: var(--font);
+}
+
+input[disabled] {
+  font-style: italic;
+  color: var(--font);
+}
+
+input,
+select,
+textarea,
+pre.jush,
+.message,
+.error,
+.icon {
+  accent-color: var(--accent);
+  background: var(--background);
+}
+
+table,
+thead {
+  background: var(--data-bg);
+}
+
+.odds tbody tr:nth-child(2n),
+tr:nth-child(2n) {
+  background: var(--background);
+}
+
+.odds tbody tr:nth-child(2n) td {
+  background: transparent;
+}
+
+tr:hover td,
+tr:hover th,
+.js .checkable .checked td,
+.js .checkable .checked th {
+  background: var(--selected-bg);
 }
 
 .jush {
-  color: #ca7;
+  color: var(--accent);
 }
 
 .jush-js_key,
@@ -78,66 +132,44 @@ textarea,
   color: lightpink;
 }
 
-input[disabled] {
-  font-style: italic;
-  color: #777;
-}
-
 .jush a,
-a {
-  color: #570;
-}
-
+a,
 a:visited {
-  color: #790;
+  color: var(--accent);
 }
 
-#menu {
+option:checked {
+  color: var(--font);
+  background: rgb(from var(--accent) r g b / .5);
+}
+
+.icon:first-child {
+  font-size: 1.3em;
+  font-weight: bold;
+}
+
+.icon {
+  color: var(--font);
+  background: var(--button);
+  display: inline-block;
+  margin: 1px;
   padding: 0;
-  border-right: 1px dotted #777;
-}
-
-h1,
-#menu p,
-#logins,
-#tables {
-  border-top: 1px dotted #777;
-  border-bottom: 1px dotted #777;
-}
-
-pre,
-input,
-select {
-  border: 1px solid #777;
-  border-radius: .3em;
-  padding: .3em .5em;
-  accent-color: #570;
-}
-
-input.icon {
-  padding: 0;
-  line-height: 1;
+  line-height: 1.2;
   height: 24px;
   width: 24px;
 }
 
-input.icon:first-child {
-  font-size: 1.4em;
-  font-weight: bold;
+.icon:hover {
+  background: var(--accent);
 }
 
-.message,
-.error {
-  border-radius: .7em;
-  border-radius: .5em;
+.icon span {
+  display: block;
 }
 
-.footer {
-  background-color: #111e;
-  border: 1px solid #777;
-  border-radius: .5em;
-  padding: .7em 1em;
-  margin-top: 1em;
-  margin-right: 1em;
-  margin-bottom: .5em;
+.js .column{
+  background: var(--data-bg);
+  border: none;
+  border-radius: 8px;
+  margin-left: .3em;
 }

@@ -40,11 +40,8 @@ function update($file, $ver = null)
     'auth[password]"' => 'auth[password]"'
       . '\'.(empty($_GET["server"]) && empty($_GET["username"])'
       . '? \' value="\' . h($_ENV["ADMINER_DEFAULT_PASSWORD"] ?? "") . \'"\' : ""). \'',
-
-    "type='image'" => "type='button'",
-    "alt='+'" => "value='+'",
-    "alt='↑'" => "value='🡅'",
-    "alt='↓'" => "value='🡇'",
-    "alt='x'" => "value='❌'",
+    '"↑"' => '"🡅"',
+    '"↓"' => '"🡇"',
+    '"x"' => '"❌"',
   ]));
 }
