@@ -61,12 +61,21 @@ params_array=( "$@" )
 exit=true
 quoted_extra_params=false
 
-if [[ $params == '-init' ]]; then ./init.sh script; exit; fi
+if [[ $params == df ]]; then docker system df; exit; fi
+if [[ $params == -init ]]; then $path/init.sh script; exit; fi
 if [[ $params == -purge ]]; then fn_purge; exit; fi
 if [[ $params == -delete ]]; then fn_delete; exit; fi
 if [[ $params == -del ]]; then fn_delete; exit; fi
 if [[ $params == -kill ]]; then fn_kill; exit; fi
-if [[ $params == df ]]; then docker system df; exit; fi
+if [[ $params == d || $params == -d ]]; then
+  docker-compose -f $config down
+  exit
+fi
+if [[ $params == r || $params == -r || $params == -reload ]]; then
+  docker-compose -f $config down
+  docker-compose -f $config up -d
+  exit
+fi
 
 if [[ $1 =~ ^[^-]+ ]]; then default_container=$1; fi
 params=$(docker ps --format {{.Names}} -f label=com.docker.compose.project=nde 2> /dev/null \
