@@ -24,7 +24,6 @@ x-adminer: &adminer
 x-exec: &exec
   volumes:
     - ~/prj:/var/www
-    - php:/tmp/php
     - ${SSH_AUTH_SOCK:-/dev/null}:/run/ssh-auth.sock:ro
     - /var/run/docker.sock:/var/run/docker.sock:ro
     - ~/.ssh:/home/${USER_NAME:-user}/.ssh:ro
