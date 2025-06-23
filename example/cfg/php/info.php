@@ -219,6 +219,7 @@ $body = preg_replace('/,([^,])/', ', $1', $body);
     }
 
     #header .right #xBlk #xModes>label {
+      color: #aaa;
       display: flex;
       margin: 0 .5em;
     }
