@@ -120,7 +120,9 @@ $body = preg_replace('/,([^,])/', ', $1', $body);
     <div class="right">
       <?php if (!empty($xModes)): ?>
         <div id="xBlk">
-          <button id="xdebug"><?= $xdebugText ?></button>
+          <select id="xdebug" onmousedown="handleclick(event)">
+            <option selected><?= $xdebugText ?></option>
+          </select>
           <div id="xModes" class="hide">
             <?php if (version_compare(phpversion('xdebug'), '3.2.0') >= 0): ?>
               <label>
@@ -167,6 +169,10 @@ $body = preg_replace('/,([^,])/', ', $1', $body);
       margin: 1em 3em;
     }
 
+    input[type="checkbox"] {
+      accent-color: #570;
+    }
+
     #header {
       display: flex;
       justify-content: space-between;
@@ -176,7 +182,7 @@ $body = preg_replace('/,([^,])/', ', $1', $body);
 
     #header>.left>a,
     #header>.right>* {
-      margin: 2px;
+      margin: 1px;
     }
 
     #header .right {
@@ -201,6 +207,12 @@ $body = preg_replace('/,([^,])/', ', $1', $body);
       width: 5em;
       height: 2.5em;
       text-align: center;
+      border: none;
+    }
+
+    #header .right select:focus,
+    #header .right button:focus {
+      outline: none;
     }
 
     #header .right #xBlk {
@@ -209,13 +221,13 @@ $body = preg_replace('/,([^,])/', ', $1', $body);
 
     #header .right #xBlk #xModes {
       position: absolute;
-      background-color: #333e;
-      padding: .5em;
-      border-radius: .3em;
+      background-color: black;
+      padding: 0;
+      border-radius: 6px;
+      border: 1px solid gray;
       z-index: 10;
       right: 0;
       top: 100%;
-      top: calc(100% + 1em);
     }
 
     #header .right #xBlk #xModes>label {
@@ -240,10 +252,6 @@ $body = preg_replace('/,([^,])/', ', $1', $body);
       color: #7a0;
       background-color: transparent;
       text-decoration: none;
-    }
-
-    a+a {
-      margin-left: 1em;
     }
 
     div.center table,
@@ -321,7 +329,7 @@ $body = preg_replace('/,([^,])/', ', $1', $body);
       display: inline-block;
       padding: .5em;
       cursor: pointer;
-      margin: .3em .5em;
+      margin: .1em .3em;
     }
 
     div.center>h2.open {
@@ -340,6 +348,11 @@ $body = preg_replace('/,([^,])/', ', $1', $body);
   <script>
     resize();
     window.onresize = resize;
+
+    function handleclick(event) {
+      event.preventDefault()
+      window.focus();
+    }
 
     let shownBlocks = getCookies('shown_blocks'),
       containers = document.querySelector('#containers'),
@@ -364,6 +377,8 @@ $body = preg_replace('/,([^,])/', ', $1', $body);
       }
 
       xdebug.addEventListener('click', (event) => {
+        event.preventDefault()
+        event.target.focus();
         if (xModes && xModes.classList.value.includes('hide')) {
           shownBlkList(event.target.innerText, true);
           xModes.classList.remove('hide');
