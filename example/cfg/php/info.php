@@ -371,21 +371,29 @@ $body = preg_replace('/,([^,])/', ', $1', $body);
       window.location.href = window.location.href.replace(document.domain, dom.join('.'));
     });
 
-    if (xdebug) {
-      if (shownBlocks.filter((value) => value == xdebug.innerText).length) {
+    if (xdebug && xModes) {
+      if (shownBlocks.filter((v) => v == 'xdebugSelect').length)
         xModes.classList.remove('hide');
-      }
+
+      document.addEventListener('click', (event) => {
+        let target = event.target;
+        while (target)
+          if (target == xModes) break;
+          else target = target.parentElement;
+
+        if (xModes.classList.value.includes('hide') &&
+          event.target == xdebug) {
+          shownBlkList('xdebugSelect', true);
+          xModes.classList.remove('hide');
+        } else if (target != xModes) {
+          shownBlkList('xdebugSelect', false);
+          xModes.classList.add('hide');
+        }
+      });
 
       xdebug.addEventListener('click', (event) => {
         event.preventDefault()
         event.target.focus();
-        if (xModes && xModes.classList.value.includes('hide')) {
-          shownBlkList(event.target.innerText, true);
-          xModes.classList.remove('hide');
-        } else {
-          shownBlkList(event.target.innerText, false);
-          xModes.classList.add('hide');
-        }
       });
 
       document.addEventListener('keydown', (event) => {
