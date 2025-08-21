@@ -1,0 +1,376 @@
+html {
+  --accent: #9a0;
+  --data-bg: #111;
+  --background: #222;
+  --selected-bg: #42443d;
+  --button: #444;
+  --font: #aaa;
+  --border: #777;
+  --alpha: 0.9;
+
+  color-scheme: dark;
+  background: var(--background);
+}
+
+html,
+body,
+td,
+th,
+label,
+legend,
+#breadcrumb {
+  color: var(--font);
+}
+
+body,
+h1,
+h2,
+code,
+th,
+thead td,
+thead th,
+#breadcrumb,
+#logins a,
+#tables a,
+#tables span,
+.footer>div,
+.odd td {
+  background: transparent;
+}
+
+
+/* ### Main ### */
+
+#infoB {
+  margin: 1em 3em;
+}
+
+
+#infoB input[type="checkbox"] {
+  accent-color: var(--accent);
+}
+
+#infoB #header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 24px;
+  line-height: 2;
+}
+
+#infoB #header>.left>a,
+#infoB #header>.right>* {
+  margin: 1px;
+}
+
+#infoB #header .right {
+  text-align: right;
+  position: relative;
+}
+
+#infoB #header .right>div,
+#infoB #header .right #xBlk,
+#infoB #header .right select,
+#infoB #header .right button {
+  display: inline-block;
+}
+
+#infoB #header .right select,
+#infoB #header .right button {
+  color: var(--font);
+  background-color: black;
+  font-size: 18px;
+  border-color: var(--border);
+  border-radius: .3em;
+  width: 5em;
+  height: 2.5em;
+  text-align: center;
+  border: none;
+}
+
+#infoB #header .right select:focus,
+#infoB #header .right button:focus {
+  outline: none;
+}
+
+#infoB #header .right #xBlk {
+  position: relative;
+}
+
+#infoB #header .right #xBlk #xModes {
+  position: absolute;
+  background-color: black;
+  padding: 0;
+  border-radius: 6px;
+  border: 1px solid gray;
+  z-index: 10;
+  right: 0;
+  top: 100%;
+}
+
+#infoB #header .right #xBlk #xModes>label {
+  display: flex;
+  color: var(--font);
+  line-height: 1.8;
+  margin: 5px;
+  padding: 0 .5em;
+  border-radius: 5px;
+}
+
+#infoB #header .right #xBlk #xModes>label>input {
+  margin-right: 1em;
+}
+
+#infoB #header .right #xBlk #xModes>label:hover {
+  background-color: var(--button);
+}
+
+#infoB #toggle {
+  display: button;
+}
+
+#infoB a,
+#infoB div.center a:link,
+#infoB div.center a:visited,
+#infoB div.center h2>a:link,
+#infoB div.center h2>a:visited {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+#infoB div.center::selection,
+#infoB div.center a::selection,
+#infoB div.center h2::selection,
+#infoB div.center h2>a::selection {
+  user-select: none !important;
+  background-color: transparent;
+}
+
+#infoB div.center table,
+#infoB div.center h1,
+#infoB div.center h2,
+#infoB div.center h3 {
+  color: var(--font);
+}
+
+#infoB div.center .h,
+#infoB div.center .e {
+  background-color: black;
+}
+
+#infoB div.center>table:first-child td {
+  padding: 1em 12em 1em 3em;
+  position: relative;
+}
+
+#infoB div.center table:first-child td img {
+  position: absolute;
+  top: 1.5em;
+  right: 3em;
+}
+
+#infoB div.center th,
+#infoB div.center td {
+  padding: .5em;
+  position: relative;
+}
+
+#infoB div.center td[style],
+#infoB div.center .v,
+#infoB div.center .d {
+  background-color: var(--data-bg) !important;
+}
+
+#infoB div.center table:not(:first-child) td img {
+  display: block;
+}
+
+#infoB #header,
+#infoB div.center {
+  text-align: left;
+  margin: .5em auto;
+}
+
+#infoB div.center>h1 {
+  display: none;
+  text-align: center;
+  margin-top: 2em;
+}
+
+#infoB div.center>span {
+  width: 100%;
+  max-width: 100%;
+  text-align: center;
+  margin: 1em auto;
+}
+
+#infoB div.center table {
+  width: 100%;
+  max-width: 100%;
+  text-align: left;
+  margin: 1em auto;
+}
+
+#infoB div.center>span {
+  display: none;
+}
+
+#infoB div.center>h2 {
+  color: var(--font);
+  font-size: 18px;
+  display: inline-block;
+  padding: .5em;
+  cursor: pointer;
+  margin: .1em .3em;
+}
+
+#infoB div.center>h2.open {
+  border: 1.5px solid;
+  border-radius: .3em;
+}
+
+#infoB div.center>span.show {
+  display: block;
+}
+
+#infoB .hide {
+  display: none !important;
+}
+
+
+/* ### Adminer ### */
+
+.adminer #menu {
+  padding: 0;
+  border-right: 1px dotted var(--border);
+}
+
+.adminer #menu h1,
+.adminer #menu p,
+.adminer #logins,
+.adminer #tables {
+  border-top: 1px dotted var(--border);
+  border-bottom: 1px dotted var(--border);
+}
+
+.adminer .footer {
+  background: rgb(from var(--background) r g b / var(--alpha));
+  border: 1px solid var(--border);
+  border-radius: .5em;
+  padding: .7em 1em;
+  margin-top: 1em;
+  margin-right: 1em;
+  margin-bottom: .5em;
+  box-shadow: unset;
+}
+
+.adminer .logout {
+  box-shadow: unset;
+  background: var(--background);
+}
+
+.adminer .message,
+.adminer .error {
+  border-radius: .7em;
+  border-radius: .5em;
+}
+
+.adminer h2,
+.adminer pre,
+.adminer input,
+.adminer select,
+.adminer textarea,
+.adminer .jush-sql_code,
+.adminer .footer>div {
+  color: var(--font);
+}
+
+.adminer input[disabled] {
+  font-style: italic;
+  color: var(--font);
+}
+
+.adminer input,
+.adminer select,
+.adminer textarea,
+.adminer pre.jush,
+.adminer .message,
+.adminer .error,
+.adminer .icon {
+  accent-color: var(--accent);
+  background: var(--background);
+}
+
+.adminer table,
+.adminer thead {
+  background: var(--data-bg);
+}
+
+.adminer .odds tbody tr:nth-child(2n),
+.adminer tr:nth-child(2n) {
+  background: var(--background);
+}
+
+.adminer .odds tbody tr:nth-child(2n) td {
+  background: transparent;
+}
+
+.adminer tr:hover td,
+.adminer tr:hover th,
+.js .checkable .checked td,
+.js .checkable .checked th,
+.js .checkable .checked:nth-child(2n) td,
+.js .checkable .checked:nth-child(2n) th {
+  background: var(--selected-bg) !important;
+}
+
+.adminer .jush {
+  color: var(--accent);
+}
+
+.adminer .jush-js_key,
+.adminer .jush-js_key .jush-quo,
+.adminer .jush-js_key .jush-apo {
+  color: lightpink;
+}
+
+.adminer .jush a,
+.adminer a,
+.adminer a:visited {
+  color: var(--accent);
+}
+
+.adminer option:checked {
+  color: var(--font);
+  background: rgb(from var(--accent) r g b / .5);
+}
+
+.adminer .icon:first-child {
+  font-size: 1.3em;
+  font-weight: bold;
+}
+
+.adminer .icon {
+  color: var(--font);
+  background: var(--button);
+  display: inline-block;
+  margin: 1px;
+  padding: 0;
+  line-height: 1.2;
+  height: 24px;
+  width: 24px;
+}
+
+.adminer .icon:hover {
+  background: var(--accent);
+}
+
+.adminer .icon span {
+  display: block;
+}
+
+.adminer .js .column {
+  background: var(--data-bg);
+  border: none;
+  border-radius: 8px;
+  margin-left: .3em;
+}

@@ -30,8 +30,8 @@ x-exec: &exec
     - ./cfg/d.bashrc:/root/.bashrc:ro
     - ./cfg/d.bashrc:/home/${USER_NAME:-user}/.bashrc:ro
     - ./cfg/php/php.ini:/usr/local/etc/php/php.ini:ro
-    - ./cfg/php/info.php:/var/www/html/index.php:ro
-    - ./cfg/php/adminer.php:/var/www/.adminer/index.php:ro
+    - ./www/info.php:/var/www/html/index.php:ro
+    - ./www/adminer.php:/var/www/.adminer/index.php:ro
   dns:
     - 1.1.1.1
     - 8.8.8.8
@@ -52,10 +52,12 @@ services:
       - 127.0.0.1:443:443
     volumes:
       - ~/prj:/var/www
-      - ./cfg/nginx/adminer.css:/var/www/.adminer/adminer.css:ro
       - ./cfg/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./cfg/nginx/cert:/etc/nginx/cert:ro
       - ./cfg/d.bashrc:/root/.bashrc:ro
+      - ./www/styles.css:/var/www/.adminer/adminer.css:ro
+      - ./www/styles.css:/var/www/html/main.css:ro
+      - ./www/info.js:/var/www/html/main.js:ro
 
   php:
     hostname: php
