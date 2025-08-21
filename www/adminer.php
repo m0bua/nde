@@ -31,15 +31,14 @@ function update($file, $ver = null)
   $data = file_get_contents($url);
   if (!empty($data)) file_put_contents($file, strtr($data, [
     'value="\'.h(SERVER).\'"' =>
-    'value="\'.h($_GET["server"]??$_ENV["ADMINER_DEFAULT_SERVER"]??"localhost").\'"',
+    'value="\'.h($_ENV["ADMINER_DEFAULT_SERVER"]??"localhost").\'"',
 
     'value="\'.h($_GET["username"]).\'"' =>
-    'value="\'.h($_GET["username"]??(empty($_GET["server"])'
-      . ' ? ($_ENV["ADMINER_DEFAULT_USER"]??""):"")).\'"',
+    'value="\'.h($_ENV["ADMINER_DEFAULT_USER"]??"").\'"',
 
     'auth[password]"' => 'auth[password]"'
-      . '\'.(empty($_GET["server"]) && empty($_GET["username"])'
-      . '? \' value="\' . h($_ENV["ADMINER_DEFAULT_PASSWORD"] ?? "") . \'"\' : ""). \'',
+      . ' value="\' . h($_ENV["ADMINER_DEFAULT_PASSWORD"] ?? ""). \'"',
+
     '"↑"' => '"🡅"',
     '"↓"' => '"🡇"',
     '"x"' => '"❌"',
