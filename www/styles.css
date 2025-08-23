@@ -2,13 +2,17 @@ html {
   --accent: #9a0;
   --data-bg: #111;
   --background: #222;
-  --selected-bg: #42443d;
+  --selected-bg: #9a03;
+  --hover-bg: #9a05;
   --button: #444;
   --font: #aaa;
   --border: #777;
   --alpha: 0.9;
+}
 
+html {
   color-scheme: dark;
+  color: var(--font);
   background: var(--background);
 }
 
@@ -314,13 +318,20 @@ thead th,
   background: transparent;
 }
 
-.adminer tr:hover td,
-.adminer tr:hover th,
 .js .checkable .checked td,
 .js .checkable .checked th,
 .js .checkable .checked:nth-child(2n) td,
 .js .checkable .checked:nth-child(2n) th {
   background: var(--selected-bg) !important;
+}
+
+.adminer tr:hover td,
+.adminer tr:hover th,
+.js .checkable .checked:hover td,
+.js .checkable .checked:hover th,
+.js .checkable .checked:hover:nth-child(2n) td,
+.js .checkable .checked:hover:nth-child(2n) th {
+  background: var(--hover-bg) !important;
 }
 
 .adminer .jush {
@@ -337,6 +348,11 @@ thead th,
 .adminer a,
 .adminer a:visited {
   color: var(--accent);
+}
+
+.adminer a:link:hover,
+.adminer a:visited:hover {
+  color: var(--font);
 }
 
 .adminer option:checked {
@@ -368,7 +384,7 @@ thead th,
   display: block;
 }
 
-.adminer .js .column {
+.js .column {
   background: var(--data-bg);
   border: none;
   border-radius: 8px;
