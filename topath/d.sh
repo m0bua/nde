@@ -54,7 +54,7 @@ export USER_ID=$(id -u)
 export GROUP_ID=$(id -g)
 export DOCKER_GID=$(getent group docker | cut -d: -f3)
 
-command="docker-compose -f ${config}"
+command="docker compose -f ${config}"
 params="$*"
 extra_params=""
 params_array=( "$@" )
@@ -68,12 +68,12 @@ if [[ $params == -delete ]]; then fn_delete; exit; fi
 if [[ $params == -del ]]; then fn_delete; exit; fi
 if [[ $params == -kill ]]; then fn_kill; exit; fi
 if [[ $params == d || $params == -d ]]; then
-  docker-compose -f $config down
+  docker compose -f $config down
   exit
 fi
 if [[ $params == r || $params == -r || $params == -reload ]]; then
-  docker-compose -f $config down
-  docker-compose -f $config up -d
+  docker compose -f $config down
+  docker compose -f $config up -d
   exit
 fi
 
