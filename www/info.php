@@ -103,7 +103,7 @@ $body = preg_replace('/,([^,])/', ', $1', $body);
 
 <head>
   <title>NDE <?= strtoupper($ver) ?> <?= phpversion() ?></title>
-  <link href="main.css" rel="stylesheet" type="text/css">
+  <link href="/main.css" rel="stylesheet" type="text/css">
 </head>
 
 <body id="infoB">
@@ -163,7 +163,7 @@ $body = preg_replace('/,([^,])/', ', $1', $body);
     <?= $body ?>
   </div>
 
-  <script src="main.js"></script>
+  <script src="/main.js"></script>
 </body>
 
 </html>
