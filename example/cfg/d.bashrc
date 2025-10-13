@@ -17,6 +17,9 @@ alias ls='ls --color=auto'
 alias grep='grep --color=auto'
 alias ll='ls -lh'
 
+alias q='exit'
+alias c='composer'
+
 # enable bash completion in interactive shells
 if ! shopt -oq posix; then
   if [ -f /usr/share/bash-completion/bash_completion ]; then
