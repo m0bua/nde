@@ -30,6 +30,7 @@ x-exec: &exec
     - ./cfg/d.bashrc:/root/.bashrc:ro
     - ./cfg/d.bashrc:/home/${USER_NAME:-user}/.bashrc:ro
     - ./cfg/php/php.ini:/usr/local/etc/php/php.ini:ro
+    - ./cfg/php/ssmtp.conf:/etc/ssmtp/ssmtp.conf
     - ./www/info.php:/var/www/html/index.php:ro
     - ./www/adminer.php:/var/www/.adminer/index.php:ro
   dns:
