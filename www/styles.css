@@ -42,13 +42,11 @@ thead th,
   background: transparent;
 }
 
-
 /* ### Main ### */
 
 #infoB {
   margin: 1em 3em;
 }
-
 
 #infoB input[type="checkbox"] {
   accent-color: var(--accent);
@@ -305,7 +303,8 @@ thead th,
 }
 
 .adminer table,
-.adminer thead {
+.adminer thead,
+.adminer .odds tbody tr {
   background: var(--data-bg);
 }
 
