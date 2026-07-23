@@ -7,6 +7,7 @@
 !/init.sh
 !/init.ps1
 !/build-php.sh
+!/lint.sh
 !/topath
 !/topath/*
 !/example
