@@ -3,6 +3,7 @@
 !.gitignore
 !.gitattributes
 !README.md
+!/d.help.md
 !LICENSE
 !/init.sh
 !/init.ps1

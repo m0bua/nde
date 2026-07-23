@@ -76,7 +76,7 @@ fn_stop_containers() {
 }
 
 fn_help() {
-  cat "${path}/topath/d.help.md"
+  cat "${path}/d.help.md"
 }
 
 path=$(dirname "$(dirname "$(realpath "${BASH_SOURCE[0]}")")")

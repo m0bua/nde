@@ -18,7 +18,7 @@ d h
 d down
 ```
 
-The complete command reference is in [topath/d.help.md](topath/d.help.md).
+The complete command reference is in [d.help.md](d.help.md).
 
 ## PHP image builds
 
