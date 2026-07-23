@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 
 if [[ -f "$script_dir/cfg/.env" ]]; then
     source "$script_dir/cfg/.env"

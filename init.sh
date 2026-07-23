@@ -2,6 +2,7 @@
 
 ndePath=$(dirname "$(realpath "${BASH_SOURCE[0]}")")
 certDir="$ndePath/cfg/nginx/cert"
+certScript="$ndePath/scripts/cert.sh"
 isYes() [[ "${1:-}" =~ ^([yY]|[yY][eE][sS])$ ]]
 
 if git -C "$ndePath" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
@@ -55,8 +56,8 @@ else
   crt=y
 fi
 if isYes "$crt"; then
-  chmod +x "$certDir/cert.sh"
-  (cd "$certDir" && ./cert.sh)
+  chmod +x "$certScript"
+  "$certScript"
 fi
 
 if isYes "$crt" && \

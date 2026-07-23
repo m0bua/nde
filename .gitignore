@@ -7,10 +7,10 @@
 !LICENSE
 !/init.sh
 !/init.ps1
-!/build-php.sh
-!/lint.sh
 !/topath
 !/topath/*
+!/scripts
+!/scripts/*
 !/example
 !/example/*
 !/www

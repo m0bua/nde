@@ -39,13 +39,18 @@ changed with `PHP_UPSTREAM_CACHE_TTL` in `cfg/.env` (in seconds).
 The PHP images are defined by the `IMAGE` build arguments in
 `docker-compose.yml`.
 
+Before `d up`, `d build`, `d reload` and `d refresh`, the PHP service
+configuration is checked. If a PHP service, image or build argument changes,
+the Nginx certificate is regenerated automatically. The Root CA is preserved;
+only the server certificate is renewed when necessary.
+
 The upstream repository and cache settings are configured in `cfg/.env`; the
 branch is always `master`.
 
 Shell scripts can be checked with:
 
 ```bash
-./lint.sh
+./scripts/lint.sh
 ```
 
 ## License

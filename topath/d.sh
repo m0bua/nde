@@ -75,12 +75,37 @@ fn_stop_containers() {
   fi
 }
 
+fn_update_cert() {
+  local cert_file="${path}/cfg/nginx/cert/nginx-selfsigned.crt"
+  local cert_hash_before=''
+  local cert_hash_after=''
+
+  if [[ -x "${cert_script}" ]]; then
+    if [[ -f "${cert_file}" ]]; then
+      cert_hash_before="$(sha256sum "${cert_file}" | awk '{print $1}')"
+    fi
+    "${cert_script}" --auto
+
+    if [[ -f "${cert_file}" ]]; then
+      cert_hash_after="$(sha256sum "${cert_file}" | awk '{print $1}')"
+    fi
+    if [[ -n "${cert_hash_before}" && "${cert_hash_before}" != "${cert_hash_after}" ]] &&
+      docker compose -f "${config}" ps --status running --services 2>/dev/null |
+      grep -Fxq nginx; then
+      echo 'Restarting nginx to load the new certificate.'
+      docker compose -f "${config}" restart nginx
+    fi
+  fi
+}
+
 fn_help() {
   cat "${path}/d.help.md"
 }
 
 path=$(dirname "$(dirname "$(realpath "${BASH_SOURCE[0]}")")")
 config="${path}/docker-compose.yml"
+cert_script="${path}/scripts/cert.sh"
+build_script="${path}/scripts/build-php.sh"
 
 export USER_NAME="$(id -un)"
 export GROUP_NAME="$(id -gn)"
@@ -127,13 +152,15 @@ case "${command_text}" in
     ;;
   r|-r|-reload|reload|--reload)
     docker compose -f "${config}" down
-    "${path}/build-php.sh"
+    "${build_script}"
+    fn_update_cert
     docker compose -f "${config}" up -d
     exit
     ;;
   refresh|-refresh|--refresh)
     docker compose -f "${config}" down
-    "${path}/build-php.sh"
+    "${build_script}"
+    fn_update_cert
     docker compose -f "${config}" up -d --build
     exit
     ;;
@@ -197,7 +224,8 @@ elif [[ "${command_args[0]:-}" == 'up' ]] && ! has_option '-d'; then
 fi
 
 if [[ "${command_args[0]:-}" == 'up' || "${command_args[0]:-}" == 'build' ]]; then
-  "${path}/build-php.sh"
+  "${build_script}"
+  fn_update_cert
 fi
 
 if [[ "${command_args[0]:-}" == 'up' ]] && has_option '-o'; then
