@@ -128,6 +128,12 @@ case "${command_text}" in
   r|-r|-reload|reload|--reload)
     docker compose -f "${config}" down
     "${path}/build-php.sh"
+    docker compose -f "${config}" up -d
+    exit
+    ;;
+  refresh|-refresh|--refresh)
+    docker compose -f "${config}" down
+    "${path}/build-php.sh"
     docker compose -f "${config}" up -d --build
     exit
     ;;
@@ -192,10 +198,6 @@ fi
 
 if [[ "${command_args[0]:-}" == 'up' || "${command_args[0]:-}" == 'build' ]]; then
   "${path}/build-php.sh"
-fi
-
-if [[ "${command_args[0]:-}" == 'up' ]]; then
-  command_args+=(--build)
 fi
 
 if [[ "${command_args[0]:-}" == 'up' ]] && has_option '-o'; then

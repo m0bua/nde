@@ -1,16 +1,9 @@
-#!/usr/bin/env bash
 set -euo pipefail
 
-# The upstream repository is intentionally tracked by master. Both
-# repositories are maintained together, so it is used only when a published
-# base image is missing.
 UPSTREAM_REPOSITORY="${PHP_UPSTREAM_REPOSITORY:-https://github.com/m0bua/ci-docker-php.git}"
 UPSTREAM_REF="master"
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 
-# Keep this list in sync with the php services in docker-compose.yml, or
-# override it for a local setup:
-#   PHP_IMAGES='php:8-fpm-alpine php:7-fpm-alpine' ./build-php.sh
 if [[ -n "${PHP_IMAGES:-}" ]]; then
     read -r -a php_images <<< "$PHP_IMAGES"
 else
@@ -29,12 +22,22 @@ work_dir="$(mktemp -d)"
 cleanup() {
     rm -rf "$work_dir"
 }
+
 trap cleanup EXIT
 
 for image in "${php_images[@]}"; do
     base_image="m0bua/${image}"
 
-    if docker buildx imagetools inspect "$base_image" >/dev/null 2>&1; then
+    if [[ -n "$(docker ps -q --filter "ancestor=${base_image}")" ]]; then
+        echo "Using running container based on ${base_image}"
+        continue
+    fi
+
+    if docker image inspect "$base_image" >/dev/null 2>&1; then
+        continue
+    fi
+
+    if docker pull "$base_image" >/dev/null 2>&1; then
         echo "Using published ${base_image}"
         continue
     fi

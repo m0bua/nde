@@ -17,7 +17,7 @@ d php8 -c 'php -v'       Run a command through bash in php8
 When no arguments are provided:
 
 - if the environment is stopped, PHP base images are checked and missing ones
-  are built, then Compose starts with `--build`;
+  are built, then Compose starts using the existing service images;
 - if a matching container is already running, `bash` is started in it.
 
 The default container is `php`. A container name can be selected by passing it
@@ -30,7 +30,8 @@ d h,  d -h,  d --help    Show this help
 d df, d --df             Show Docker disk usage
 d i,  d -i,  d --init    Run NDE initialization
 d d,  d -d,  d --down    Stop the Compose environment
-d r,  d -r,  d --reload  Recreate the environment and rebuild services
+d r,  d -r,  d --reload  Recreate the environment without rebuilding services
+d refresh                 Recreate the environment and rebuild services
 d x,  d -x,  d --delete  Remove all containers
 d k,  d -k,  d --kill    Kill all running containers
 d p,  d -p,  d --purge   Remove all containers and images
