@@ -18,8 +18,11 @@ is_yes() {
     [[ "${1:-}" =~ ^(yes|y)$ ]]
 }
 
-if [[ "$auto_mode" == true ]]; then
+if [[ "$auto_mode" == true && -f "$cert_dir/NdeRootCA.crt" &&
+    -f "$cert_dir/NdeRootCA.pem" && -f "$cert_dir/NdeRootCA.key" ]]; then
     update_root='n'
+elif [[ "$auto_mode" == true ]]; then
+    update_root='y'
 elif [[ -f "$cert_dir/NdeRootCA.crt" ]]; then
     read -r -p 'Update RootCA? [yN]: ' update_root
 else
@@ -39,6 +42,13 @@ if is_yes "$update_root"; then
         -out "$cert_dir/NdeRootCA.crt"
 fi
 
+if [[ "$auto_mode" == true && -f "$cert_dir/nginx-selfsigned.crt" &&
+    -f "$cert_dir/nginx-selfsigned.key" && -f "$cert_dir/NdeRootCA.crt" &&
+    -f "$cert_dir/NdeRootCA.pem" && -f "$cert_dir/NdeRootCA.key" &&
+    ! "$compose_file" -nt "$cert_dir/nginx-selfsigned.crt" ]]; then
+    exit 0
+fi
+
 mapfile -t php_services < <(
     docker compose -f "$compose_file" config --services |
         awk '/^php[0-9]*$/ { print }' |
@@ -48,24 +58,6 @@ mapfile -t php_services < <(
 if ((${#php_services[@]} == 0)); then
     echo 'No PHP services found in docker-compose.yml' >&2
     exit 1
-fi
-
-cert_state="$cert_dir/.php-config.sha256"
-php_config_hash="$(
-    {
-        printf '%s\n' "${php_services[@]}"
-        docker compose -f "$compose_file" config | awk '
-            /^  php[0-9]*:$/ { in_php=1 }
-            in_php { print }
-            in_php && /^  [a-zA-Z0-9_-]+:$/ && $1 !~ /^php[0-9]*:$/ { in_php=0 }
-        '
-    } | sha256sum | awk '{print $1}'
-)"
-
-if [[ "$auto_mode" == true && -f "$cert_state" && -f "$cert_dir/nginx-selfsigned.crt" &&
-    -f "$cert_dir/nginx-selfsigned.key" && -f "$cert_dir/NdeRootCA.pem" &&
-    "$(<"$cert_state")" == "$php_config_hash" ]]; then
-    exit 0
 fi
 
 printf '\n   Updating Nginx self-signed certificate...\n'
@@ -106,4 +98,3 @@ openssl x509 -req -sha256 -days 1024 \
     -out "$cert_dir/nginx-selfsigned.crt"
 
 rm -f "$cert_dir/nginx-selfsigned.csr"
-printf '%s\n' "$php_config_hash" > "$cert_state"

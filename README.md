@@ -39,10 +39,10 @@ changed with `PHP_UPSTREAM_CACHE_TTL` in `cfg/.env` (in seconds).
 The PHP images are defined by the `IMAGE` build arguments in
 `docker-compose.yml`.
 
-Before `d up`, `d build`, `d reload` and `d refresh`, the PHP service
-configuration is checked. If a PHP service, image or build argument changes,
-the Nginx certificate is regenerated automatically. The Root CA is preserved;
-only the server certificate is renewed when necessary.
+Before `d up`, `d build`, `d reload` and `d refresh`, the modification time of
+`docker-compose.yml` is compared with the Nginx certificate. The certificate
+is regenerated only when Compose is newer or the certificate is missing. The
+Root CA is preserved.
 
 The upstream repository and cache settings are configured in `cfg/.env`; the
 branch is always `master`.
