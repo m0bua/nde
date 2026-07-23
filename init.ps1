@@ -32,8 +32,10 @@ if ([System.IO.Directory]::Exists($topath) -and [System.IO.File]::Exists($exec))
 
 $user = (wsl.exe whoami).Trim()
 $internalPath = "/home/$user/nde"
-$distro = (wsl.exe -l -q | Select-Object -First 1).Trim()
-$externalPath = "\\wsl$\$distro$($internalPath -replace '/', '\')"
+$externalPath = (wsl.exe wslpath -w "$internalPath").Trim()
+if ($LASTEXITCODE -ne 0 -or !$externalPath) {
+  throw "Could not resolve the Windows path for $internalPath"
+}
 $repoUrl = git -C $basePath remote get-url origin 2>$null
 if ($repoUrl) {
   $repoUrl = $repoUrl.Trim()
