@@ -28,7 +28,7 @@ as the first argument.
 ```text
 d h,  d -h,  d --help    Show this help
 d df, d --df             Show Docker disk usage
-d i,  d -i,  d --init    Run NDE initialization
+d i,  d -i,  d --init    Run NDE initialization (imports certificates on Windows)
 d d,  d -d,  d --down    Stop the Compose environment
 d r,  d -r,  d --reload  Recreate the environment without rebuilding services
 d refresh                 Recreate the environment and rebuild services

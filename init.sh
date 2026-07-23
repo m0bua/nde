@@ -49,13 +49,21 @@ if [[ ! -d "$ndePath/cfg" ]]; then
 fi
 
 if [[ -f "$certDir/NdeRootCA.crt" ]]; then
-  read -r -p 'Generate nginx certificates? [yN]: ' crt
+  read -r -p 'Generate nginx certificates? [Yn]: ' crt
+  [[ -z "$crt" ]] && crt=y
 else
   crt=y
 fi
 if isYes "$crt"; then
   chmod +x "$certDir/cert.sh"
   (cd "$certDir" && ./cert.sh)
+fi
+
+if isYes "$crt" && \
+  docker compose -f "$ndePath/docker-compose.yml" ps --status running --services 2>/dev/null |
+  grep -Fxq nginx; then
+  echo 'Restarting nginx to load the new certificate.'
+  docker compose -f "$ndePath/docker-compose.yml" restart nginx
 fi
 
 if [[ "${1:-}" != ps1 ]]; then
