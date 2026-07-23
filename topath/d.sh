@@ -56,7 +56,7 @@ export DOCKER_GID=$(getent group docker | cut -d: -f3)
 
 command="docker compose -f ${config}"
 params="$*"
-extra_params=""
+extra_params=''
 params_array=( "$@" )
 exit=true
 quoted_extra_params=false
@@ -82,10 +82,10 @@ params=$(docker ps --format {{.Names}} -f label=com.docker.compose.project=nde 2
   | grep -E "$default_container" | sort | head -n 1)
 
 if [[ ! -z $params ]]; then
-  command="docker exec -it"
-  extra_params="bash"
+  command='docker exec -it'
+  extra_params='bash'
   if [[ $2 =~ [^\s]+ ]]; then extra_params=$2; fi
-elif [[ -z $params ]] && [[ -z $1 ]];then params="up"; extra_params="-d"
+elif [[ -z $params ]] && [[ -z $1 ]];then params='up'; extra_params='-d'
 else params="$*"; fi
 
 if [[ ${params_array[0]} == '-c' ]]; then
@@ -106,6 +106,14 @@ fi
 if [[ $params =~ ^up.*-a ]]; then params=$(echo $params | sed 's/ -a//')
 elif [[ $params =~ ^up ]] && [[ ! $params =~ -d ]]
   then extra_params='-d'; fi
+
+if [[ $params =~ ^(up|build)([[:space:]]|$) ]]; then
+  "$path/build-php.sh"
+fi
+
+if [[ $params =~ ^up([[:space:]]|$) ]]; then
+  params="$params --build"
+fi
 
 if [[ $params =~ ^up ]] && [[ $params =~ -o ]]; then
   params=$(echo $params | sed 's/ -o//')
