@@ -1,8 +1,18 @@
+#!/usr/bin/env bash
+
 set -euo pipefail
 
-UPSTREAM_REPOSITORY="${PHP_UPSTREAM_REPOSITORY:-https://github.com/m0bua/ci-docker-php.git}"
-UPSTREAM_REF="master"
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+
+if [[ -z "${PHP_UPSTREAM_CACHE_TTL+x}" && -f "$script_dir/.env" ]]; then
+    # shellcheck disable=SC1091
+    source "$script_dir/.env"
+fi
+
+UPSTREAM_REPOSITORY="${PHP_UPSTREAM_REPOSITORY:-https://github.com/m0bua/ci-docker-php.git}"
+# ci-docker-php is intentionally a rolling dependency of NDE.
+UPSTREAM_REF="master"
+UPSTREAM_CACHE_TTL="${PHP_UPSTREAM_CACHE_TTL:-604800}"
 
 if [[ -n "${PHP_IMAGES:-}" ]]; then
     read -r -a php_images <<< "$PHP_IMAGES"
@@ -18,12 +28,48 @@ if ((${#php_images[@]} == 0)); then
     exit 1
 fi
 
-work_dir="$(mktemp -d)"
-cleanup() {
-    rm -rf "$work_dir"
-}
+cache_root="${XDG_CACHE_HOME:-${HOME}/.cache}/nde"
+upstream_dir="$cache_root/ci-docker-php"
+cache_stamp="$cache_root/ci-docker-php.updated"
 
-trap cleanup EXIT
+mkdir -p "$cache_root"
+
+refresh_upstream_cache() {
+    local now stamp_age
+
+    if [[ -f "$cache_stamp" ]]; then
+        now="$(date +%s)"
+        stamp_age=$((now - $(stat -c %Y "$cache_stamp")))
+        if ((stamp_age < UPSTREAM_CACHE_TTL)); then
+            return 0
+        fi
+    fi
+
+    if [[ -d "$upstream_dir/.git" ]]; then
+        echo "Updating ${UPSTREAM_REPOSITORY} (${UPSTREAM_REF})"
+        git -C "$upstream_dir" remote set-url origin "$UPSTREAM_REPOSITORY"
+        if git -C "$upstream_dir" fetch --depth 1 origin "$UPSTREAM_REF" >/dev/null 2>&1 \
+            && git -C "$upstream_dir" checkout --detach FETCH_HEAD >/dev/null 2>&1; then
+            touch "$cache_stamp"
+            return 0
+        fi
+
+        if [[ -f "$upstream_dir/Dockerfile" ]]; then
+            echo "Using stale cached ${upstream_dir}" >&2
+            return 0
+        fi
+    else
+        echo "Cloning ${UPSTREAM_REPOSITORY} (${UPSTREAM_REF})"
+        if git clone --depth 1 --branch "$UPSTREAM_REF" "$UPSTREAM_REPOSITORY" \
+            "$upstream_dir" >/dev/null 2>&1; then
+            touch "$cache_stamp"
+            return 0
+        fi
+    fi
+
+    echo "Unable to prepare ${upstream_dir}" >&2
+    exit 1
+}
 
 for image in "${php_images[@]}"; do
     base_image="m0bua/${image}"
@@ -42,19 +88,13 @@ for image in "${php_images[@]}"; do
         continue
     fi
 
-    if [[ ! -d "$work_dir/ci-docker-php" ]]; then
-        echo "Cloning ${UPSTREAM_REPOSITORY} (${UPSTREAM_REF})"
-        git clone --depth 1 --branch "$UPSTREAM_REF" "$UPSTREAM_REPOSITORY" \
-            "$work_dir/ci-docker-php"
-    fi
-
-    upstream_dir="$work_dir/ci-docker-php"
+    refresh_upstream_cache
     if [[ ! -f "$upstream_dir/Dockerfile" ]]; then
         echo "Upstream Dockerfile was not found in $upstream_dir" >&2
         exit 1
     fi
 
-    echo "Building ${base_image} from ${UPSTREAM_REF}"
+    echo "Published ${base_image} is unavailable; building it from ${UPSTREAM_REF}"
     docker buildx build \
         --load \
         --pull \

@@ -23,6 +23,9 @@ if [[ -d "$ndePath/cfg" ]];then
 else link='y'; fi
 if [[ $link =~ ^yes|y$ ]];then
   cp -rf $ndePath/example/* $ndePath
+  if [[ -f "$ndePath/example/cfg/.env" ]]; then
+    cp -f "$ndePath/example/cfg/.env" "$ndePath/.env"
+  fi
   sed -i 's/^#//' $ndePath/docker-compose.yml
 fi
 

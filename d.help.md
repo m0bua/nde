@@ -49,14 +49,16 @@ d up -o                  Stop and kill running containers before starting
 ```
 
 Every `up` and `build` operation checks the PHP base image tags configured in
-`docker-compose.yml`. Existing `m0bua/php` images are reused; missing images
-are built from the `master` branch of `m0bua/ci-docker-php`.
+`docker-compose.yml`. Local and published `m0bua/php` images are used first;
+only missing images are built from the `master` branch of
+`m0bua/ci-docker-php`.
 
 ## Environment variables
 
 ```text
 PHP_IMAGES               Override the PHP image list
 PHP_UPSTREAM_REPOSITORY  Override the upstream repository URL
+PHP_UPSTREAM_CACHE_TTL   Cache refresh interval in seconds (default: 604800)
 ```
 
 Example:
