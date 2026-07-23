@@ -1,58 +1,82 @@
 Write-Output 'NDE init!'
 
 $basePath = $PSScriptRoot
-$topath = '{0}\topath' -f $basePath;
-$exec = '{0}\d.ps1' -f $topath;
+$beforePull = git -C $basePath rev-parse HEAD 2>$null
+if ($beforePull) {
+  $beforePull = $beforePull.Trim()
+}
+git -C $basePath pull --ff-only
+if ($LASTEXITCODE -ne 0) {
+  throw 'Windows repository was not updated.'
+}
+$afterPull = git -C $basePath rev-parse HEAD 2>$null
+if ($afterPull) {
+  $afterPull = $afterPull.Trim()
+}
+if ($beforePull -and $beforePull -ne $afterPull) {
+  Write-Output 'init.ps1 was updated. Restarting...'
+  & $PSCommandPath @args
+  exit $LASTEXITCODE
+}
+
+$topath = Join-Path $basePath 'topath'
+$exec = Join-Path $topath 'd.ps1'
 if ([System.IO.Directory]::Exists($topath) -and [System.IO.File]::Exists($exec)) {
-  $path = [Environment]::GetEnvironmentVariable("path", [System.EnvironmentVariableTarget]::User)
-  if (!($path -match ($topath -replace "\\", "\\")) ) {
-    [Environment]::SetEnvironmentVariable("path", "$path;$topath", [System.EnvironmentVariableTarget]::User)
+  $path = [Environment]::GetEnvironmentVariable('path', [System.EnvironmentVariableTarget]::User)
+  if (($path -split ';') -notcontains $topath) {
+    [Environment]::SetEnvironmentVariable('path', "$path;$topath", [System.EnvironmentVariableTarget]::User)
+  }
+} else {
+  Write-Output 'Path error!'
+}
+
+$user = (wsl.exe whoami).Trim()
+$internalPath = "/home/$user/nde"
+$distro = (wsl.exe -l -q | Select-Object -First 1).Trim()
+$externalPath = "\\wsl$\$distro$($internalPath -replace '/', '\')"
+$repoUrl = git -C $basePath remote get-url origin 2>$null
+if ($repoUrl) {
+  $repoUrl = $repoUrl.Trim()
+}
+if (!$repoUrl) {
+  throw "Cannot determine the Git origin for $basePath"
+}
+
+wsl.exe test -d "$internalPath/.git"
+$repoExists = $LASTEXITCODE -eq 0
+if (!$repoExists) {
+  wsl.exe test -e $internalPath
+  if ($LASTEXITCODE -eq 0) {
+    throw "$internalPath exists but is not a Git repository"
+  }
+
+  wsl.exe git clone $repoUrl $internalPath
+  if ($LASTEXITCODE -ne 0) {
+    throw 'Could not clone the repository into WSL'
   }
 }
-else { Write-Output 'Path error!' }
 
-$user = (wsl whoami) -replace '[^\w\d_]', ''
-$internalPath = '/home/{0}/nde' -f $user
-$distro = (wsl -l) -replace '[^A-Za-z() ]', ''
-$distro = $distro | Select-String '(Default)' -CaseSensitive -SimpleMatch
-$distro = $distro -replace '\W+\(.*', ''
-$distro = $distro -replace '\W', ''
-$externalPath = '\\wsl$\{0}{1}' -f $distro, $internalPath
-$externalPath = $externalPath -replace ' / ', '\'
+wsl.exe chmod +x "$internalPath/topath/d.sh" "$internalPath/init.sh"
 
-$copy = 'y'
-if ([System.IO.Directory]::Exists($externalPath)) {
-  $copy = Read-Host "Replace distro? [yN]"
-  if ($copy -match '^yes|y|Y$') {
-    Remove-Item $externalPath -Recurse -Force
-  }
-}
+$initPath = "$internalPath/init.sh"
+wsl.exe $initPath ps1
 
-if ($copy -match '^yes|y|Y$') {
-  Copy-Item $basePath -Destination $externalPath -Recurse
-  wsl chmod +x "$internalPath/topath/d.sh"
-  wsl chmod +x "$internalPath/init.sh"
-}
+$importCrt = Read-Host 'Import nginx root certificate? [yN]'
+if ($importCrt -match '(?i)^(yes|y)$') {
+  $path = Join-Path $externalPath 'cfg\nginx\cert\NdeRootCA.crt'
 
-$init_path = '{0}/init.sh' -f $internalPath
-wsl $init_path ps1
-
-$importCrt = Read-Host "Import nginx root certificate? [yN]"
-if ($importCrt -match '^yes|y|Y$') {
-  $path = '{0}\cfg\nginx\cert\NdeRootCA.crt' -f $externalPath
-
-  $delCrt = Read-Host "Delete old root certificates? [Yn]"
-  if (!($delCrt -match '^no|n|N$')) {
+  $delCrt = Read-Host 'Delete old root certificates? [Yn]'
+  if ($delCrt -notmatch '(?i)^(no|n)$') {
     Get-ChildItem Cert:\CurrentUser\Root |
-    Where-Object { $_.Subject -match 'NDE-Root-CA' } |
-    Remove-Item
+      Where-Object { $_.Subject -match 'NDE-Root-CA' } |
+      Remove-Item
   }
 
   Write-Output "Importing $path"
   Import-Certificate -FilePath $path -CertStoreLocation Cert:\CurrentUser\Root
 }
 
-if(!($args -eq 'script')){
+if ($args -ne 'script') {
   Write-Host -NoNewLine 'Ready!'
   $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
 }
