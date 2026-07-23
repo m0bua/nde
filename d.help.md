@@ -56,13 +56,6 @@ only missing images are built from the `master` branch of
 ## Environment variables
 
 ```text
-PHP_IMAGES               Override the PHP image list
-PHP_UPSTREAM_REPOSITORY  Override the upstream repository URL
-PHP_UPSTREAM_CACHE_TTL   Cache refresh interval in seconds (default: 604800)
-```
-
-Example:
-
-```bash
-PHP_IMAGES='php:8.5.1-fpm-alpine php:7-fpm-alpine' d up
+PHP_UPSTREAM_REPOSITORY  Upstream repository URL (configured in cfg/.env)
+PHP_UPSTREAM_CACHE_TTL   Cache refresh interval in seconds (configured in cfg/.env)
 ```

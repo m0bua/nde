@@ -36,15 +36,11 @@ When a fallback build is needed, a shallow clone is cached in
 `~/.cache/nde/ci-docker-php` and refreshed once a week. The interval can be
 changed with `PHP_UPSTREAM_CACHE_TTL` in `cfg/.env` (in seconds).
 
-The default images are `php:8-fpm-alpine`, `php:7-fpm-alpine`, and
-`php:5-fpm-alpine`. The list can be overridden, for example:
+The PHP images are defined by the `IMAGE` build arguments in
+`docker-compose.yml`.
 
-```bash
-PHP_IMAGES='php:8-fpm-alpine php:7-fpm-alpine' d up
-```
-
-The upstream repository can be overridden with
-`PHP_UPSTREAM_REPOSITORY`; the branch is always `master`.
+The upstream repository and cache settings are configured in `cfg/.env`; the
+branch is always `master`.
 
 Shell scripts can be checked with:
 

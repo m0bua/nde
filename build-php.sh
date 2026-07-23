@@ -4,27 +4,21 @@ set -euo pipefail
 
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 
-if [[ -z "${PHP_UPSTREAM_CACHE_TTL+x}" && -f "$script_dir/.env" ]]; then
-    # shellcheck disable=SC1091
-    source "$script_dir/.env"
+if [[ -f "$script_dir/cfg/.env" ]]; then
+    source "$script_dir/cfg/.env"
 fi
 
-UPSTREAM_REPOSITORY="${PHP_UPSTREAM_REPOSITORY:-https://github.com/m0bua/ci-docker-php.git}"
-# ci-docker-php is intentionally a rolling dependency of NDE.
+UPSTREAM_REPOSITORY="${PHP_UPSTREAM_REPOSITORY:?PHP_UPSTREAM_REPOSITORY is not set in cfg/.env}"
 UPSTREAM_REF="master"
 UPSTREAM_CACHE_TTL="${PHP_UPSTREAM_CACHE_TTL:-604800}"
 
-if [[ -n "${PHP_IMAGES:-}" ]]; then
-    read -r -a php_images <<< "$PHP_IMAGES"
-else
-    mapfile -t php_images < <(
-        sed -nE 's/^[[:space:]]+IMAGE:[[:space:]]*([^[:space:]]+).*$/\1/p' \
-            "$script_dir/docker-compose.yml" | sort -u
-    )
-fi
+mapfile -t php_images < <(
+    sed -nE 's/^[[:space:]]+IMAGE:[[:space:]]*([^[:space:]]+).*$/\1/p' \
+        "$script_dir/docker-compose.yml" | sort -u
+)
 
 if ((${#php_images[@]} == 0)); then
-    echo "PHP_IMAGES must contain at least one image" >&2
+    echo "No PHP images found in docker-compose.yml" >&2
     exit 1
 fi
 
