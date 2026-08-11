@@ -305,17 +305,15 @@ td.hover,
 
 .adminer table,
 .adminer thead,
-.adminer .odds tbody tr {
-  background: var(--data-bg);
-}
-
+.adminer .odds tbody tr,
 .adminer .odds tbody tr:nth-child(2n),
 .adminer tr:nth-child(2n) {
-  background: var(--background);
+  background: transparent;
 }
 
+.adminer .odds tbody tr:nth-child(2n) th,
 .adminer .odds tbody tr:nth-child(2n) td {
-  background: transparent;
+  background: var(--data-bg);
 }
 
 .js .checkable .checked td,
@@ -323,6 +321,11 @@ td.hover,
 .js .checkable .checked:nth-child(2n) td,
 .js .checkable .checked:nth-child(2n) th {
   background: var(--selected-bg) !important;
+}
+
+tr,
+.adminer .hover {
+  background: transparent !important;
 }
 
 .adminer tr:hover td,
@@ -389,4 +392,23 @@ td.hover,
   border: none;
   border-radius: 8px;
   margin-left: .3em;
+}
+
+button.icon span {
+  font-size: 0;
+}
+
+.icon-move span:before {
+  content: '≣';
+  font-size: 10px;
+}
+
+.icon-plus span:before {
+  content: '+';
+  font-size: 16px;
+}
+
+.icon-cross span:before {
+  content: '❌';
+  font-size: 10px;
 }
