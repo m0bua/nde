@@ -10,8 +10,6 @@ ini_set('post_max_size', '10G');
 ini_set('upload_max_filesize', '10G');
 ini_set('max_execution_time', 360);
 
-define('Adminer\\SERVER', $_ENV['ADMINER_DEFAULT_SERVER'] ?? '');
-
 if (!filesize($file)) update($file);
 else {
   preg_match('#^\* \@version ([\d\.]+)$#m', file_get_contents($file), $matches);
@@ -30,22 +28,21 @@ if ((bool)filesize($file)) {
       $nonce = $matches[1] ?? '';
       $nonceAttribute = $nonce ? ' nonce="'
         . htmlspecialchars($nonce, ENT_QUOTES) . '"' : '';
-      $username = env('USER');
-      $password = env('PASSWORD');
+      $server = env('server');
+      $username = env('user');
+      $password = env('password');
       $script = <<<HTML
 <script$nonceAttribute>
 window.addEventListener('load', function () {
   const params = new URLSearchParams(window.location.search)
+  fieldFill('server', $server);
   if(!params.get('username')) {
-    ff('username', $username);
-    ff('password', $password);
+    fieldFill('username', $username);
+    fieldFill('password', $password);
   }
 });
-function f(key) {
-    return document.querySelector('input[name="auth['+key+']"]');
-}
-function ff(key, val) {
-    const field = f(key);
+function fieldFill(key, val) {
+    const field = document.querySelector(`input[name="auth[\${key}]"]`);
     if (field && !field.value) field.value = val;
 }
 </script>
