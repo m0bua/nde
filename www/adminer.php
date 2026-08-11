@@ -30,8 +30,8 @@ function update($file, $ver = null)
     . str_replace('latest', "adminer-$ver", $file);
   $data = file_get_contents($url);
   if (!empty($data)) file_put_contents($file, strtr($data, [
-    'value="\'.h(SERVER).\'"' =>
-    'value="\'.h($_ENV["ADMINER_DEFAULT_SERVER"]??"localhost").\'"',
+    'value=\'".h(SERVER)."\'' =>
+    'value=\"".h($_ENV["ADMINER_DEFAULT_SERVER"]??"localhost")."\"',
 
     'value="\'.h($_GET["username"]).\'"' =>
     'value="\'.h($_ENV["ADMINER_DEFAULT_USER"]??"").\'"',
