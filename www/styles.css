@@ -1,56 +1,47 @@
 html {
-  --accent: #9a0;
-  --data-bg: #111;
-  --background: #222;
-  --selected-bg: #9a03;
-  --hover-bg: #9a05;
-  --button: #444;
-  --font: #aaa;
-  --border: #777;
-  --alpha: 0.9;
-}
+  --fg: #aaa;
+  --data: #111;
+  --bg: #222;
+  --btn: #444;
+  --a: #9a0;
+  --sel: #9a03;
+  --hover: #9a05;
+  --alpha: .8;
 
-html {
   color-scheme: dark;
-  color: var(--font);
-  background: var(--background);
+  color: var(--fg);
+  background: var(--bg);
+  accent-color: var(--a);
 }
 
-html,
-body,
-td,
-th,
-label,
-legend,
-#breadcrumb {
-  color: var(--font);
+a,
+a:visited {
+  color: var(--a);
+  text-decoration: none;
 }
 
-body,
-h1,
-h2,
-code,
-th,
-thead th,
-thead td,
-td.hover,
-#breadcrumb,
-#logins a,
-#tables a,
-#tables span,
-.footer>div,
-.odd td {
-  background: transparent;
+a:hover,
+a:link:hover,
+a:visited:hover {
+  color: var(--fg);
 }
 
-/* ### Main ### */
+input,
+button,
+select {
+  color: var(--fg);
+  background: var(--data);
+}
+
+select option:checked {
+  background: var(--a);
+}
+
+
+/* ### Info ### */
 
 #infoB {
   margin: 1em 3em;
-}
-
-#infoB input[type="checkbox"] {
-  accent-color: var(--accent);
 }
 
 #infoB #header {
@@ -67,158 +58,90 @@ td.hover,
 
 #infoB #header .right {
   text-align: right;
-  position: relative;
 }
 
 #infoB #header .right>div,
-#infoB #header .right #xBlk,
-#infoB #header .right select,
-#infoB #header .right button {
+#infoB #header .right>select,
+#infoB #header .right>button {
   display: inline-block;
 }
 
 #infoB #header .right select,
 #infoB #header .right button {
-  color: var(--font);
-  background-color: black;
+  background-color: var(--data);
   font-size: 18px;
-  border-color: var(--border);
-  border-radius: .3em;
   width: 5em;
   height: 2.5em;
   text-align: center;
   border: none;
+  border-radius: .3em;
 }
 
-#infoB #header .right select:focus,
-#infoB #header .right button:focus {
+#infoB #header .right :is(select, button):focus {
   outline: none;
 }
 
-#infoB #header .right #xBlk {
+#infoB #xBlk {
   position: relative;
 }
 
-#infoB #header .right #xBlk #xModes {
+#infoB #xModes {
   position: absolute;
-  background-color: black;
-  padding: 0;
-  border-radius: 6px;
-  border: 1px solid gray;
-  z-index: 10;
-  right: 0;
-  top: 100%;
+  background-color: var(--data);
+  border-radius: 5px;
+  top: 103%;
+  z-index: 1;
 }
 
-#infoB #header .right #xBlk #xModes>label {
+#infoB #xModes>label {
   display: flex;
-  color: var(--font);
-  line-height: 1.8;
-  margin: 5px;
   padding: 0 .5em;
   border-radius: 5px;
 }
 
-#infoB #header .right #xBlk #xModes>label>input {
+#infoB #xModes>label>input {
   margin-right: 1em;
 }
 
-#infoB #header .right #xBlk #xModes>label:hover {
-  background-color: var(--button);
+#infoB #xModes>label:hover {
+  background-color: var(--btn);
 }
 
-#infoB #toggle {
-  display: button;
+#infoB .center :is(h1, h2) {
+  user-select: none;
 }
 
-#infoB a,
-#infoB div.center a:link,
-#infoB div.center a:visited,
-#infoB div.center h2>a:link,
-#infoB div.center h2>a:visited {
-  color: var(--accent);
-  text-decoration: none;
-}
-
-#infoB div.center::selection,
-#infoB div.center a::selection,
-#infoB div.center h2::selection,
-#infoB div.center h2>a::selection {
-  user-select: none !important;
-  background-color: transparent;
-}
-
-#infoB div.center table,
-#infoB div.center h1,
-#infoB div.center h2,
-#infoB div.center h3 {
-  color: var(--font);
-}
-
-#infoB div.center .h,
-#infoB div.center .e {
-  background-color: black;
-}
-
-#infoB div.center>table:first-child td {
-  padding: 1em 12em 1em 3em;
+#infoB .center table tr.h td {
   position: relative;
+  padding: 1em 12em 1em 3em;
 }
 
-#infoB div.center table:first-child td img {
+#infoB .center table tr.h td img {
   position: absolute;
   top: 1.5em;
   right: 3em;
 }
 
-#infoB div.center th,
-#infoB div.center td {
+#infoB .center :is(th, td) {
   padding: .5em;
-  position: relative;
+  background-color: var(--data);
 }
 
-#infoB div.center td[style],
-#infoB div.center .v,
-#infoB div.center .d {
-  background-color: var(--data-bg) !important;
-}
-
-#infoB div.center table:not(:first-child) td img {
+#infoB .center table td img {
   display: block;
 }
 
-#infoB #header,
-#infoB div.center {
-  text-align: left;
-  margin: .5em auto;
-}
-
-#infoB div.center>h1 {
-  display: none;
-  text-align: center;
-  margin-top: 2em;
-}
-
-#infoB div.center>span {
-  width: 100%;
-  max-width: 100%;
-  text-align: center;
-  margin: 1em auto;
-}
-
-#infoB div.center table {
-  width: 100%;
-  max-width: 100%;
-  text-align: left;
-  margin: 1em auto;
-}
-
-#infoB div.center>span {
+#infoB .center span {
   display: none;
 }
 
-#infoB div.center>h2 {
-  color: var(--font);
+#infoB .center table {
+  width: 100%;
+  max-width: 100%;
+  margin: 1em auto;
+}
+
+#infoB .center h2 {
   font-size: 18px;
   display: inline-block;
   padding: .5em;
@@ -226,189 +149,88 @@ td.hover,
   margin: .1em .3em;
 }
 
-#infoB div.center>h2.open {
+#infoB .center h2.open {
   border: 1.5px solid;
   border-radius: .3em;
 }
 
-#infoB div.center>span.show {
+#infoB .center :is(span.show, .open+span) {
   display: block;
 }
 
 #infoB .hide {
-  display: none !important;
+  display: none;
 }
 
 
 /* ### Adminer ### */
 
-.adminer #menu {
-  padding: 0;
-  border-right: 1px dotted var(--border);
+html {
+  --dim: var(--hover);
+  --lit: var(--sel);
 }
 
-.adminer #menu h1,
-.adminer #menu p,
-.adminer #logins,
-.adminer #tables {
-  border-top: 1px dotted var(--border);
-  border-bottom: 1px dotted var(--border);
-}
-
-.adminer .footer {
-  background: rgb(from var(--background) r g b / var(--alpha));
-  border: 1px solid var(--border);
-  border-radius: .5em;
-  padding: .7em 1em;
-  margin-top: 1em;
-  margin-right: 1em;
-  margin-bottom: .5em;
-  box-shadow: unset;
-}
-
-.adminer .logout {
-  box-shadow: unset;
-  background: var(--background);
-}
-
-.adminer .message,
-.adminer .error {
-  border-radius: .7em;
-  border-radius: .5em;
-}
-
-.adminer h2,
-.adminer pre,
-.adminer input,
-.adminer select,
-.adminer textarea,
-.adminer .jush-sql_code,
-.adminer .footer>div {
-  color: var(--font);
-}
-
-.adminer input[disabled] {
-  font-style: italic;
-  color: var(--font);
-}
-
-.adminer input,
-.adminer select,
-.adminer textarea,
-.adminer pre.jush,
-.adminer .message,
-.adminer .error,
-.adminer .icon {
-  accent-color: var(--accent);
-  background: var(--background);
-}
-
-.adminer table,
-.adminer thead,
-.adminer .odds tbody tr,
-.adminer .odds tbody tr:nth-child(2n),
-.adminer tr:nth-child(2n) {
+.adminer :is(h1, h2, h3, code, td, #breadcrumb) {
   background: transparent;
 }
 
-.adminer .odds tbody tr:nth-child(2n) th,
-.adminer .odds tbody tr:nth-child(2n) td {
-  background: var(--data-bg);
-}
-
-.js .checkable .checked td,
-.js .checkable .checked th,
-.js .checkable .checked:nth-child(2n) td,
-.js .checkable .checked:nth-child(2n) th {
-  background: var(--selected-bg) !important;
-}
-
-tr,
-.adminer .hover {
-  background: transparent !important;
-}
-
-.adminer tr:hover td,
-.adminer tr:hover th,
-.js .checkable .checked:hover td,
-.js .checkable .checked:hover th,
-.js .checkable .checked:hover:nth-child(2n) td,
-.js .checkable .checked:hover:nth-child(2n) th {
-  background: var(--hover-bg) !important;
+.adminer th {
+  background: var(--data);
 }
 
 .adminer .jush {
-  color: var(--accent);
+  --text-color: var(--fg);
+  --value-color: var(--a);
 }
 
-.adminer .jush-js_key,
-.adminer .jush-js_key .jush-quo,
-.adminer .jush-js_key .jush-apo {
-  color: lightpink;
+.adminer .jush a {
+  color: var(--a);
 }
 
-.adminer .jush a,
-.adminer a,
-.adminer a:visited {
-  color: var(--accent);
+.adminer .odds tbody tr:nth-child(even) {
+  background: var(--data);
 }
 
-.adminer a:link:hover,
-.adminer a:visited:hover {
-  color: var(--font);
-}
-
-.adminer option:checked {
-  color: var(--font);
-  background: rgb(from var(--accent) r g b / .5);
-}
-
-.adminer .icon:first-child {
-  font-size: 1.3em;
-  font-weight: bold;
+.adminer .column {
+  background: var(--data);
+  border-width: 1px;
+  border-radius: 8px;
+  margin-left: .5em;
 }
 
 .adminer .icon {
-  color: var(--font);
-  background: var(--button);
-  display: inline-block;
-  margin: 1px;
-  padding: 0;
-  line-height: 1.2;
+  background: var(--data);
+  border-radius: 5px;
+  padding-bottom: 2px;
   height: 24px;
   width: 24px;
 }
 
-.adminer .icon:hover {
-  background: var(--accent);
-}
-
 .adminer .icon span {
-  display: block;
+  display: inline;
 }
 
-.js .column {
-  background: var(--data-bg);
-  border: none;
-  border-radius: 8px;
-  margin-left: .3em;
-}
-
-button.icon span {
-  font-size: 0;
-}
-
-.icon-move span:before {
-  content: '≣';
-  font-size: 10px;
-}
-
-.icon-plus span:before {
-  content: '+';
+.adminer .icon-move span:before {
+  content: '☰';
   font-size: 16px;
 }
 
-.icon-cross span:before {
-  content: '❌';
-  font-size: 10px;
+.adminer .icon-plus {
+  font-size: 18px;
+}
+
+.adminer .icon-cross {
+  font-size: 12px;
+}
+
+.adminer .icon-move {
+  font-size: 0;
+}
+
+.adminer :is(.message, .error) {
+  background: var(--data);
+}
+
+.adminer .footer {
+  opacity: var(--alpha);
 }
