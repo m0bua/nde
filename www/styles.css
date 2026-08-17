@@ -34,6 +34,7 @@ select {
 }
 
 select option:checked {
+  color: var(--data);
   background: var(--a);
 }
 
@@ -166,16 +167,8 @@ select option:checked {
 /* ### Adminer ### */
 
 html {
-  --dim: var(--hover);
-  --lit: var(--sel);
-}
-
-.adminer :is(h1, h2, h3, code, td, #breadcrumb) {
-  background: transparent;
-}
-
-.adminer th {
-  background: var(--data);
+  --dim: transparent;
+  --lit: transparent;
 }
 
 .adminer .jush {
@@ -187,8 +180,20 @@ html {
   color: var(--a);
 }
 
-.adminer .odds tbody tr:nth-child(even) {
+.adminer thead th {
   background: var(--data);
+}
+
+.adminer .odds tr:nth-child(even) {
+  background: var(--data);
+}
+
+.adminer .odds tr.checked {
+  background: var(--sel);
+}
+
+.adminer .odds tr:hover {
+  background: var(--hover);
 }
 
 .adminer .column {
@@ -227,7 +232,7 @@ html {
   font-size: 0;
 }
 
-.adminer :is(.message, .error) {
+.adminer :is(#help, .message, .error) {
   background: var(--data);
 }
 
