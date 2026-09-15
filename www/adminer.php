@@ -1,6 +1,6 @@
 <?php
 
-$file = 'latest-mysql-en.php';
+$file = __DIR__ . '/latest-mysql-en.php';
 
 error_reporting(0);
 ini_set('display_errors', 0);
@@ -10,28 +10,34 @@ ini_set('post_max_size', '10G');
 ini_set('upload_max_filesize', '10G');
 ini_set('max_execution_time', 360);
 
-if (!filesize($file)) update($file);
+if (!is_file($file) || filesize($file) === 0) update($file);
 else {
   preg_match('#^\* \@version ([\d\.]+)$#m', file_get_contents($file), $matches);
-  if (!empty($matches[1]) && version_compare($matches[1], $_COOKIE['adminer_version'], '<')) {
-    echo "<span style=color:red>Updating: {$matches[1]}->{$_COOKIE['adminer_version']}</span>";
-    update($file, $_COOKIE['adminer_version']);
+  $version = $_COOKIE['adminer_version'] ?? '';
+
+  if (!empty($matches[1])
+    && preg_match('/^\d+(?:\.\d+)*$/', $version)
+    && version_compare($matches[1], $version, '<')
+  ) {
+    echo "<span style=color:red>Updating: {$matches[1]}->{$version}</span>";
+    update($file, $version);
   }
 }
 
-if ((bool)filesize($file)) {
-  ob_start();
-  register_shutdown_function(function () {
-    $html = ob_get_clean();
-    if (empty($_GET['file'])) {
-      preg_match('~<script\s+nonce="([^"]+)"~i', $html, $matches);
-      $nonce = $matches[1] ?? '';
-      $nonceAttribute = $nonce ? ' nonce="'
-        . htmlspecialchars($nonce, ENT_QUOTES) . '"' : '';
-      $server = env('server');
-      $username = env('user');
-      $password = env('password');
-      $script = <<<HTML
+clearstatcache(true, $file);
+
+if (is_file($file) && filesize($file) > 0) {
+  ob_start(function (string $html): string {
+    if (!empty($_GET['file'])) return $html;
+
+    preg_match('~<script\s+nonce="([^"]+)"~i', $html, $matches);
+    $nonce = $matches[1] ?? '';
+    $nonceAttribute = $nonce ? ' nonce="'
+      . htmlspecialchars($nonce, ENT_QUOTES) . '"' : '';
+    $server = env('server');
+    $username = env('user');
+    $password = env('password');
+    $script = <<<HTML
 <script$nonceAttribute>
 window.addEventListener('load', function () {
   const params = new URLSearchParams(window.location.search)
@@ -47,22 +53,33 @@ function fieldFill(key, val) {
 }
 </script>
 HTML;
-      $html .= $script;
-    }
 
-    echo $html;
+    return $html . $script;
   });
 
   require_once $file;
 } else echo 'Adminer file error!';
 
-function update($file, $ver = null)
+function update(string $file, ?string $ver = null): bool
 {
-  $url = empty($ver) ? "https://adminer.org/$file" :
+  if ($ver !== null && !preg_match('/^\d+(?:\.\d+)*$/', $ver)) return false;
+
+  $name = basename($file);
+  $url = $ver === null ? "https://adminer.org/$name" :
     "https://github.com/vrana/adminer/releases/download/v$ver/"
-    . str_replace('latest', "adminer-$ver", $file);
-  $data = file_get_contents($url);
-  if (!empty($data)) file_put_contents($file, $data);
+    . str_replace('latest', "adminer-$ver", $name);
+  $data = @file_get_contents($url);
+
+  if (!$data) return false;
+
+  $temporary = $file . '.tmp';
+  if (file_put_contents($temporary, $data, LOCK_EX) === false) return false;
+  if (!rename($temporary, $file)) {
+    @unlink($temporary);
+    return false;
+  }
+
+  return true;
 }
 
 function env(string $key)
