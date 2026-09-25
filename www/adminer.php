@@ -29,7 +29,6 @@ clearstatcache(true, $file);
 if (is_file($file) && filesize($file) > 0) {
   ob_start(function (string $html): string {
     if (!empty($_GET['file'])) return $html;
-
     preg_match('~<script\s+nonce="([^"]+)"~i', $html, $matches);
     $nonce = $matches[1] ?? '';
     $nonceAttribute = $nonce ? ' nonce="'
@@ -40,16 +39,38 @@ if (is_file($file) && filesize($file) > 0) {
     $script = <<<HTML
 <script$nonceAttribute>
 window.addEventListener('load', function () {
-  const params = new URLSearchParams(window.location.search)
-  fieldFill('server', $server);
-  if(!params.get('username')) {
-    fieldFill('username', $username);
-    fieldFill('password', $password);
-  }
+  clearForm(false)
+  const isLoginPage = Array.from(document.querySelectorAll("h2"))
+    .some((heading) => heading.textContent.trim() === "Login");
+  if (!isLoginPage) return;
+
+  document.querySelectorAll("form input[type=\"submit\"]").forEach((submit) => {
+    if (submit.dataset.getReset) return;
+    submit.dataset.getReset = "true";
+
+    const reset = document.createElement("input");
+    reset.type = "button";
+    reset.value = "Reset";
+    reset.style = "margin-left:2em";
+    reset.dataset.getReset = "true";
+    const label = submit.closest("p")?.querySelector("label");
+    (label || submit).insertAdjacentElement("afterend", reset);
+    reset.addEventListener("click", clearForm);
+  });
 });
-function fieldFill(key, val) {
+function clearForm(force = true) {
+  const params = new URLSearchParams(window.location.search)
+  fieldFill('server', $server, force);
+  if(force || !params.get('username')) {
+    fieldFill('username', $username, force);
+    fieldFill('password', $password, force);
+  }
+  if(force) fieldFill('db', '', force);
+}
+function fieldFill(key, val, force = false) {
     const field = document.querySelector(`input[name="auth[\${key}]"]`);
-    if (field && !field.value) field.value = val;
+    console.log([key, force, field.value]);
+    if (field && (force || !field.value)) field.value = val;
 }
 </script>
 HTML;
