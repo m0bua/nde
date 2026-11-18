@@ -102,6 +102,156 @@ fn_help() {
   cat "${path}/d.help.md"
 }
 
+fn_host_block() {
+  local project handler
+  local -a projects project_dirs handlers
+
+  local -a static_projects=(main adminer mail)
+  mapfile -t project_dirs < <(
+    find "${HOME}/prj" -mindepth 1 -maxdepth 1 -type d -printf '%f\n' 2>/dev/null |
+      grep -E '^[a-zA-Z0-9-]+$' |
+      grep -Ev '^(main|adminer|mail|html)$' |
+      sort || true
+  )
+  projects=("${static_projects[@]}" "${project_dirs[@]}")
+  mapfile -t handlers < <(
+    docker compose -f "${config}" config --services |
+      grep -E '^[a-zA-Z0-9-]+$' |
+      grep -Ev '^(nginx|db|redis|mail)$' | sort -u
+  )
+
+  if ((${#projects[@]} <= 3)); then
+    echo 'No project directories found under ~/prj.' >&2
+    return 1
+  fi
+  if ((${#handlers[@]} == 0)); then
+    echo 'No handlers found in docker-compose.yml.' >&2
+    return 1
+  fi
+
+  printf '%s\n' '# NDE managed hosts start'
+  for project in "${projects[@]}"; do
+    printf '127.0.0.1 %s.local\n' "$project"
+    for handler in "${handlers[@]}"; do
+      printf '127.0.0.1 %s.%s.local\n' "$project" "$handler"
+    done
+  done
+  printf '%s\n' '# NDE managed hosts end'
+}
+
+fn_hosts_write() {
+  local hosts_file="$1"
+  local block_file="$2"
+  local temp_file
+
+  temp_file=$(mktemp)
+  if ! awk '
+    function flush_blanks() {
+      for (i = 0; i < blank_count; i++) print ""
+      blank_count = 0
+    }
+    $0 == "# NDE managed hosts start" {
+      if (inside || seen_start) exit 2
+      inside = 1
+      seen_start = 1
+      next
+    }
+    $0 == "# NDE managed hosts end" {
+      if (!inside || seen_end) exit 2
+      inside = 0
+      seen_end = 1
+      next
+    }
+    !inside {
+      if ($0 ~ /^[[:space:]]*$/) {
+        blank_count++
+        next
+      }
+      flush_blanks()
+      print
+    }
+    END {
+      if (inside || (seen_start != seen_end)) exit 2
+    }
+  ' "$hosts_file" > "$temp_file"; then
+    rm -f "$temp_file"
+    echo 'NDE hosts markers are incomplete or duplicated; hosts was left unchanged.' >&2
+    return 1
+  fi
+
+  printf '\n' >> "$temp_file"
+  cat "$block_file" >> "$temp_file"
+  if [[ -w "$hosts_file" ]]; then
+    cat "$temp_file" > "$hosts_file"
+  else
+    sudo tee "$hosts_file" < "$temp_file" >/dev/null
+  fi
+  rm -f "$temp_file"
+}
+
+fn_hosts_sync() {
+  local block_file
+  block_file=$(mktemp)
+  fn_host_block > "$block_file"
+  fn_hosts_write /etc/hosts "$block_file"
+  rm -f "$block_file"
+  echo 'Updated /etc/hosts with NDE domains.'
+}
+
+fn_hosts_clean() {
+  local hosts_file='/etc/hosts'
+  local temp_file
+
+  if ! grep -Fxq '# NDE managed hosts start' "$hosts_file" &&
+    ! grep -Fxq '# NDE managed hosts end' "$hosts_file"; then
+    echo 'No NDE hosts block found.'
+    return 0
+  fi
+
+  temp_file=$(mktemp)
+  if ! awk '
+    function flush_blanks() {
+      for (i = 0; i < blank_count; i++) print ""
+      blank_count = 0
+    }
+    $0 == "# NDE managed hosts start" {
+      if (inside || seen_start) exit 2
+      inside = 1
+      seen_start = 1
+      next
+    }
+    $0 == "# NDE managed hosts end" {
+      if (!inside || seen_end) exit 2
+      inside = 0
+      seen_end = 1
+      next
+    }
+    !inside {
+      if ($0 ~ /^[[:space:]]*$/) {
+        blank_count++
+        next
+      }
+      flush_blanks()
+      print
+    }
+    END {
+      if (inside || seen_start != 1 || seen_end != 1) exit 2
+    }
+  ' "$hosts_file" > "$temp_file"; then
+    rm -f "$temp_file"
+    echo 'NDE hosts markers are incomplete or duplicated; hosts was left unchanged.' >&2
+    return 1
+  fi
+
+  if [[ -w "$hosts_file" ]]; then
+    cat "$temp_file" > "$hosts_file"
+  else
+    sudo tee "$hosts_file" < "$temp_file" >/dev/null
+  fi
+  rm -f "$temp_file"
+  echo 'Removed the NDE hosts block from /etc/hosts.'
+}
+
 path=$(dirname "$(dirname "$(realpath "${BASH_SOURCE[0]}")")")
 config="${path}/docker-compose.yml"
 cert_script="${path}/scripts/cert.sh"
@@ -122,6 +272,18 @@ should_exit='true'
 command_text="${command_args[*]}"
 
 case "${command_text}" in
+  v|-v|--view)
+    fn_host_block
+    exit
+    ;;
+  s|-s|--sync)
+    fn_hosts_sync
+    exit
+    ;;
+  c|-c|--clean)
+    fn_hosts_clean
+    exit
+    ;;
   df|--df)
     docker system df
     exit

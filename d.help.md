@@ -29,6 +29,9 @@ as the first argument.
 d h,  d -h,  d --help    Show this help
 d df, d --df             Show Docker disk usage
 d i,  d -i,  d --init    Run NDE initialization (imports certificates on Windows)
+d v,  d -v,  d --view    Show generated local NDE domains
+d s,  d -s,  d --sync    Sync local NDE domains to the system hosts file
+d c,  d -c,  d --clean   Remove the NDE managed block from the system hosts file
 d d,  d -d,  d --down    Stop the Compose environment
 d r,  d -r,  d --reload  Recreate the environment without rebuilding services
 d refresh                 Recreate the environment and rebuild services
